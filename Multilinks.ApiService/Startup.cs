@@ -11,30 +11,43 @@ using Microsoft.Extensions.Options;
 
 namespace Multilinks.ApiService
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+   public class Startup
+   {
+      public Startup(IConfiguration configuration)
+      {
+         Configuration = configuration;
+      }
 
-        public IConfiguration Configuration { get; }
+      public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc();
-        }
+      // This method gets called by the runtime. Use this method to add services to the container.
+      public void ConfigureServices(IServiceCollection services)
+      {
+         services.AddMvcCore()
+            .AddAuthorization()
+            .AddJsonFormatters();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
+         services.AddAuthentication("Bearer")
+            .AddIdentityServerAuthentication(options =>
             {
-                app.UseDeveloperExceptionPage();
-            }
+               options.Authority = "http://localhost:5000";
+               options.RequireHttpsMetadata = false;
 
-            app.UseMvc();
-        }
-    }
+               options.ApiName = "api1";
+            });
+      }
+
+      // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+      public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+      {
+         if(env.IsDevelopment())
+         {
+            app.UseDeveloperExceptionPage();
+         }
+
+         app.UseAuthentication();
+
+         app.UseMvc();
+      }
+   }
 }
