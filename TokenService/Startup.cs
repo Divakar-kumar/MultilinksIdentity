@@ -17,6 +17,8 @@ namespace TokenService
       {
          services.AddIdentityServer()
             .AddDeveloperSigningCredential();
+
+         services.AddMvc();
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -28,6 +30,9 @@ namespace TokenService
          }
 
          app.UseIdentityServer();
+
+         app.UseStaticFiles();
+         app.UseMvcWithDefaultRoute();
       }
    }
 }
