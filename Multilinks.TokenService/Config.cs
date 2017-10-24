@@ -69,7 +69,9 @@ namespace Multilinks.TokenService
                ClientId = "mvc",
                ClientName = "MVC Client",
                AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
-               
+
+               RequireConsent = false,
+
                ClientSecrets =
                {
                      new Secret("secret".Sha256())
