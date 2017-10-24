@@ -16,7 +16,11 @@ namespace TokenService
       public void ConfigureServices(IServiceCollection services)
       {
          services.AddIdentityServer()
-            .AddDeveloperSigningCredential();
+            .AddDeveloperSigningCredential()
+            .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            .AddInMemoryApiResources(Config.GetApiResources())
+            .AddInMemoryClients(Config.GetClients())
+            .AddTestUsers(Config.GetUsers());
 
          services.AddMvc();
       }
