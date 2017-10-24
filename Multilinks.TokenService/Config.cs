@@ -4,7 +4,7 @@ using IdentityServer4.Test;
 using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace TokenService
+namespace Multilinks.TokenService
 {
    public class Config
    {
