@@ -14,55 +14,67 @@ using Multilinks.TokenService.Services;
 
 namespace Multilinks.TokenService
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+   public class Startup
+   {
+      public Startup(IConfiguration configuration)
+      {
+         Configuration = configuration;
+      }
 
-        public IConfiguration Configuration { get; }
+      public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+      // This method gets called by the runtime. Use this method to add services to the container.
+      public void ConfigureServices(IServiceCollection services)
+      {
+         services.AddDbContext<ApplicationDbContext>(options =>
+             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+         services.AddIdentity<ApplicationUser, IdentityRole>()
+             .AddEntityFrameworkStores<ApplicationDbContext>()
+             .AddDefaultTokenProviders();
 
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+         // Modify default password validation options.
+         services.Configure<IdentityOptions>(o =>
+         {
+            o.Password.RequireNonAlphanumeric = false;
+            o.Password.RequireUppercase = false;
+            o.Password.RequiredLength = 8;
+         });
 
-            services.AddMvc();
-        }
+         // Add application services.
+         services.AddTransient<IEmailSender, EmailSender>();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+         services.AddMvc();
 
-            app.UseStaticFiles();
+         // configure identity server with in-memory stores, keys, clients and scopes
+         services.AddIdentityServer()
+            .AddDeveloperSigningCredential()
+            .AddInMemoryPersistedGrants()
+            .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            .AddInMemoryApiResources(Config.GetApiResources())
+            .AddInMemoryClients(Config.GetClients())
+            .AddAspNetIdentity<ApplicationUser>();
+      }
 
-            app.UseAuthentication();
+      // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+      public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+      {
+         if(env.IsDevelopment())
+         {
+            app.UseDeveloperExceptionPage();
+            app.UseBrowserLink();
+            app.UseDatabaseErrorPage();
+         }
+         else
+         {
+            app.UseExceptionHandler("/Home/Error");
+         }
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
-        }
-    }
+         app.UseStaticFiles();
+
+         app.UseIdentityServer();
+
+         app.UseMvcWithDefaultRoute();
+      }
+   }
 }
