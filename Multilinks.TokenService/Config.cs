@@ -62,7 +62,7 @@ namespace Multilinks.TokenService
                ClientName = "MVC Client",
                AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
-               RequireConsent = true,
+               RequireConsent = false,
 
                ClientSecrets =
                {
