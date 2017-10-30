@@ -4,3 +4,4 @@ syntax: glob
 **/obj/**
 TokenService/tempkey.rsa
 *.user
+**/tempkey.rsa
