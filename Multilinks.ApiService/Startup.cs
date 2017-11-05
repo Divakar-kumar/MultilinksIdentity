@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Multilinks.ApiService.Infrastructure;
 
 namespace Multilinks.ApiService
 {
@@ -25,7 +22,13 @@ namespace Multilinks.ApiService
       {
          services.AddMvcCore()
             .AddAuthorization()
-            .AddJsonFormatters();
+            .AddJsonFormatters()
+            .AddMvcOptions(opt =>
+            {
+               var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
+               opt.OutputFormatters.Remove(jsonFormatter);
+               opt.OutputFormatters.Add(new IonOutputFormatter(jsonFormatter));
+            });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
 
