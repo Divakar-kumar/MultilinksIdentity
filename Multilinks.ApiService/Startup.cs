@@ -27,6 +27,8 @@ namespace Multilinks.ApiService
             .AddAuthorization()
             .AddJsonFormatters();
 
+         services.AddRouting(opt => opt.LowercaseUrls = true);
+
          services.AddAuthentication("Bearer")
             .AddIdentityServerAuthentication(options =>
             {
