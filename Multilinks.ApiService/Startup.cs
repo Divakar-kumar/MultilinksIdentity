@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Multilinks.ApiService.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Multilinks.ApiService
 {
@@ -31,6 +33,15 @@ namespace Multilinks.ApiService
             });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
+
+         services.AddApiVersioning(opt =>
+         {
+            opt.ApiVersionReader = new MediaTypeApiVersionReader();
+            opt.AssumeDefaultVersionWhenUnspecified = true;
+            opt.ReportApiVersions = true;
+            opt.DefaultApiVersion = new ApiVersion(1, 0);
+            opt.ApiVersionSelector = new CurrentImplementationApiVersionSelector(opt);
+         });
 
          services.AddAuthentication("Bearer")
             .AddIdentityServerAuthentication(options =>
