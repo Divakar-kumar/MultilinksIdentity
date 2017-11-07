@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Multilinks.ApiService.Controllers
 {
    [Route("/")]
    [ApiVersion("1.0")]
+   [Authorize]
    public class RootController : Controller
    {
       [HttpGet(Name = nameof(GetRoot))]
+      [AllowAnonymous]
       public IActionResult GetRoot()
       {
          var response = new
