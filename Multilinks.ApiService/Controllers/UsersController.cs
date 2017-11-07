@@ -8,14 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
+   [ApiVersion("1.0")]
    [Authorize]
    public class UsersController : Controller
    {
-      // GET api/values
-      [HttpGet]
-      public IActionResult Get()
+      // GET api/users
+      [HttpGet(Name = nameof(GetUsers))]
+      [AllowAnonymous]
+      public IActionResult GetUsers()
       {
-         return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+         throw new NotImplementedException();
       }
    }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Multilinks.ApiService.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using Multilinks.ApiService.Filters;
 
 namespace Multilinks.ApiService
 {
@@ -30,6 +31,8 @@ namespace Multilinks.ApiService
                var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
                opt.OutputFormatters.Remove(jsonFormatter);
                opt.OutputFormatters.Add(new IonOutputFormatter(jsonFormatter));
+
+               opt.Filters.Add(typeof(JsonExceptionFilter));
             });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
