@@ -15,6 +15,7 @@
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.0.0" />
+    <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
