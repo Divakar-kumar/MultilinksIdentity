@@ -17,7 +17,12 @@ namespace Multilinks.ApiService.Controllers
       [AllowAnonymous]
       public IActionResult GetUsers()
       {
-         throw new NotImplementedException();
+         var response = new
+         {
+            href = Url.Link(nameof(UsersController.GetUsers), null)
+         };
+
+         return Ok(response);
       }
    }
 }

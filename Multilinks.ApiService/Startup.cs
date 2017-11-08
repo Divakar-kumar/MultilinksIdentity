@@ -13,12 +13,14 @@ namespace Multilinks.ApiService
 {
    public class Startup
    {
-      public Startup(IConfiguration configuration)
-      {
-         Configuration = configuration;
-      }
+      private IConfiguration _configuration { get; }
+      private IHostingEnvironment _env { get; }
 
-      public IConfiguration Configuration { get; }
+      public Startup(IConfiguration configuration, IHostingEnvironment env)
+      {
+         _configuration = configuration;
+         _env = env;
+      }
 
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
@@ -33,6 +35,12 @@ namespace Multilinks.ApiService
                opt.OutputFormatters.Add(new IonOutputFormatter(jsonFormatter));
 
                opt.Filters.Add(typeof(JsonExceptionFilter));
+
+               if(!_env.IsProduction())
+               {
+                  opt.SslPort = 44301;
+               }
+               opt.Filters.Add(new RequireHttpsAttribute());
             });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
@@ -57,9 +65,9 @@ namespace Multilinks.ApiService
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-      public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+      public void Configure(IApplicationBuilder app)
       {
-         if(env.IsDevelopment())
+         if(_env.IsDevelopment())
          {
             app.UseDeveloperExceptionPage();
          }
