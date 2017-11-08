@@ -38,7 +38,11 @@ namespace Multilinks.ApiService
 
                if(!_env.IsProduction())
                {
-                  opt.SslPort = 44301;
+                  var launchJsonConfig = new ConfigurationBuilder()
+                        .SetBasePath(_env.ContentRootPath)
+                        .AddJsonFile("Properties\\launchSettings.json")
+                        .Build();
+                  opt.SslPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
                }
                opt.Filters.Add(new RequireHttpsAttribute());
             });
