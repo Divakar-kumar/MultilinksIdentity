@@ -15,7 +15,8 @@ namespace Multilinks.ApiService.Controllers
          var response = new
          {
             href = Url.Link(nameof(GetRoot), null),
-            users = new { href = Url.Link(nameof(UsersController.GetUsers), null) }
+            users = new { href = Url.Link(nameof(UsersController.GetUsers), null) },
+            info = new { href = Url.Link(nameof(InfoController.GetInfo), null) }
          };
 
          return Ok(response);

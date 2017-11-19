@@ -8,6 +8,7 @@ using Multilinks.ApiService.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Multilinks.ApiService.Filters;
+using Multilinks.ApiService.Models;
 
 namespace Multilinks.ApiService
 {
@@ -57,6 +58,8 @@ namespace Multilinks.ApiService
             opt.DefaultApiVersion = new ApiVersion(1, 0);
             opt.ApiVersionSelector = new CurrentImplementationApiVersionSelector(opt);
          });
+
+         services.Configure<MultilinksInfo>(_configuration.GetSection("Info"));
 
          services.AddAuthentication("Bearer")
             .AddIdentityServerAuthentication(options =>
