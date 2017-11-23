@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Multilinks.ApiService.Filters;
 using Multilinks.ApiService.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using Multilinks.ApiService.Data;
+using Multilinks.ApiService.Services;
+using AutoMapper;
 
 namespace Multilinks.ApiService
 {
@@ -26,6 +31,11 @@ namespace Multilinks.ApiService
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
+         services.AddDbContext<ApplicationDbContext>(options =>
+             options.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString")));
+
+         services.AddAutoMapper();
+
          services.AddMvcCore()
             .AddAuthorization()
             .AddJsonFormatters()
@@ -59,7 +69,7 @@ namespace Multilinks.ApiService
             opt.ApiVersionSelector = new CurrentImplementationApiVersionSelector(opt);
          });
 
-         services.Configure<MultilinksInfo>(_configuration.GetSection("Info"));
+         services.Configure<MultilinksInfoViewModel>(_configuration.GetSection("Info"));
 
          services.AddAuthentication("Bearer")
             .AddIdentityServerAuthentication(options =>
@@ -69,6 +79,8 @@ namespace Multilinks.ApiService
 
                options.ApiName = "api1";
             });
+
+         services.AddScoped<IEndpointService, EndpointService>();
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +88,7 @@ namespace Multilinks.ApiService
       {
          if(_env.IsDevelopment())
          {
+            AddTestData(app);
             app.UseDeveloperExceptionPage();
          }
 
@@ -89,6 +102,47 @@ namespace Multilinks.ApiService
          });
 
          app.UseMvc();
+      }
+
+      private static void AddTestData(IApplicationBuilder app)
+      {
+         using(var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+         {
+            var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            /* Add test endpoints if table is empty. */
+            if(context.Endpoints.Count() == 0)
+            {
+               Guid creatorId = Guid.NewGuid();
+               Guid serviceAreaId = Guid.NewGuid();
+
+               context.Endpoints.Add(new EndpointEntity
+               {
+                  EndpointId = Guid.NewGuid(),
+                  ServiceAreaId = serviceAreaId,
+                  CreatorId = creatorId,
+                  IsCloudConnected = false,
+                  IsGateway = false,
+                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.receiveOnly,
+                  Name = "Arduino TV Remote",
+                  Description = "Receive command from the gateway and action the command on the TV"
+               });
+
+               context.Endpoints.Add(new EndpointEntity
+               {
+                  EndpointId = Guid.NewGuid(),
+                  ServiceAreaId = serviceAreaId,
+                  CreatorId = creatorId,
+                  IsCloudConnected = true,
+                  IsGateway = true,
+                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.transmitAndReceive,
+                  Name = "Arduino TV Remote Gateway",
+                  Description = "Manage communications between Arduino TV Remote and other endpoints"
+               });
+
+               context.SaveChanges();
+            }
+         }
       }
    }
 }

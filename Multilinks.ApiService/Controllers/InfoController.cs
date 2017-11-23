@@ -10,9 +10,9 @@ namespace Multilinks.ApiService.Controllers
    [Authorize]
    public class InfoController : Controller
    {
-      private readonly MultilinksInfo _multilinksInfo;
+      private readonly MultilinksInfoViewModel _multilinksInfo;
 
-      public InfoController(IOptions<MultilinksInfo> multilinksInfo)
+      public InfoController(IOptions<MultilinksInfoViewModel> multilinksInfo)
       {
          _multilinksInfo = multilinksInfo.Value;
       }

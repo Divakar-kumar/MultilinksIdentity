@@ -1,6 +1,6 @@
 ﻿namespace Multilinks.ApiService.Models
 {
-   public class MultilinksInfo : Resource
+   public class MultilinksInfoViewModel : Resource
    {
       public string Title { get; set; }
       public string Tagline { get; set; }
