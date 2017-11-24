@@ -25,6 +25,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Multilinks.ApiService.Models
 {
@@ -37,7 +38,10 @@ namespace Multilinks.ApiService.Models
          transmitAndReceive
       };
 
+      [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
       [Key]
+      public long Id { get; set; }
+
       public Guid EndpointId { get; set; }
 
       public Guid ServiceAreaId { get; set; }
