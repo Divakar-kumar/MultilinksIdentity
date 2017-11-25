@@ -27,6 +27,7 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/endpoints/{endpointId}
       [HttpGet("{endpointId}", Name = nameof(GetEndpointByIdAsync))]
+      [AllowAnonymous]
       public async Task<IActionResult> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
          var endpointViewModel = await _endpointService.GetEndpointAsync(endpointId, ct);

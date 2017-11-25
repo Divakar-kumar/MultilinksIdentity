@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Multilinks.ApiService.Models;
 
 namespace Multilinks.ApiService.Controllers
 {
@@ -12,12 +13,12 @@ namespace Multilinks.ApiService.Controllers
       [AllowAnonymous]
       public IActionResult GetRoot()
       {
-         var response = new
+         var response = new RootResponse
          {
-            href = Url.Link(nameof(GetRoot), null),
-            info = new { href = Url.Link(nameof(InfoController.GetInfo), null) },
-            users = new { href = Url.Link(nameof(UsersController.GetUsers), null) },
-            endpoints = new { href = Url.Link(nameof(EndpointsController.GetEndpoints), null) }
+            Self = Link.To(nameof(GetRoot)),
+            Info = Link.To(nameof(InfoController.GetInfo)),
+            Users = Link.To(nameof(UsersController.GetUsers)),
+            Endpoints = Link.To(nameof(EndpointsController.GetEndpoints))
          };
 
          return Ok(response);
