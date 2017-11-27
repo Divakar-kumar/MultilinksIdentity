@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +11,6 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   [Authorize]
    public class EndpointsController : Controller
    {
       private readonly IEndpointService _endpointService;
@@ -19,15 +20,23 @@ namespace Multilinks.ApiService.Controllers
          _endpointService = endpointService;
       }
 
-      [HttpGet(Name = nameof(GetEndpoints))]
-      public IActionResult GetEndpoints()
+      [HttpGet(Name = nameof(GetEndpointsAsync))]
+      public async Task<IActionResult> GetEndpointsAsync(CancellationToken ct)
       {
-         throw new NotImplementedException();
+         var endpoints = await _endpointService.GetEndpointsAsync(ct);
+
+         var collectionLink = Link.ToCollection(nameof(GetEndpointsAsync));
+         var collection = new Collection<EndpointViewModel>
+         {
+            Self = collectionLink,
+            Value = endpoints.ToArray()
+         };
+
+         return Ok(collection);
       }
 
       // GET api/endpoints/{endpointId}
       [HttpGet("{endpointId}", Name = nameof(GetEndpointByIdAsync))]
-      [AllowAnonymous]
       public async Task<IActionResult> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
          var endpointViewModel = await _endpointService.GetEndpointAsync(endpointId, ct);

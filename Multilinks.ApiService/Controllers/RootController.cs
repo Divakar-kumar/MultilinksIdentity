@@ -18,7 +18,7 @@ namespace Multilinks.ApiService.Controllers
             Self = Link.To(nameof(GetRoot)),
             Info = Link.To(nameof(InfoController.GetInfo)),
             Users = Link.To(nameof(UsersController.GetUsers)),
-            Endpoints = Link.To(nameof(EndpointsController.GetEndpoints))
+            Endpoints = Link.To(nameof(EndpointsController.GetEndpointsAsync))
          };
 
          return Ok(response);

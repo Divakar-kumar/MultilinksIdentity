@@ -5,6 +5,8 @@ using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using System.Collections.Generic;
+using AutoMapper.QueryableExtensions;
 
 namespace Multilinks.ApiService.Services
 {
@@ -23,6 +25,14 @@ namespace Multilinks.ApiService.Services
          if(entity == null) return null;
 
          return Mapper.Map<EndpointViewModel>(entity);
+      }
+
+      public async Task<IEnumerable<EndpointViewModel>> GetEndpointsAsync(CancellationToken ct)
+      {
+         var query = _context.Endpoints
+            .ProjectTo<EndpointViewModel>();
+
+         return await query.ToArrayAsync();
       }
    }
 }

@@ -16,6 +16,15 @@ namespace Multilinks.ApiService.Models
             Relations = null
          };
 
+      public static Link ToCollection(string routeName, object routeValues = null)
+        => new Link
+        {
+           RouteName = routeName,
+           RouteValues = routeValues,
+           Method = GetMethod,
+           Relations = new string[] { "collection" }
+        };
+
       [JsonProperty(Order = -4)]
       public string Href { get; set; }
 
