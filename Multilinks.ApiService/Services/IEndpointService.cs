@@ -10,6 +10,6 @@ namespace Multilinks.ApiService.Services
    {
       Task<EndpointViewModel> GetEndpointAsync(Guid endpointId, CancellationToken ct);
 
-      Task<IEnumerable<EndpointViewModel>> GetEndpointsAsync(CancellationToken ct);
+      Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(PagingOptions pagingOptions, CancellationToken ct);
    }
 }

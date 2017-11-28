@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Collections.Generic;
 using AutoMapper.QueryableExtensions;
+using System.Linq;
 
 namespace Multilinks.ApiService.Services
 {
@@ -27,12 +28,21 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointViewModel>(entity);
       }
 
-      public async Task<IEnumerable<EndpointViewModel>> GetEndpointsAsync(CancellationToken ct)
+      public async Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(PagingOptions pagingOptions, CancellationToken ct)
       {
          var query = _context.Endpoints
             .ProjectTo<EndpointViewModel>();
+         var allEndpoints = await query.ToArrayAsync();
 
-         return await query.ToArrayAsync();
+         var pagedEndpoints = allEndpoints
+            .Skip(pagingOptions.Offset.Value)
+            .Take(pagingOptions.Limit.Value);
+
+         return new PagedResults<EndpointViewModel>
+         {
+            Items = pagedEndpoints,
+            TotalSize = allEndpoints.Count()
+         };
       }
    }
 }
