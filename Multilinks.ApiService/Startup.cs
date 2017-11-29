@@ -39,6 +39,7 @@ namespace Multilinks.ApiService
          services.AddMvcCore()
             .AddAuthorization()
             .AddJsonFormatters()
+            .AddDataAnnotations()
             .AddMvcOptions(opt =>
             {
                var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
@@ -71,6 +72,7 @@ namespace Multilinks.ApiService
          });
 
          services.Configure<MultilinksInfoViewModel>(_configuration.GetSection("Info"));
+         services.Configure<PagingOptions>(_configuration.GetSection("DefaultPagingOptions"));
 
          services.AddAuthentication("Bearer")
             .AddIdentityServerAuthentication(options =>

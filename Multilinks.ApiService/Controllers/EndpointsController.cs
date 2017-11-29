@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
 using System;
@@ -14,15 +15,22 @@ namespace Multilinks.ApiService.Controllers
    public class EndpointsController : Controller
    {
       private readonly IEndpointService _endpointService;
+      private readonly PagingOptions _defaultPagingOptions;
 
-      public EndpointsController(IEndpointService endpointService)
+      public EndpointsController(IEndpointService endpointService, IOptions<PagingOptions> defaultPagingOptions)
       {
          _endpointService = endpointService;
+         _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
       [HttpGet(Name = nameof(GetEndpointsAsync))]
       public async Task<IActionResult> GetEndpointsAsync([FromQuery] PagingOptions pagingOptions, CancellationToken ct)
       {
+         if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
+
+         pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+         pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+
          var endpoints = await _endpointService.GetEndpointsAsync(pagingOptions, ct);
 
          var collectionLink = Link.ToCollection(nameof(GetEndpointsAsync));
