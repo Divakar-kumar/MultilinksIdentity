@@ -7,6 +7,7 @@
  * 
  *************************************************************************************************/
 
+using Multilinks.ApiService.Infrastructure;
 using System;
 using static Multilinks.ApiService.Models.EndpointEntity;
 
@@ -18,12 +19,15 @@ namespace Multilinks.ApiService.Models
 
       public Guid CreatorId { get; set; }
 
+      [Sortable]
       public bool IsCloudConnected { get; set; }
 
+      [Sortable]
       public bool IsGateway { get; set; }
 
       public CommsDirectionCapabilities DirectionCapability { get; set; }
 
+      [Sortable(Default = true)]
       public string Name { get; set; }
 
       public string Description { get; set; }

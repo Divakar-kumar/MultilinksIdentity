@@ -24,14 +24,17 @@ namespace Multilinks.ApiService.Controllers
       }
 
       [HttpGet(Name = nameof(GetEndpointsAsync))]
-      public async Task<IActionResult> GetEndpointsAsync([FromQuery] PagingOptions pagingOptions, CancellationToken ct)
+      public async Task<IActionResult> GetEndpointsAsync(
+         [FromQuery] PagingOptions pagingOptions,
+         [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+         CancellationToken ct)
       {
          if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
 
          pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
          pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-         var endpoints = await _endpointService.GetEndpointsAsync(pagingOptions, ct);
+         var endpoints = await _endpointService.GetEndpointsAsync(pagingOptions, sortOptions, ct);
 
          var collection = PagedCollection<EndpointViewModel>.Create(
             Link.ToCollection(nameof(GetEndpointsAsync)),

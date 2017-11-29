@@ -28,20 +28,26 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointViewModel>(entity);
       }
 
-      public async Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(PagingOptions pagingOptions, CancellationToken ct)
+      public async Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(
+         PagingOptions pagingOptions,
+         SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+         CancellationToken ct)
       {
-         var query = _context.Endpoints
-            .ProjectTo<EndpointViewModel>();
-         var allEndpoints = await query.ToArrayAsync();
+         IQueryable<EndpointEntity> query = _context.Endpoints;
+         query = sortOptions.Apply(query);
 
-         var pagedEndpoints = allEndpoints
-            .Skip(pagingOptions.Offset.Value)
-            .Take(pagingOptions.Limit.Value);
+         var size = await query.CountAsync(ct);
+
+         var items = await query
+                .Skip(pagingOptions.Offset.Value)
+                .Take(pagingOptions.Limit.Value)
+                .ProjectTo<EndpointViewModel>()
+                .ToArrayAsync(ct);
 
          return new PagedResults<EndpointViewModel>
          {
-            Items = pagedEndpoints,
-            TotalSize = allEndpoints.Count()
+            Items = items,
+            TotalSize = size
          };
       }
    }
