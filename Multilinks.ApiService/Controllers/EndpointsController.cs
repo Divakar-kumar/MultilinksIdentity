@@ -33,15 +33,12 @@ namespace Multilinks.ApiService.Controllers
 
          var endpoints = await _endpointService.GetEndpointsAsync(pagingOptions, ct);
 
-         var collectionLink = Link.ToCollection(nameof(GetEndpointsAsync));
-         var collection = new PagedCollection<EndpointViewModel>
-         {
-            Self = collectionLink,
-            Value = endpoints.Items.ToArray(),
-            Size = endpoints.TotalSize,
-            Offset = pagingOptions.Offset.Value,
-            Limit = pagingOptions.Limit.Value
-         };
+         var collection = PagedCollection<EndpointViewModel>.Create(
+            Link.ToCollection(nameof(GetEndpointsAsync)),
+            endpoints.Items.ToArray(),
+            endpoints.TotalSize,
+            pagingOptions
+            );
 
          return Ok(collection);
       }
