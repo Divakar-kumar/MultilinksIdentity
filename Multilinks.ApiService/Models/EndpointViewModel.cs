@@ -23,6 +23,7 @@ namespace Multilinks.ApiService.Models
       public bool IsCloudConnected { get; set; }
 
       [Sortable]
+      [SearchableBoolean]
       public bool IsGateway { get; set; }
 
       public CommsDirectionCapabilities DirectionCapability { get; set; }
