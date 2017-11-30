@@ -20,6 +20,7 @@ namespace Multilinks.ApiService.Models
       public Guid CreatorId { get; set; }
 
       [Sortable]
+      [SearchableBoolean]
       public bool IsCloudConnected { get; set; }
 
       [Sortable]
