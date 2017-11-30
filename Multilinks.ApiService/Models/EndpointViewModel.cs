@@ -28,6 +28,7 @@ namespace Multilinks.ApiService.Models
       public CommsDirectionCapabilities DirectionCapability { get; set; }
 
       [Sortable(Default = true)]
+      [Searchable]
       public string Name { get; set; }
 
       public string Description { get; set; }

@@ -13,6 +13,7 @@ namespace Multilinks.ApiService.Services
       Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(
          PagingOptions pagingOptions,
          SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+         SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
          CancellationToken ct);
    }
 }

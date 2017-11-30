@@ -31,9 +31,11 @@ namespace Multilinks.ApiService.Services
       public async Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(
          PagingOptions pagingOptions,
          SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+         SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
          CancellationToken ct)
       {
          IQueryable<EndpointEntity> query = _context.Endpoints;
+         query = searchOptions.Apply(query);
          query = sortOptions.Apply(query);
 
          var size = await query.CountAsync(ct);
