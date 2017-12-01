@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
+   [ApiVersion("1.0")]
    [Authorize]
    public class UsersController : Controller
    {
-      // GET api/values
-      [HttpGet]
-      public IActionResult Get()
+      // GET api/users
+      [HttpGet(Name = nameof(GetUsers))]
+      public IActionResult GetUsers()
       {
-         return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+         var response = new
+         {
+            href = Url.Link(nameof(UsersController.GetUsers), null)
+         };
+
+         return Ok(response);
       }
    }
 }
