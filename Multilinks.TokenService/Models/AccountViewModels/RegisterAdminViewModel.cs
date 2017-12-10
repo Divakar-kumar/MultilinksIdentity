@@ -2,7 +2,7 @@
 
 namespace Multilinks.TokenService.Models.AccountViewModels
 {
-   public class RegisterViewModel
+   public class RegisterAdminViewModel
    {
       [Required]
       [Display(Name = "First Name")]

@@ -20,6 +20,7 @@ namespace Multilinks.TokenService.Controllers
    public class AccountController : Controller
    {
       private readonly UserManager<ApplicationUser> _userManager;
+      private readonly RoleManager<ApplicationRole> _roleManager;
       private readonly SignInManager<ApplicationUser> _signInManager;
       private readonly IEmailSender _emailSender;
       private readonly ILogger _logger;
@@ -29,6 +30,7 @@ namespace Multilinks.TokenService.Controllers
 
       public AccountController(
           UserManager<ApplicationUser> userManager,
+          RoleManager<ApplicationRole> roleManager,
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<AccountController> logger,
@@ -39,12 +41,27 @@ namespace Multilinks.TokenService.Controllers
       )
       {
          _userManager = userManager;
+         _roleManager = roleManager;
          _signInManager = signInManager;
          _emailSender = emailSender;
          _logger = logger;
 
+         AddRoles().Wait();
+
          _interaction = interaction;
          _account = new AccountService(interaction, httpContextAccessor, schemeProvider, clientStore);
+      }
+
+      private async Task AddRoles()
+      {
+         // Add roles to database if doesn't exist
+         foreach(string roleName in new[] { "System Admin" })
+         {
+            if(!await _roleManager.RoleExistsAsync(roleName))
+            {
+               await _roleManager.CreateAsync(new ApplicationRole(roleName));
+            }
+         }
       }
 
       [TempData]
@@ -230,11 +247,81 @@ namespace Multilinks.TokenService.Controllers
          ViewData["ReturnUrl"] = returnUrl;
          if(ModelState.IsValid)
          {
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser
+            {
+               UserName = model.Email,
+               Email = model.Email,
+               ApplicationUserId = Guid.NewGuid(),
+               Firstname = model.Firstname,
+               Lastname = model.Lastname,
+               StartDate = DateTimeOffset.UtcNow
+            };
+
             var result = await _userManager.CreateAsync(user, model.Password);
             if(result.Succeeded)
             {
                _logger.LogInformation("User created a new account with password.");
+
+               var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+               var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+               await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+
+               await _signInManager.SignInAsync(user, isPersistent: false);
+               _logger.LogInformation("User created a new account with password.");
+               return RedirectToLocal(returnUrl);
+            }
+            AddErrors(result);
+         }
+
+         // If we got this far, something failed, redisplay form
+         return View(model);
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public IActionResult RegisterAdmin(string returnUrl = null)
+      {
+         /* This action returns a form for an admin account to be created. */
+         ViewData["ReturnUrl"] = returnUrl;
+         return View();
+      }
+
+      [HttpPost]
+      [AllowAnonymous]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> RegisterAdmin(RegisterAdminViewModel model, string returnUrl = null)
+      {
+         /* This action allows an admin account to be created. However if an admin
+          * already existed, this will do nothing. */
+         var systemAdmin = await _userManager.GetUsersInRoleAsync("System Admin");
+
+         if(systemAdmin.Count != 0)
+         {
+            /* Todo: At the moment we just return the same form back, we need explicitly indicate that an
+             * error has occurred. */
+            ErrorMessage = $"There can only be one System Admin.";
+            return View(model);
+         }
+
+         ViewData["ReturnUrl"] = returnUrl;
+         if(ModelState.IsValid)
+         {
+            var user = new ApplicationUser
+            {
+               UserName = model.Email,
+               Email = model.Email,
+               ApplicationUserId = Guid.NewGuid(),
+               Firstname = model.Firstname,
+               Lastname = model.Lastname,
+               StartDate = DateTimeOffset.UtcNow
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if(result.Succeeded)
+            {
+               _logger.LogInformation("User created a new account with password.");
+
+               await _userManager.AddToRoleAsync(user, "System Admin");
 
                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
