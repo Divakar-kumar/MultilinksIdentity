@@ -247,7 +247,16 @@ namespace Multilinks.TokenService.Controllers
          ViewData["ReturnUrl"] = returnUrl;
          if(ModelState.IsValid)
          {
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser
+            {
+               UserName = model.Email,
+               Email = model.Email,
+               ApplicationUserId = Guid.NewGuid(),
+               Firstname = model.Firstname,
+               Lastname = model.Lastname,
+               StartDate = DateTimeOffset.UtcNow
+            };
+
             var result = await _userManager.CreateAsync(user, model.Password);
             if(result.Succeeded)
             {
@@ -288,6 +297,8 @@ namespace Multilinks.TokenService.Controllers
 
          if(systemAdmin.Count != 0)
          {
+            /* Todo: At the moment we just return the same form back, we need explicitly indicate that an
+             * error has occurred. */
             ErrorMessage = $"There can only be one System Admin.";
             return View(model);
          }
@@ -295,7 +306,16 @@ namespace Multilinks.TokenService.Controllers
          ViewData["ReturnUrl"] = returnUrl;
          if(ModelState.IsValid)
          {
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser
+            {
+               UserName = model.Email,
+               Email = model.Email,
+               ApplicationUserId = Guid.NewGuid(),
+               Firstname = model.Firstname,
+               Lastname = model.Lastname,
+               StartDate = DateTimeOffset.UtcNow
+            };
+
             var result = await _userManager.CreateAsync(user, model.Password);
             if(result.Succeeded)
             {
