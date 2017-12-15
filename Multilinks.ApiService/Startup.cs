@@ -11,9 +11,10 @@ using Multilinks.ApiService.Filters;
 using Multilinks.ApiService.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using Multilinks.ApiService.Data;
 using Multilinks.ApiService.Services;
 using AutoMapper;
+using Multilinks.DataService.Entities;
+using Multilinks.DataService;
 
 namespace Multilinks.ApiService
 {

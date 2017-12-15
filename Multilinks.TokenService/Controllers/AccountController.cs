@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Multilinks.TokenService.Models;
 using Multilinks.TokenService.Models.AccountViewModels;
 using Multilinks.TokenService.Services;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
+using Multilinks.DataService.Entities;
 
 namespace Multilinks.TokenService.Controllers
 {
@@ -19,9 +19,9 @@ namespace Multilinks.TokenService.Controllers
    [Route("[controller]/[action]")]
    public class AccountController : Controller
    {
-      private readonly UserManager<ApplicationUser> _userManager;
-      private readonly RoleManager<ApplicationRole> _roleManager;
-      private readonly SignInManager<ApplicationUser> _signInManager;
+      private readonly UserManager<UserEntity> _userManager;
+      private readonly RoleManager<UserRoleEnitity> _roleManager;
+      private readonly SignInManager<UserEntity> _signInManager;
       private readonly IEmailSender _emailSender;
       private readonly ILogger _logger;
 
@@ -29,9 +29,9 @@ namespace Multilinks.TokenService.Controllers
       private readonly AccountService _account;
 
       public AccountController(
-          UserManager<ApplicationUser> userManager,
-          RoleManager<ApplicationRole> roleManager,
-          SignInManager<ApplicationUser> signInManager,
+          UserManager<UserEntity> userManager,
+          RoleManager<UserRoleEnitity> roleManager,
+          SignInManager<UserEntity> signInManager,
           IEmailSender emailSender,
           ILogger<AccountController> logger,
           IIdentityServerInteractionService interaction,
@@ -59,7 +59,7 @@ namespace Multilinks.TokenService.Controllers
          {
             if(!await _roleManager.RoleExistsAsync(roleName))
             {
-               await _roleManager.CreateAsync(new ApplicationRole(roleName));
+               await _roleManager.CreateAsync(new UserRoleEnitity(roleName));
             }
          }
       }
@@ -247,7 +247,7 @@ namespace Multilinks.TokenService.Controllers
          ViewData["ReturnUrl"] = returnUrl;
          if(ModelState.IsValid)
          {
-            var user = new ApplicationUser
+            var user = new UserEntity
             {
                UserName = model.Email,
                Email = model.Email,
@@ -306,7 +306,7 @@ namespace Multilinks.TokenService.Controllers
          ViewData["ReturnUrl"] = returnUrl;
          if(ModelState.IsValid)
          {
-            var user = new ApplicationUser
+            var user = new UserEntity
             {
                UserName = model.Email,
                Email = model.Email,
@@ -441,7 +441,7 @@ namespace Multilinks.TokenService.Controllers
             {
                throw new ApplicationException("Error loading external login information during confirmation.");
             }
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var user = new UserEntity { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user);
             if(result.Succeeded)
             {

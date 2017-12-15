@@ -2,12 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Multilinks.ApiService.Models;
-using Multilinks.ApiService.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using System.Collections.Generic;
 using AutoMapper.QueryableExtensions;
 using System.Linq;
+using Multilinks.DataService.Entities;
+using Multilinks.DataService;
 
 namespace Multilinks.ApiService.Services
 {

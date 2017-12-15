@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using Multilinks.ApiService.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Multilinks.DataService.Entities;
 
 namespace Multilinks.ApiService.Infrastructure
 {

@@ -19,10 +19,10 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace Multilinks.TokenService.Models
+namespace Multilinks.DataService.Entities
 {
    // Add profile data for application users by adding properties to the ApplicationUser class
-   public class ApplicationUser : IdentityUser
+   public class UserEntity : IdentityUser
    {
       public Guid ApplicationUserId { get; set; }
 
