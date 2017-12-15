@@ -13,10 +13,11 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Multilinks.DataService.Entities;
+using System;
 
 namespace Multilinks.DataService
 {
-   public class ApplicationDbContext : IdentityDbContext<UserEntity, UserRoleEnitity, string>
+   public class ApplicationDbContext : IdentityDbContext<UserEntity, UserRoleEntity, string>
    {
       public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
           : base(options)

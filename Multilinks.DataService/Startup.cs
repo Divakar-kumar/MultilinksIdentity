@@ -29,7 +29,7 @@ namespace Multilinks.DataService
          services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("MultilinksConnectionString")));
 
-         services.AddIdentity<UserEntity, UserRoleEnitity>()
+         services.AddIdentity<UserEntity, UserRoleEntity>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
              .AddDefaultTokenProviders();
 

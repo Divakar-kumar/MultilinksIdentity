@@ -25,6 +25,7 @@ namespace Multilinks.ApiService.Controllers
          _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
+      // GET api/endpoints/
       [HttpGet(Name = nameof(GetEndpointsAsync))]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,

@@ -189,7 +189,7 @@ namespace Multilinks.DataService.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Multilinks.DataService.Entities.UserRoleEnitity", b =>
+            modelBuilder.Entity("Multilinks.DataService.Entities.UserRoleEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -215,7 +215,7 @@ namespace Multilinks.DataService.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Multilinks.DataService.Entities.UserRoleEnitity")
+                    b.HasOne("Multilinks.DataService.Entities.UserRoleEntity")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -239,7 +239,7 @@ namespace Multilinks.DataService.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Multilinks.DataService.Entities.UserRoleEnitity")
+                    b.HasOne("Multilinks.DataService.Entities.UserRoleEntity")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);

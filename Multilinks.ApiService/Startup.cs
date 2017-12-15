@@ -15,6 +15,7 @@ using Multilinks.ApiService.Services;
 using AutoMapper;
 using Multilinks.DataService.Entities;
 using Multilinks.DataService;
+using Microsoft.AspNetCore.Identity;
 
 namespace Multilinks.ApiService
 {
@@ -34,6 +35,10 @@ namespace Multilinks.ApiService
       {
          services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString")));
+
+         services.AddIdentity<UserEntity, UserRoleEntity>()
+             .AddEntityFrameworkStores<ApplicationDbContext>()
+             .AddDefaultTokenProviders();
 
          services.AddAutoMapper();
 
@@ -85,6 +90,7 @@ namespace Multilinks.ApiService
             });
 
          services.AddScoped<IEndpointService, EndpointService>();
+         services.AddScoped<IUserService, UserService>();
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
