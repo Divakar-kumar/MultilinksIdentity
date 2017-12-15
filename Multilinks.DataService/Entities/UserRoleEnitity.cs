@@ -13,21 +13,17 @@
  *************************************************************************************************/
 
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Multilinks.TokenService.Models
+namespace Multilinks.DataService.Entities
 {
-   public class ApplicationRole : IdentityRole
+   public class UserRoleEnitity : IdentityRole
    {
-      public ApplicationRole()
+      public UserRoleEnitity()
          : base()
       {
       }
 
-      public ApplicationRole(string roleName)
+      public UserRoleEnitity(string roleName)
          : base(roleName)
       {
       }

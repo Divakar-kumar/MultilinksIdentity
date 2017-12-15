@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Multilinks.TokenService.Services;
-using System.Reflection;
 using Multilinks.DataService.Entities;
-using Multilinks.DataService;
+using System.Linq;
+using System.Reflection;
 
-namespace Multilinks.TokenService
+namespace Multilinks.DataService
 {
    public class Startup
    {
@@ -21,6 +23,7 @@ namespace Multilinks.TokenService
       public IConfiguration Configuration { get; }
 
       // This method gets called by the runtime. Use this method to add services to the container.
+      // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
       public void ConfigureServices(IServiceCollection services)
       {
          services.AddDbContext<ApplicationDbContext>(options =>
@@ -37,11 +40,6 @@ namespace Multilinks.TokenService
             o.Password.RequireUppercase = false;
             o.Password.RequiredLength = 8;
          });
-
-         // Add application services.
-         services.AddTransient<IEmailSender, EmailSender>();
-
-         services.AddMvc();
 
          var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
@@ -69,22 +67,55 @@ namespace Multilinks.TokenService
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
       public void Configure(IApplicationBuilder app, IHostingEnvironment env)
       {
+         // This will do the initial DB population for identity server configuration data store.
+         InitializeDatabase(app);
+
          if(env.IsDevelopment())
          {
             app.UseDeveloperExceptionPage();
-            app.UseBrowserLink();
-            app.UseDatabaseErrorPage();
          }
-         else
+
+         app.Run(async (context) =>
          {
-            app.UseExceptionHandler("/Home/Error");
+            await context.Response.WriteAsync("Hello World!");
+         });
+      }
+
+      private void InitializeDatabase(IApplicationBuilder app)
+      {
+         using(var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+         {
+            serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+            var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            context.Database.Migrate();
+            if(!context.Clients.Any())
+            {
+               foreach(var client in Config.GetClients())
+               {
+                  context.Clients.Add(client.ToEntity());
+               }
+               context.SaveChanges();
+            }
+
+            if(!context.IdentityResources.Any())
+            {
+               foreach(var resource in Config.GetIdentityResources())
+               {
+                  context.IdentityResources.Add(resource.ToEntity());
+               }
+               context.SaveChanges();
+            }
+
+            if(!context.ApiResources.Any())
+            {
+               foreach(var resource in Config.GetApiResources())
+               {
+                  context.ApiResources.Add(resource.ToEntity());
+               }
+               context.SaveChanges();
+            }
          }
-
-         app.UseStaticFiles();
-
-         app.UseIdentityServer();
-
-         app.UseMvcWithDefaultRoute();
       }
    }
 }

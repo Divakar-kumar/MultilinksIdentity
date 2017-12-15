@@ -1,8 +1,7 @@
-﻿using IdentityServer4;
-using IdentityServer4.Models;
+﻿using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace Multilinks.TokenService
+namespace Multilinks.DataService
 {
    public class Config
    {
