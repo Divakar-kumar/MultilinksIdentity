@@ -4,13 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Multilinks.TokenService.Data;
-using Multilinks.TokenService.Models;
 using Multilinks.TokenService.Services;
 using System.Reflection;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
-using System.Linq;
+using Multilinks.DataService.Entities;
+using Multilinks.DataService;
 
 namespace Multilinks.TokenService
 {
@@ -29,7 +26,7 @@ namespace Multilinks.TokenService
          services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("MultilinksConnectionString")));
 
-         services.AddIdentity<ApplicationUser, ApplicationRole>()
+         services.AddIdentity<UserEntity, UserRoleEnitity>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
              .AddDefaultTokenProviders();
 
@@ -66,15 +63,12 @@ namespace Multilinks.TokenService
                options.EnableTokenCleanup = true;
                options.TokenCleanupInterval = 30;
             })
-            .AddAspNetIdentity<ApplicationUser>();
+            .AddAspNetIdentity<UserEntity>();
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
       public void Configure(IApplicationBuilder app, IHostingEnvironment env)
       {
-         // This will do the initial DB population for identity server configuration data store.
-         InitializeDatabase(app);
-
          if(env.IsDevelopment())
          {
             app.UseDeveloperExceptionPage();
@@ -91,43 +85,6 @@ namespace Multilinks.TokenService
          app.UseIdentityServer();
 
          app.UseMvcWithDefaultRoute();
-      }
-
-      private void InitializeDatabase(IApplicationBuilder app)
-      {
-         using(var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-         {
-            serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-
-            var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-            context.Database.Migrate();
-            if(!context.Clients.Any())
-            {
-               foreach(var client in Config.GetClients())
-               {
-                  context.Clients.Add(client.ToEntity());
-               }
-               context.SaveChanges();
-            }
-
-            if(!context.IdentityResources.Any())
-            {
-               foreach(var resource in Config.GetIdentityResources())
-               {
-                  context.IdentityResources.Add(resource.ToEntity());
-               }
-               context.SaveChanges();
-            }
-
-            if(!context.ApiResources.Any())
-            {
-               foreach(var resource in Config.GetApiResources())
-               {
-                  context.ApiResources.Add(resource.ToEntity());
-               }
-               context.SaveChanges();
-            }
-         }
       }
    }
 }

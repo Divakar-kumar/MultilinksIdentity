@@ -9,7 +9,7 @@
 
 using Multilinks.ApiService.Infrastructure;
 using System;
-using static Multilinks.ApiService.Models.EndpointEntity;
+using static Multilinks.DataService.Entities.EndpointEntity;
 
 namespace Multilinks.ApiService.Models
 {
