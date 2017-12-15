@@ -13,7 +13,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   [Authorize]
+   //[Authorize]
    public class UsersController : Controller
    {
       private readonly IUserService _userService;
@@ -27,7 +27,6 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/users
       [HttpGet(Name = nameof(GetVisibleUsersAsync))]
-      [AllowAnonymous]
       public async Task<IActionResult> GetVisibleUsersAsync(
             [FromQuery] PagingOptions pagingOptions,
             [FromQuery] SortOptions<UserViewModel, UserEntity> sortOptions,

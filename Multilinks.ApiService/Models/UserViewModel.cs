@@ -7,20 +7,20 @@ namespace Multilinks.ApiService.Models
    {
       [Sortable]
       [SearchableBoolean]
-      public string Email { get; }
+      public string Email { get; set; }
 
-      public Guid ApplicationUserId { get; }
-
-      [Sortable]
-      [SearchableBoolean]
-      public string Firstname { get; }
+      public Guid ApplicationUserId { get; set; }
 
       [Sortable]
       [SearchableBoolean]
-      public string Lastname { get; }
+      public string Firstname { get; set; }
 
-      public DateTimeOffset StartDate { get; }
+      [Sortable]
+      [SearchableBoolean]
+      public string Lastname { get; set; }
 
-      public DateTimeOffset EndDate { get; }
+      public DateTimeOffset StartDate { get; set; }
+
+      public DateTimeOffset EndDate { get; set; }
    }
 }

@@ -14,7 +14,7 @@ namespace Multilinks.ApiService.Infrastructure
 
          CreateMap<UserEntity, UserViewModel>()
                 .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
-                    Link.To(nameof(Controllers.UsersController.GetUserByIdAsync), new { userId = src.Id })))
+                    Link.To(nameof(Controllers.UsersController.GetUserByIdAsync), new { userId = src.ApplicationUserId })))
                 .ForMember(dest => dest.ApplicationUserId, opt => opt.MapFrom(src => src.ApplicationUserId));
       }
    }
