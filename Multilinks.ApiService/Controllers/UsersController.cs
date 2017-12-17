@@ -26,6 +26,7 @@ namespace Multilinks.ApiService.Controllers
       }
 
       // GET api/users
+      // TODO: Admin only
       [HttpGet(Name = nameof(GetVisibleUsersAsync))]
       public async Task<IActionResult> GetVisibleUsersAsync(
             [FromQuery] PagingOptions pagingOptions,
@@ -50,12 +51,10 @@ namespace Multilinks.ApiService.Controllers
       }
 
       // GET api/users/{userId}
+      // TODO: Admin only
       [HttpGet("{userId}", Name = nameof(GetUserByIdAsync))]
       public Task<IActionResult> GetUserByIdAsync(Guid userId, CancellationToken ct)
       {
-         // TODO is userId the current user's ID?
-         // If so, return myself.
-         // If not, only Admin roles should be able to view arbitrary users.
          throw new NotImplementedException();
       }
    }
