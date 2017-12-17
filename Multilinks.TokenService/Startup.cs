@@ -8,23 +8,26 @@ using Multilinks.TokenService.Services;
 using System.Reflection;
 using Multilinks.DataService.Entities;
 using Multilinks.DataService;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Multilinks.TokenService
 {
    public class Startup
    {
-      public Startup(IConfiguration configuration)
-      {
-         Configuration = configuration;
-      }
+      private IConfiguration _configuration { get; }
+      private IHostingEnvironment _env { get; }
 
-      public IConfiguration Configuration { get; }
+      public Startup(IConfiguration configuration, IHostingEnvironment env)
+      {
+         _configuration = configuration;
+         _env = env;
+      }
 
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
          services.AddDbContext<ApplicationDbContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("MultilinksConnectionString")));
+             options.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString")));
 
          services.AddIdentity<UserEntity, UserRoleEntity>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -41,7 +44,19 @@ namespace Multilinks.TokenService
          // Add application services.
          services.AddTransient<IEmailSender, EmailSender>();
 
-         services.AddMvc();
+         services.AddMvc(opt =>
+         {
+            if(!_env.IsProduction())
+            {
+               var launchJsonConfig = new ConfigurationBuilder()
+                     .SetBasePath(_env.ContentRootPath)
+                     .AddJsonFile("Properties\\launchSettings.json")
+                     .Build();
+               opt.SslPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
+
+            }
+            opt.Filters.Add(new RequireHttpsAttribute());
+         });
 
          var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
@@ -50,13 +65,13 @@ namespace Multilinks.TokenService
             .AddConfigurationStore(options =>
             {
                options.ConfigureDbContext = builder =>
-                   builder.UseSqlServer(Configuration.GetConnectionString("MultilinksConnectionString"),
+                   builder.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString"),
                        sql => sql.MigrationsAssembly(migrationsAssembly));
             })
             .AddOperationalStore(options =>
             {
                options.ConfigureDbContext = builder =>
-                   builder.UseSqlServer(Configuration.GetConnectionString("MultilinksConnectionString"),
+                   builder.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString"),
                        sql => sql.MigrationsAssembly(migrationsAssembly));
 
                // this enables automatic token cleanup. this is optional.
@@ -67,9 +82,9 @@ namespace Multilinks.TokenService
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-      public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+      public void Configure(IApplicationBuilder app)
       {
-         if(env.IsDevelopment())
+         if(_env.IsDevelopment())
          {
             app.UseDeveloperExceptionPage();
             app.UseBrowserLink();
