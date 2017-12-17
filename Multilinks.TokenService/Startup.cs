@@ -99,6 +99,13 @@ namespace Multilinks.TokenService
 
          app.UseIdentityServer();
 
+         app.UseHsts(opt =>
+         {
+            opt.MaxAge(days: 365);
+            opt.IncludeSubdomains();
+            opt.Preload();
+         });
+
          app.UseMvcWithDefaultRoute();
       }
    }
