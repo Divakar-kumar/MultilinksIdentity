@@ -3,21 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
-using Multilinks.TokenService.Data;
 using System;
 
-namespace Multilinks.TokenService.Data.Migrations
+namespace Multilinks.DataService.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+   [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20171215081955_InitialDatabaseCreation")]
+    partial class InitialDatabaseCreation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -104,31 +102,33 @@ namespace Multilinks.TokenService.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Multilinks.TokenService.Models.ApplicationRole", b =>
+            modelBuilder.Entity("Multilinks.DataService.Entities.EndpointEntity", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                    b.Property<Guid>("CreatorId");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(256);
+                    b.Property<string>("Description");
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256);
+                    b.Property<int>("DirectionCapability");
+
+                    b.Property<Guid>("EndpointId");
+
+                    b.Property<bool>("IsCloudConnected");
+
+                    b.Property<bool>("IsGateway");
+
+                    b.Property<string>("Name");
+
+                    b.Property<Guid>("ServiceAreaId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("Endpoints");
                 });
 
-            modelBuilder.Entity("Multilinks.TokenService.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Multilinks.DataService.Entities.UserEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -189,9 +189,33 @@ namespace Multilinks.TokenService.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Multilinks.DataService.Entities.UserRoleEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Multilinks.TokenService.Models.ApplicationRole")
+                    b.HasOne("Multilinks.DataService.Entities.UserRoleEntity")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -199,7 +223,7 @@ namespace Multilinks.TokenService.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Multilinks.TokenService.Models.ApplicationUser")
+                    b.HasOne("Multilinks.DataService.Entities.UserEntity")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -207,7 +231,7 @@ namespace Multilinks.TokenService.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Multilinks.TokenService.Models.ApplicationUser")
+                    b.HasOne("Multilinks.DataService.Entities.UserEntity")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -215,12 +239,12 @@ namespace Multilinks.TokenService.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Multilinks.TokenService.Models.ApplicationRole")
+                    b.HasOne("Multilinks.DataService.Entities.UserRoleEntity")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Multilinks.TokenService.Models.ApplicationUser")
+                    b.HasOne("Multilinks.DataService.Entities.UserEntity")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -228,7 +252,7 @@ namespace Multilinks.TokenService.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Multilinks.TokenService.Models.ApplicationUser")
+                    b.HasOne("Multilinks.DataService.Entities.UserEntity")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

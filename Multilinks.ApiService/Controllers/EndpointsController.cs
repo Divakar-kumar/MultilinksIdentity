@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
+using Multilinks.DataService.Entities;
 using System;
 using System.Linq;
 using System.Threading;
@@ -12,6 +13,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
+   //[Authorize]
    public class EndpointsController : Controller
    {
       private readonly IEndpointService _endpointService;
@@ -23,6 +25,7 @@ namespace Multilinks.ApiService.Controllers
          _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
+      // GET api/endpoints/
       [HttpGet(Name = nameof(GetEndpointsAsync))]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,

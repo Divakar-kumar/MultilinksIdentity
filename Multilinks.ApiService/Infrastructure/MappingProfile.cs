@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using Multilinks.ApiService.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Multilinks.DataService.Entities;
 
 namespace Multilinks.ApiService.Infrastructure
 {
@@ -14,6 +11,11 @@ namespace Multilinks.ApiService.Infrastructure
          CreateMap<EndpointEntity, EndpointViewModel>()
             .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
                Link.To(nameof(Controllers.EndpointsController.GetEndpointByIdAsync), new { endpointId = src.EndpointId })));
+
+         CreateMap<UserEntity, UserViewModel>()
+                .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
+                    Link.To(nameof(Controllers.UsersController.GetUserByIdAsync), new { userId = src.ApplicationUserId })))
+                .ForMember(dest => dest.ApplicationUserId, opt => opt.MapFrom(src => src.ApplicationUserId));
       }
    }
 }
