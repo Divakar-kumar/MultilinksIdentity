@@ -6,7 +6,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("/")]
    [ApiVersion("1.0")]
-   [Authorize]
+   //[Authorize]
    public class RootController : Controller
    {
       [HttpGet(Name = nameof(GetRoot))]
@@ -17,7 +17,7 @@ namespace Multilinks.ApiService.Controllers
          {
             Self = Link.To(nameof(GetRoot)),
             Info = Link.To(nameof(InfoController.GetInfo)),
-            Users = Link.To(nameof(UsersController.GetUsers)),
+            Users = Link.To(nameof(UsersController.GetVisibleUsersAsync)),
             Endpoints = Link.To(nameof(EndpointsController.GetEndpointsAsync))
          };
 

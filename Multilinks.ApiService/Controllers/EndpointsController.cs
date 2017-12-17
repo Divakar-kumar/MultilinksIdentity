@@ -13,7 +13,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   [Authorize]
+   //[Authorize]
    public class EndpointsController : Controller
    {
       private readonly IEndpointService _endpointService;
@@ -25,6 +25,7 @@ namespace Multilinks.ApiService.Controllers
          _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
+      // GET api/endpoints/
       [HttpGet(Name = nameof(GetEndpointsAsync))]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,

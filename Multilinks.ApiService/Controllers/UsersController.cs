@@ -1,23 +1,61 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
+using Multilinks.ApiService.Models;
+using System.Threading;
+using Microsoft.Extensions.Options;
+using Multilinks.ApiService.Services;
+using System.Linq;
+using System;
+using Multilinks.DataService.Entities;
 
 namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   [Authorize]
+   //[Authorize]
    public class UsersController : Controller
    {
-      // GET api/users
-      [HttpGet(Name = nameof(GetUsers))]
-      public IActionResult GetUsers()
-      {
-         var response = new
-         {
-            href = Url.Link(nameof(UsersController.GetUsers), null)
-         };
+      private readonly IUserService _userService;
+      private readonly PagingOptions _defaultPagingOptions;
 
-         return Ok(response);
+      public UsersController(IUserService userService, IOptions<PagingOptions> defaultPagingOptions)
+      {
+         _userService = userService;
+         _defaultPagingOptions = defaultPagingOptions.Value;
+      }
+
+      // GET api/users
+      // TODO: Admin only
+      [HttpGet(Name = nameof(GetVisibleUsersAsync))]
+      public async Task<IActionResult> GetVisibleUsersAsync(
+            [FromQuery] PagingOptions pagingOptions,
+            [FromQuery] SortOptions<UserViewModel, UserEntity> sortOptions,
+            [FromQuery] SearchOptions<UserViewModel, UserEntity> searchOptions,
+            CancellationToken ct)
+      {
+         if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
+
+         pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+         pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+
+         // TODO: Authorization check. Is the user an admin?
+         var users = await _userService.GetUsersAsync(pagingOptions, sortOptions, searchOptions, ct);
+
+         var collection = PagedCollection<UserViewModel>.Create(Link.To(nameof(GetVisibleUsersAsync)),
+                                                                users.Items.ToArray(),
+                                                                users.TotalSize,
+                                                                pagingOptions);
+
+         return Ok(collection);
+      }
+
+      // GET api/users/{userId}
+      // TODO: Admin only
+      [HttpGet("{userId}", Name = nameof(GetUserByIdAsync))]
+      public Task<IActionResult> GetUserByIdAsync(Guid userId, CancellationToken ct)
+      {
+         throw new NotImplementedException();
       }
    }
 }

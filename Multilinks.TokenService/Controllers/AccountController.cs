@@ -20,7 +20,7 @@ namespace Multilinks.TokenService.Controllers
    public class AccountController : Controller
    {
       private readonly UserManager<UserEntity> _userManager;
-      private readonly RoleManager<UserRoleEnitity> _roleManager;
+      private readonly RoleManager<UserRoleEntity> _roleManager;
       private readonly SignInManager<UserEntity> _signInManager;
       private readonly IEmailSender _emailSender;
       private readonly ILogger _logger;
@@ -30,7 +30,7 @@ namespace Multilinks.TokenService.Controllers
 
       public AccountController(
           UserManager<UserEntity> userManager,
-          RoleManager<UserRoleEnitity> roleManager,
+          RoleManager<UserRoleEntity> roleManager,
           SignInManager<UserEntity> signInManager,
           IEmailSender emailSender,
           ILogger<AccountController> logger,
@@ -59,7 +59,7 @@ namespace Multilinks.TokenService.Controllers
          {
             if(!await _roleManager.RoleExistsAsync(roleName))
             {
-               await _roleManager.CreateAsync(new UserRoleEnitity(roleName));
+               await _roleManager.CreateAsync(new UserRoleEntity(roleName));
             }
          }
       }
