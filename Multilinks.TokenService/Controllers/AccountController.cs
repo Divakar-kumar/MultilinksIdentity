@@ -299,8 +299,8 @@ namespace Multilinks.TokenService.Controllers
          {
             /* Todo: At the moment we just return the same form back, we need explicitly indicate that an
              * error has occurred. */
-            ErrorMessage = $"There can only be one System Admin.";
-            return View(model);
+            ViewData["ErrorMessage"] = $"There can only be one System Admin.";
+            return View("Error");
          }
 
          ViewData["ReturnUrl"] = returnUrl;
