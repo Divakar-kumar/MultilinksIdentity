@@ -8,7 +8,6 @@ namespace Multilinks.ApiService.Models
    public class ApiError
    {
       public string Message { get; set; }
-      public string Details { get; set; }
 
       public ApiError()
       {
@@ -22,9 +21,13 @@ namespace Multilinks.ApiService.Models
       public ApiError(ModelStateDictionary modelState)
       {
          Message = "Invalid parameters.";
-         Details = modelState
-            .FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage;
+         Detail = modelState
+             .FirstOrDefault(x => x.Value.Errors.Any()).Value.Errors
+             .FirstOrDefault().ErrorMessage;
       }
+
+      [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+      public string Detail { get; set; }
 
       [JsonProperty(NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
       [DefaultValue("")]
