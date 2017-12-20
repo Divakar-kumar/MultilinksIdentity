@@ -1,9 +1,12 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Multilinks.ApiService.Infrastructure
 {
    public interface ISearchExpressionProvider
    {
+      IEnumerable<string> GetOperators();
+
       ConstantExpression GetValue(string input);
 
       Expression GetComparison(

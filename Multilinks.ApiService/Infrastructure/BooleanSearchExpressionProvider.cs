@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Multilinks.ApiService.Infrastructure
 {
-   public class BooleanSearchExpressionProvider : SearchExpressionProvider
+   public class BooleanSearchExpressionProvider : DefaultSearchExpressionProvider
    {
       public override ConstantExpression GetValue(string input)
       {
