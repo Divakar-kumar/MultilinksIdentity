@@ -125,5 +125,16 @@ namespace Multilinks.ApiService.Controllers
 
          return Created(newEndpointUrl, null);
       }
+
+      // DELETE api/endpoints/{endpointId}
+      [HttpDelete("{endpointId}", Name = nameof(DeleteEndpointByIdAsync))]
+      public async Task<IActionResult> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct)
+      {
+         /* TODO: Need to ensure authenticated user is allowed to delete. */
+
+         await _endpointService.DeleteEndpointByIdAsync(endpointId, ct);
+
+         return NoContent();
+      }
    }
 }

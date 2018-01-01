@@ -28,5 +28,7 @@ namespace Multilinks.ApiService.Services
                                      string name,
                                      string description,
                                      CancellationToken ct);
+
+      Task DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct);
    }
 }

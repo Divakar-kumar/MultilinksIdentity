@@ -104,5 +104,16 @@ namespace Multilinks.ApiService.Services
 
          return newEndpoint.EndpointId;
       }
+
+      public async Task DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct)
+      {
+         var endpoint = await _context.Endpoints.SingleOrDefaultAsync(ep => ep.EndpointId == endpointId, ct);
+
+         if(endpoint == null) return;
+
+         _context.Endpoints.Remove(endpoint);
+         var deleted = await _context.SaveChangesAsync(ct);
+         if(deleted < 1) throw new InvalidOperationException("Could not delete endpoint.");
+      }
    }
 }
