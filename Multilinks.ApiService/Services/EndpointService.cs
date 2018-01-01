@@ -20,12 +20,30 @@ namespace Multilinks.ApiService.Services
          _context = context;
       }
 
-      public async Task<EndpointViewModel> GetEndpointAsync(Guid id, CancellationToken ct)
+      public async Task<EndpointViewModel> GetEndpointByIdAsync(Guid id, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.EndpointId == id, ct);
          if(entity == null) return null;
 
          return Mapper.Map<EndpointViewModel>(entity);
+      }
+
+      public async Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct)
+      {
+         var entity = await _context.Endpoints.SingleOrDefaultAsync(
+            r => (r.CreatorId == creatorId  && r.Name == name),
+            ct);
+         if(entity == null) return false;
+
+         return true;
+      }
+
+      public async Task<bool> CheckGatewayExistsAsync(Guid serviceAreaId, CancellationToken ct)
+      {
+         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.ServiceAreaId == serviceAreaId, ct);
+         if(entity == null) return false;
+
+         return true;
       }
 
       public async Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(
@@ -51,6 +69,40 @@ namespace Multilinks.ApiService.Services
             Items = items,
             TotalSize = size
          };
+      }
+
+      public async Task<Guid> CreateEndpointAsync(Guid serviceAreaId,
+                                     Guid creatorId,
+                                     bool isCloudConnected,
+                                     bool isGateway,
+                                     EndpointEntity.CommsDirectionCapabilities commCapability,
+                                     string name,
+                                     string description,
+                                     CancellationToken ct)
+      {
+         var endpointId = Guid.NewGuid();
+
+         if(isGateway) serviceAreaId = endpointId;
+
+         var newEndpoint = new EndpointEntity
+         {
+            EndpointId = endpointId,
+            ServiceAreaId = serviceAreaId,
+            CreatorId = creatorId,
+            IsCloudConnected = isCloudConnected,
+            IsGateway = isGateway,
+            DirectionCapability = commCapability,
+            Name = name,
+            Description = description
+         };
+
+         _context.Endpoints.Add(newEndpoint);
+
+         var created = await _context.SaveChangesAsync(ct);
+
+         if(created < 1) throw new InvalidOperationException("Could not create new endpoint.");
+
+         return newEndpoint.EndpointId;
       }
    }
 }

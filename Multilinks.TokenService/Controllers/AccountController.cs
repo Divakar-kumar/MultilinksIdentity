@@ -297,8 +297,6 @@ namespace Multilinks.TokenService.Controllers
 
          if(systemAdmin.Count != 0)
          {
-            /* Todo: At the moment we just return the same form back, we need explicitly indicate that an
-             * error has occurred. */
             ViewData["ErrorMessage"] = $"There can only be one System Admin.";
             return View("Error");
          }
