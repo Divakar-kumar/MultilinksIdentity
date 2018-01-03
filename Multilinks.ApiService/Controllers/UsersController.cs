@@ -42,10 +42,10 @@ namespace Multilinks.ApiService.Controllers
          // TODO: Authorization check. Is the user an admin?
          var users = await _userService.GetUsersAsync(pagingOptions, sortOptions, searchOptions, ct);
 
-         var collection = PagedCollection<UserViewModel>.Create(Link.To(nameof(GetVisibleUsersAsync)),
-                                                                users.Items.ToArray(),
-                                                                users.TotalSize,
-                                                                pagingOptions);
+         var collection = PagedCollection<UserViewModel>.Create<UsersResponse>(Link.To(nameof(GetVisibleUsersAsync)),
+                                                                               users.Items.ToArray(),
+                                                                               users.TotalSize,
+                                                                               pagingOptions);
 
          return Ok(collection);
       }
