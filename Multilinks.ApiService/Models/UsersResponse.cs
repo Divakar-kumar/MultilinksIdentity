@@ -2,5 +2,6 @@
 {
    public class UsersResponse : PagedCollection<UserViewModel>
    {
+      public Form QueryForm { get; set; }
    }
 }

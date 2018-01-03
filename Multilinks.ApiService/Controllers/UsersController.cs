@@ -8,6 +8,7 @@ using Multilinks.ApiService.Services;
 using System.Linq;
 using System;
 using Multilinks.DataService.Entities;
+using Multilinks.ApiService.Infrastructure;
 
 namespace Multilinks.ApiService.Controllers
 {
@@ -46,6 +47,12 @@ namespace Multilinks.ApiService.Controllers
                                                                                users.Items.ToArray(),
                                                                                users.TotalSize,
                                                                                pagingOptions);
+
+         collection.QueryForm = FormMetadata.FromResource<UserViewModel>(Link.ToForm(nameof(GetVisibleUsersAsync),
+                                                                             null,
+                                                                             Link.GetMethod,
+                                                                             Form.QueryRelation));
+
 
          return Ok(collection);
       }
