@@ -6,17 +6,17 @@ namespace Multilinks.ApiService.Models
    public class UserViewModel : Resource
    {
       [Sortable]
-      [SearchableBoolean]
+      [Searchable]
       public string Email { get; set; }
 
       public Guid ApplicationUserId { get; set; }
 
       [Sortable]
-      [SearchableBoolean]
+      [Searchable]
       public string Firstname { get; set; }
 
       [Sortable]
-      [SearchableBoolean]
+      [Searchable]
       public string Lastname { get; set; }
 
       public DateTimeOffset StartDate { get; set; }
