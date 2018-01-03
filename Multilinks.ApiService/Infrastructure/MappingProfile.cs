@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Multilinks.ApiService.Controllers;
 using Multilinks.ApiService.Models;
 using Multilinks.DataService.Entities;
 
@@ -10,7 +11,15 @@ namespace Multilinks.ApiService.Infrastructure
       {
          CreateMap<EndpointEntity, EndpointViewModel>()
             .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
-               Link.To(nameof(Controllers.EndpointsController.GetEndpointByIdAsync), new { endpointId = src.EndpointId })));
+               Link.To(nameof(Controllers.EndpointsController.GetEndpointByIdAsync), new { endpointId = src.EndpointId })))
+            .ForMember(dest => dest.SubmitForm, opt => opt.MapFrom(src =>
+                  FormMetadata.FromModel(
+                     new NewEndpointForm(),
+                     Link.ToForm(
+                           nameof(EndpointsController.CreateEndpointAsync),
+                           null,
+                           Link.PostMethod,
+                           Form.CreateRelation))));
 
          CreateMap<UserEntity, UserViewModel>()
                 .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
