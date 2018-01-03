@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Multilinks.ApiService.Infrastructure;
 using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
 using Multilinks.DataService.Entities;
@@ -46,6 +47,12 @@ namespace Multilinks.ApiService.Controllers
                                                                                        endpoints.Items.ToArray(),
                                                                                        endpoints.TotalSize,
                                                                                        pagingOptions);
+
+         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(
+                                                                             nameof(GetEndpointsAsync),
+                                                                             null,
+                                                                             Link.GetMethod,
+                                                                             Form.QueryRelation));
 
          return Ok(collection);
       }
