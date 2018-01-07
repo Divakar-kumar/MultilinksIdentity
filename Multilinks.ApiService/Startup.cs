@@ -64,6 +64,10 @@ namespace Multilinks.ApiService
                   opt.SslPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
                }
                opt.Filters.Add(new RequireHttpsAttribute());
+
+               opt.CacheProfiles.Add("Static", new CacheProfile { Duration = 86400 });
+               opt.CacheProfiles.Add("Collection", new CacheProfile { Duration = 60 });
+               opt.CacheProfiles.Add("Resource", new CacheProfile { Duration = 180 });
             });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);

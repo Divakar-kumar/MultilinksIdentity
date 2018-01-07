@@ -10,6 +10,7 @@ namespace Multilinks.ApiService.Controllers
    public class RootController : Controller
    {
       [HttpGet(Name = nameof(GetRoot))]
+      [ResponseCache(CacheProfileName = "Static")]
       [AllowAnonymous]
       public IActionResult GetRoot()
       {

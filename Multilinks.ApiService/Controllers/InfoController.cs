@@ -19,6 +19,7 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/info
       [HttpGet(Name = nameof(GetInfo))]
+      [ResponseCache(CacheProfileName = "Static")]
       [AllowAnonymous]
       public IActionResult GetInfo()
       {
