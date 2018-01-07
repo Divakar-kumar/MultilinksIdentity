@@ -48,11 +48,16 @@ namespace Multilinks.ApiService.Controllers
                                                                                        endpoints.TotalSize,
                                                                                        pagingOptions);
 
-         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(
-                                                                             nameof(GetEndpointsAsync),
-                                                                             null,
-                                                                             Link.GetMethod,
-                                                                             Form.QueryRelation));
+         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(nameof(GetEndpointsAsync),
+                                                                                         null,
+                                                                                         Link.GetMethod,
+                                                                                         Form.QueryRelation));
+
+         collection.SubmitForm = FormMetadata.FromModel(new NewEndpointForm(),
+                                                        Link.ToForm(nameof(EndpointsController.CreateEndpointAsync),
+                                                                    null,
+                                                                    Link.PostMethod,
+                                                                    Form.CreateRelation));
 
          return Ok(collection);
       }
