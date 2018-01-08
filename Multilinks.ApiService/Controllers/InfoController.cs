@@ -27,6 +27,11 @@ namespace Multilinks.ApiService.Controllers
       {
          _multilinksInfo.Href = Url.Link(nameof(InfoController.GetInfo), null);
 
+         if(!Request.GetEtagHandler().NoneMatch(_multilinksInfo))
+         {
+            return StatusCode(304, _multilinksInfo);
+         }
+
          return Ok(_multilinksInfo);
       }
    }
