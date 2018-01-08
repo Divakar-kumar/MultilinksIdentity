@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Multilinks.ApiService.Infrastructure;
 using Multilinks.ApiService.Models;
 
 namespace Multilinks.ApiService.Controllers
@@ -11,6 +12,7 @@ namespace Multilinks.ApiService.Controllers
    {
       [HttpGet(Name = nameof(GetRoot))]
       [ResponseCache(CacheProfileName = "Static")]
+      [Etag]
       [AllowAnonymous]
       public IActionResult GetRoot()
       {
