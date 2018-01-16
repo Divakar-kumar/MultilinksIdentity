@@ -64,6 +64,10 @@ namespace Multilinks.ApiService
                   opt.SslPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
                }
                opt.Filters.Add(new RequireHttpsAttribute());
+
+               opt.CacheProfiles.Add("Static", new CacheProfile { Duration = 86400 });
+               opt.CacheProfiles.Add("Collection", new CacheProfile { Duration = 30 });
+               opt.CacheProfiles.Add("Resource", new CacheProfile { Duration = 60 });
             });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
@@ -98,7 +102,6 @@ namespace Multilinks.ApiService
       {
          if(_env.IsDevelopment())
          {
-            AddTestData(app);
             app.UseDeveloperExceptionPage();
          }
 
@@ -112,103 +115,6 @@ namespace Multilinks.ApiService
          });
 
          app.UseMvc();
-      }
-
-      private static void AddTestData(IApplicationBuilder app)
-      {
-         using(var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-         {
-            var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            /* Add test endpoints if table is empty. */
-            if(context.Endpoints.Count() == 0)
-            {
-               Guid creatorId = Guid.NewGuid();
-               Guid serviceAreaId = Guid.NewGuid();
-
-               context.Endpoints.Add(new EndpointEntity
-               {
-                  EndpointId = Guid.NewGuid(),
-                  ServiceAreaId = serviceAreaId,
-                  CreatorId = creatorId,
-                  IsCloudConnected = false,
-                  IsGateway = false,
-                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.receiveOnly,
-                  Name = "Arduino TV Remote",
-                  Description = "Receive command from the gateway and action the command on the TV"
-               });
-
-               context.Endpoints.Add(new EndpointEntity
-               {
-                  EndpointId = Guid.NewGuid(),
-                  ServiceAreaId = serviceAreaId,
-                  CreatorId = creatorId,
-                  IsCloudConnected = true,
-                  IsGateway = true,
-                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.transmitAndReceive,
-                  Name = "Arduino TV Remote Gateway",
-                  Description = "Manage communications between Arduino TV Remote and other endpoints"
-               });
-
-               creatorId = Guid.NewGuid();
-               serviceAreaId = Guid.NewGuid();
-
-               context.Endpoints.Add(new EndpointEntity
-               {
-                  EndpointId = Guid.NewGuid(),
-                  ServiceAreaId = serviceAreaId,
-                  CreatorId = creatorId,
-                  IsCloudConnected = false,
-                  IsGateway = false,
-                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.receiveOnly,
-                  Name = "Arduino Garage Remote",
-                  Description = "Receive command from the gateway and action the command on the garage remote"
-               });
-
-               context.Endpoints.Add(new EndpointEntity
-               {
-                  EndpointId = Guid.NewGuid(),
-                  ServiceAreaId = serviceAreaId,
-                  CreatorId = creatorId,
-                  IsCloudConnected = true,
-                  IsGateway = true,
-                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.transmitAndReceive,
-                  Name = "Arduino Garage Remote Gateway",
-                  Description = "Manage communications between Arduino Garage Remote and other endpoints"
-               });
-
-               creatorId = Guid.NewGuid();
-               serviceAreaId = Guid.NewGuid();  /* TODO: We need a service area ID specific for cloud */
-
-               context.Endpoints.Add(new EndpointEntity
-               {
-                  EndpointId = Guid.NewGuid(),
-                  ServiceAreaId = serviceAreaId,
-                  CreatorId = creatorId,
-                  IsCloudConnected = true,
-                  IsGateway = false,
-                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.transmitAndReceive,
-                  Name = "HTC One",
-                  Description = "Multilinks client running on Android mobile device"
-               });
-
-               creatorId = Guid.NewGuid();
-
-               context.Endpoints.Add(new EndpointEntity
-               {
-                  EndpointId = Guid.NewGuid(),
-                  ServiceAreaId = serviceAreaId,
-                  CreatorId = creatorId,
-                  IsCloudConnected = true,
-                  IsGateway = false,
-                  DirectionCapability = EndpointEntity.CommsDirectionCapabilities.transmitAndReceive,
-                  Name = "IPhone 7 Plus",
-                  Description = "Multilinks client running on iOS mobile device"
-               });
-
-               context.SaveChanges();
-            }
-         }
       }
    }
 }

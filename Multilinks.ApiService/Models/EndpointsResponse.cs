@@ -3,13 +3,11 @@ using Newtonsoft.Json;
 
 namespace Multilinks.ApiService.Models
 {
-   public class RootResponse : Resource, IEtaggable
+   public class EndpointsResponse : PagedCollection<EndpointViewModel>, IEtaggable
    {
-      public Link Info { get; set; }
+      public Form QueryForm { get; set; }
 
-      public Link Users { get; set; }
-
-      public Link Endpoints { get; set; }
+      public Form SubmitForm { get; set; }
 
       public string GetEtag()
       {

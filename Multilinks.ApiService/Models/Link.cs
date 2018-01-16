@@ -6,6 +6,8 @@ namespace Multilinks.ApiService.Models
    public class Link
    {
       public const string GetMethod = "GET";
+      public const string PostMethod = "POST";
+      public const string DeleteMethod = "DELETE";
 
       public static Link To(string routeName, object routeValues = null)
          => new Link
@@ -25,6 +27,18 @@ namespace Multilinks.ApiService.Models
            Relations = new string[] { "collection" }
         };
 
+      public static Link ToForm(string routeName,
+                                object routeValues = null,
+                                string method = PostMethod,
+                                params string[] relations)
+        => new Link
+        {
+           RouteName = routeName,
+           RouteValues = routeValues,
+           Method = method,
+           Relations = relations
+        };
+
       [JsonProperty(Order = -4)]
       public string Href { get; set; }
 
@@ -38,6 +52,8 @@ namespace Multilinks.ApiService.Models
       /* Stores the route name before being rewritten. */
       [JsonIgnore]
       public string RouteName { get; set; }
+
+      // Stores the route Values before being rewritten
       [JsonIgnore]
       public object RouteValues { get; set; }
    }

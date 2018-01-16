@@ -4,6 +4,8 @@
    {
       public string Name { get; set; }
 
+      public string EntityName { get; set; }
+
       public string Operator { get; set; }
 
       public string Value { get; set; }
