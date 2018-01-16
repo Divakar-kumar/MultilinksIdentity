@@ -30,6 +30,7 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/endpoints/
       [HttpGet(Name = nameof(GetEndpointsAsync))]
+      [ResponseCache(CacheProfileName = "Collection")]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,
          [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
@@ -64,6 +65,7 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/endpoints/{endpointId}
       [HttpGet("{endpointId}", Name = nameof(GetEndpointByIdAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
          var endpointViewModel = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
@@ -74,6 +76,7 @@ namespace Multilinks.ApiService.Controllers
 
       // POST api/endpoints
       [HttpPost(Name = nameof(CreateEndpointAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> CreateEndpointAsync(
          [FromBody] NewEndpointForm newEndpoint,
          CancellationToken ct)
@@ -138,6 +141,7 @@ namespace Multilinks.ApiService.Controllers
 
       // DELETE api/endpoints/{endpointId}
       [HttpDelete("{endpointId}", Name = nameof(DeleteEndpointByIdAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
          /* TODO: Need to ensure authenticated user is allowed to delete. */
@@ -156,6 +160,7 @@ namespace Multilinks.ApiService.Controllers
 
       // PUT api/endpoints/{endpointId}
       [HttpPut("{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> UpdateEndpointByIdAsync(Guid endpointId,
          [FromBody] NewEndpointForm newEndpoint,
          CancellationToken ct)

@@ -66,8 +66,8 @@ namespace Multilinks.ApiService
                opt.Filters.Add(new RequireHttpsAttribute());
 
                opt.CacheProfiles.Add("Static", new CacheProfile { Duration = 86400 });
-               opt.CacheProfiles.Add("Collection", new CacheProfile { Duration = 60 });
-               opt.CacheProfiles.Add("Resource", new CacheProfile { Duration = 180 });
+               opt.CacheProfiles.Add("Collection", new CacheProfile { Duration = 30 });
+               opt.CacheProfiles.Add("Resource", new CacheProfile { Duration = 60 });
             });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
