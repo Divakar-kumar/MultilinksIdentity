@@ -30,5 +30,15 @@ namespace Multilinks.ApiService.Services
                                      CancellationToken ct);
 
       Task DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct);
+
+      Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
+                                                       Guid serviceAreaId,
+                                                       Guid creatorId,
+                                                       bool isCloudConnected,
+                                                       bool isGateway,
+                                                       EndpointEntity.CommsDirectionCapabilities commCapability,
+                                                       string name,
+                                                       string description,
+                                                       CancellationToken ct);
    }
 }

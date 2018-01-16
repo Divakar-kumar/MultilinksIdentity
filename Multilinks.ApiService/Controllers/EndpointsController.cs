@@ -146,5 +146,50 @@ namespace Multilinks.ApiService.Controllers
 
          return NoContent();
       }
+
+      // PUT api/endpoints/{endpointId}
+      [HttpPut("{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
+      public async Task<IActionResult> UpdateEndpointByIdAsync(Guid endpointId,
+         [FromBody] NewEndpointForm newEndpoint,
+         CancellationToken ct)
+      {
+         if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
+
+         /* TODO: Need to ensure creator Id matches authenticated user. */
+
+         var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
+
+         if(existingEndpoint == null) return NotFound(new ApiError("Device does not exists"));
+
+         /* We will only allow name and description to be changed (for now). */
+         if(newEndpoint.ServiceAreaId != existingEndpoint.ServiceAreaId ||
+            newEndpoint.CreatorId != existingEndpoint.CreatorId ||
+            newEndpoint.IsCloudConnected != existingEndpoint.IsCloudConnected ||
+            newEndpoint.IsGateway != existingEndpoint.IsGateway ||
+            newEndpoint.DirectionCapability != existingEndpoint.DirectionCapability)
+         {
+            return BadRequest(new ApiError("One or more fields cannot be modified"));
+         }
+
+         /* Device name should be unique for the same user. */
+         var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
+         if(endpointExist)
+            return BadRequest(new ApiError("A device with the same name already exists"));
+
+         var replacedEndpoint = await _endpointService.ReplaceEndpointByIdAsync(endpointId,
+                                                                                newEndpoint.ServiceAreaId,
+                                                                                newEndpoint.CreatorId,
+                                                                                newEndpoint.IsCloudConnected,
+                                                                                newEndpoint.IsGateway,
+                                                                                newEndpoint.DirectionCapability,
+                                                                                newEndpoint.Name,
+                                                                                newEndpoint.Description,
+                                                                                ct);
+
+         if(replacedEndpoint == null)
+            return BadRequest(new ApiError("Device failed to be updated"));
+
+         return Ok(replacedEndpoint);
+      }
    }
 }

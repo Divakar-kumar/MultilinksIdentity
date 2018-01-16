@@ -31,7 +31,7 @@ namespace Multilinks.ApiService.Services
       public async Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(
-            r => (r.CreatorId == creatorId  && r.Name == name),
+            r => (r.CreatorId == creatorId && r.Name == name),
             ct);
          if(entity == null) return false;
 
@@ -114,6 +114,35 @@ namespace Multilinks.ApiService.Services
          _context.Endpoints.Remove(endpoint);
          var deleted = await _context.SaveChangesAsync(ct);
          if(deleted < 1) throw new InvalidOperationException("Could not delete endpoint.");
+      }
+
+      public async Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
+                                                                    Guid serviceAreaId,
+                                                                    Guid creatorId,
+                                                                    bool isCloudConnected,
+                                                                    bool isGateway,
+                                                                    EndpointEntity.CommsDirectionCapabilities commCapability,
+                                                                    string name,
+                                                                    string description,
+                                                                    CancellationToken ct)
+      {
+         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.EndpointId == endpointId, ct);
+
+         if(entity == null) return null;
+
+         entity.ServiceAreaId = serviceAreaId;
+         entity.CreatorId = creatorId;
+         entity.IsCloudConnected = isCloudConnected;
+         entity.IsGateway = isGateway;
+         entity.DirectionCapability = commCapability;
+         entity.Name = name;
+         entity.Description = description;
+
+         var replaced = await _context.SaveChangesAsync();
+
+         if(replaced < 1) return null;
+
+         return Mapper.Map<EndpointViewModel>(entity);
       }
    }
 }
