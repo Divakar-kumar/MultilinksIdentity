@@ -24,6 +24,11 @@ namespace Multilinks.ApiService.Controllers
             Endpoints = Link.To(nameof(EndpointsController.GetEndpointsAsync))
          };
 
+         if(!Request.GetEtagHandler().NoneMatch(response))
+         {
+            return StatusCode(304, response);
+         }
+
          return Ok(response);
       }
    }

@@ -55,6 +55,10 @@ namespace Multilinks.ApiService.Controllers
                                                                              Link.GetMethod,
                                                                              Form.QueryRelation));
 
+         if(!Request.GetEtagHandler().NoneMatch(collection))
+         {
+            return StatusCode(304, collection);
+         }
 
          return Ok(collection);
       }
@@ -62,8 +66,6 @@ namespace Multilinks.ApiService.Controllers
       // GET api/users/{userId}
       // TODO: Admin only
       [HttpGet("{userId}", Name = nameof(GetUserByIdAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
-      [Etag]
       public Task<IActionResult> GetUserByIdAsync(Guid userId, CancellationToken ct)
       {
          throw new NotImplementedException();

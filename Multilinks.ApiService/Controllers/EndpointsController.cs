@@ -61,6 +61,11 @@ namespace Multilinks.ApiService.Controllers
                                                                     Link.PostMethod,
                                                                     Form.CreateRelation));
 
+         if(!Request.GetEtagHandler().NoneMatch(collection))
+         {
+            return StatusCode(304, collection);
+         }
+
          return Ok(collection);
       }
 
@@ -72,6 +77,11 @@ namespace Multilinks.ApiService.Controllers
       {
          var endpointViewModel = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
          if(endpointViewModel == null) return NotFound();
+
+         if(!Request.GetEtagHandler().NoneMatch(endpointViewModel))
+         {
+            return StatusCode(304, endpointViewModel);
+         }
 
          return Ok(endpointViewModel);
       }
