@@ -142,7 +142,14 @@ namespace Multilinks.ApiService.Controllers
       {
          /* TODO: Need to ensure authenticated user is allowed to delete. */
 
-         await _endpointService.DeleteEndpointByIdAsync(endpointId, ct);
+         var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
+
+         if(existingEndpoint == null) return NotFound(new ApiError("Device does not exists"));
+
+         var endpointDeleted = await _endpointService.DeleteEndpointByIdAsync(endpointId, ct);
+
+         if(!endpointDeleted)
+            return BadRequest(new ApiError("Device failed to be deleted"));
 
          return NoContent();
       }

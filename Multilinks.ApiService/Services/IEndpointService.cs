@@ -29,7 +29,7 @@ namespace Multilinks.ApiService.Services
                                      string description,
                                      CancellationToken ct);
 
-      Task DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct);
+      Task<bool> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct);
 
       Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
                                                        Guid serviceAreaId,
