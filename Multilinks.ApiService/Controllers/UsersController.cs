@@ -30,6 +30,7 @@ namespace Multilinks.ApiService.Controllers
       // TODO: Admin only
       [HttpGet(Name = nameof(GetVisibleUsersAsync))]
       [ResponseCache(CacheProfileName = "Collection")]
+      [Etag]
       public async Task<IActionResult> GetVisibleUsersAsync(
             [FromQuery] PagingOptions pagingOptions,
             [FromQuery] SortOptions<UserViewModel, UserEntity> sortOptions,
@@ -62,6 +63,7 @@ namespace Multilinks.ApiService.Controllers
       // TODO: Admin only
       [HttpGet("{userId}", Name = nameof(GetUserByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
+      [Etag]
       public Task<IActionResult> GetUserByIdAsync(Guid userId, CancellationToken ct)
       {
          throw new NotImplementedException();

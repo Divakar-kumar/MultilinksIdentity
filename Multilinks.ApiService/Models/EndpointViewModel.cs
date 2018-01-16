@@ -8,12 +8,13 @@
  *************************************************************************************************/
 
 using Multilinks.ApiService.Infrastructure;
+using Newtonsoft.Json;
 using System;
 using static Multilinks.DataService.Entities.EndpointEntity;
 
 namespace Multilinks.ApiService.Models
 {
-   public class EndpointViewModel : Resource
+   public class EndpointViewModel : Resource, IEtaggable
    {
       public Guid ServiceAreaId { get; set; }
 
@@ -34,5 +35,11 @@ namespace Multilinks.ApiService.Models
       public string Name { get; set; }
 
       public string Description { get; set; }
+
+      public string GetEtag()
+      {
+         var serialized = JsonConvert.SerializeObject(this);
+         return Md5Hash.ForString(serialized);
+      }
    }
 }

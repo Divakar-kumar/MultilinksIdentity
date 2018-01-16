@@ -31,6 +31,7 @@ namespace Multilinks.ApiService.Controllers
       // GET api/endpoints/
       [HttpGet(Name = nameof(GetEndpointsAsync))]
       [ResponseCache(CacheProfileName = "Collection")]
+      [Etag]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,
          [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
@@ -66,6 +67,7 @@ namespace Multilinks.ApiService.Controllers
       // GET api/endpoints/{endpointId}
       [HttpGet("{endpointId}", Name = nameof(GetEndpointByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
+      [Etag]
       public async Task<IActionResult> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
          var endpointViewModel = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
