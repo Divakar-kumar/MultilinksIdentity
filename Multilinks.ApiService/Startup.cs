@@ -88,6 +88,8 @@ namespace Multilinks.ApiService
             .AddIdentityServerAuthentication(options =>
             {
                options.Authority = "http://localhost:5000";
+
+               /* TODO: Remove when deployed. */
                options.RequireHttpsMetadata = false;
 
                options.ApiName = "api1";
