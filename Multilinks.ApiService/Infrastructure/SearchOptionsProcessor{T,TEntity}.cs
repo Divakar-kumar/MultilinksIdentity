@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Multilinks.ApiService.Infrastructure
@@ -79,6 +78,7 @@ namespace Multilinks.ApiService.Infrastructure
             {
                ValidSyntax = term.ValidSyntax,
                Name = declaredTerm.Name,
+               EntityName = declaredTerm.EntityName,
                Operator = term.Operator,
                Value = term.Value,
                ExpressionProvider = declaredTerm.ExpressionProvider
@@ -96,7 +96,7 @@ namespace Multilinks.ApiService.Infrastructure
          foreach(var term in terms)
          {
             var propertyInfo = ExpressionHelper
-                .GetPropertyInfo<TEntity>(term.Name);
+                .GetPropertyInfo<TEntity>(term.EntityName ?? term.Name);
             var obj = ExpressionHelper.Parameter<TEntity>();
 
             // Build up the LINQ expression backwards:
@@ -126,10 +126,15 @@ namespace Multilinks.ApiService.Infrastructure
           => typeof(T).GetTypeInfo()
           .DeclaredProperties
           .Where(p => p.GetCustomAttributes<SearchableAttribute>().Any())
-          .Select(p => new SearchTerm
+          .Select(p =>
           {
-             Name = p.Name,
-             ExpressionProvider = p.GetCustomAttribute<SearchableAttribute>().ExpressionProvider
+             var attribute = p.GetCustomAttribute<SearchableAttribute>();
+             return new SearchTerm
+             {
+                Name = p.Name,
+                EntityName = attribute.EntityProperty,
+                ExpressionProvider = attribute.ExpressionProvider
+             };
           });
    }
 }

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Multilinks.ApiService.Infrastructure
 {
-   public class DecimalToIntSearchExpressionProvider : SearchExpressionProvider
+   public class DecimalToIntSearchExpressionProvider : DefaultSearchExpressionProvider
    {
       public override ConstantExpression GetValue(string input)
       {

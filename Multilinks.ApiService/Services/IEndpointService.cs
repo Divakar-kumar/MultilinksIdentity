@@ -8,12 +8,37 @@ namespace Multilinks.ApiService.Services
 {
    public interface IEndpointService
    {
-      Task<EndpointViewModel> GetEndpointAsync(Guid endpointId, CancellationToken ct);
+      Task<EndpointViewModel> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct);
+
+      Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct);
+
+      Task<bool> CheckGatewayExistsAsync(Guid serviceAreaId, CancellationToken ct);
 
       Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(
          PagingOptions pagingOptions,
          SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
          SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
          CancellationToken ct);
+
+      Task<Guid> CreateEndpointAsync(Guid serviceAreaId,
+                                     Guid creatorId,
+                                     bool isCloudConnected,
+                                     bool isGateway,
+                                     EndpointEntity.CommsDirectionCapabilities commCapability,
+                                     string name,
+                                     string description,
+                                     CancellationToken ct);
+
+      Task<bool> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct);
+
+      Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
+                                                       Guid serviceAreaId,
+                                                       Guid creatorId,
+                                                       bool isCloudConnected,
+                                                       bool isGateway,
+                                                       EndpointEntity.CommsDirectionCapabilities commCapability,
+                                                       string name,
+                                                       string description,
+                                                       CancellationToken ct);
    }
 }

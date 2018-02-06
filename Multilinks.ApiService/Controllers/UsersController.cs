@@ -8,6 +8,7 @@ using Multilinks.ApiService.Services;
 using System.Linq;
 using System;
 using Multilinks.DataService.Entities;
+using Multilinks.ApiService.Infrastructure;
 
 namespace Multilinks.ApiService.Controllers
 {
@@ -28,6 +29,8 @@ namespace Multilinks.ApiService.Controllers
       // GET api/users
       // TODO: Admin only
       [HttpGet(Name = nameof(GetVisibleUsersAsync))]
+      [ResponseCache(CacheProfileName = "Collection")]
+      [Etag]
       public async Task<IActionResult> GetVisibleUsersAsync(
             [FromQuery] PagingOptions pagingOptions,
             [FromQuery] SortOptions<UserViewModel, UserEntity> sortOptions,
@@ -42,10 +45,20 @@ namespace Multilinks.ApiService.Controllers
          // TODO: Authorization check. Is the user an admin?
          var users = await _userService.GetUsersAsync(pagingOptions, sortOptions, searchOptions, ct);
 
-         var collection = PagedCollection<UserViewModel>.Create(Link.To(nameof(GetVisibleUsersAsync)),
-                                                                users.Items.ToArray(),
-                                                                users.TotalSize,
-                                                                pagingOptions);
+         var collection = PagedCollection<UserViewModel>.Create<UsersResponse>(Link.To(nameof(GetVisibleUsersAsync)),
+                                                                               users.Items.ToArray(),
+                                                                               users.TotalSize,
+                                                                               pagingOptions);
+
+         collection.QueryForm = FormMetadata.FromResource<UserViewModel>(Link.ToForm(nameof(GetVisibleUsersAsync),
+                                                                             null,
+                                                                             Link.GetMethod,
+                                                                             Form.QueryRelation));
+
+         if(!Request.GetEtagHandler().NoneMatch(collection))
+         {
+            return StatusCode(304, collection);
+         }
 
          return Ok(collection);
       }

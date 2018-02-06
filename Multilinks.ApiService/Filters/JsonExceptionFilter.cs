@@ -21,12 +21,12 @@ namespace Multilinks.ApiService.Filters
          if(_env.IsDevelopment())
          {
             error.Message = context.Exception.Message;
-            error.Details = context.Exception.StackTrace;
+            error.Detail = context.Exception.StackTrace;
          }
          else
          {
             error.Message = "A server error occurred.";
-            error.Details = context.Exception.Message;
+            error.Detail = context.Exception.Message;
          }
 
          context.Result = new ObjectResult(error)

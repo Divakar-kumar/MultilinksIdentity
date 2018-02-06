@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Multilinks.ApiService.Infrastructure;
 using Multilinks.ApiService.Models;
 
 namespace Multilinks.ApiService.Controllers
@@ -10,6 +11,8 @@ namespace Multilinks.ApiService.Controllers
    public class RootController : Controller
    {
       [HttpGet(Name = nameof(GetRoot))]
+      [ResponseCache(CacheProfileName = "Static")]
+      [Etag]
       [AllowAnonymous]
       public IActionResult GetRoot()
       {
@@ -20,6 +23,11 @@ namespace Multilinks.ApiService.Controllers
             Users = Link.To(nameof(UsersController.GetVisibleUsersAsync)),
             Endpoints = Link.To(nameof(EndpointsController.GetEndpointsAsync))
          };
+
+         if(!Request.GetEtagHandler().NoneMatch(response))
+         {
+            return StatusCode(304, response);
+         }
 
          return Ok(response);
       }
