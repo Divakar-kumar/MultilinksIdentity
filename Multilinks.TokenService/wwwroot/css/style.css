@@ -1,7 +1,7 @@
 ﻿@charset "UTF-8";
 @import url(animate.css);
 /*==================  GOOGLE MAP  ======================*/
-@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
+@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
 @import url(//fonts.googleapis.com/css?family=Open+Sans:400,300,600);
 
 .map_model {
@@ -188,6 +188,24 @@ strong {
 }
 
    .btnicon_1:hover {
+      background: #43464c;
+   }
+
+.btnicon_2 {
+   font-size: 60px;
+   line-height: 100px;
+   color: #FFf;
+   margin-top: 51px;
+   display: inline-block;
+   width: 100px;
+   height: 100px;
+   text-align: center;
+   border-radius: 26px;
+   background: #00A1D9;
+   font-weight: 600;
+}
+
+   .btnicon_2:hover {
       background: #43464c;
    }
 
