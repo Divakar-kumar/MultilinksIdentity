@@ -2,16 +2,19 @@
    var errorMessage = ViewData["ErrorMessage"];
 }
 
-<div class="error-page">
-   <div class="page-header">
-      <h1>Error</h1>
-   </div>
-
-   <div class="row">
-      <div class="col-sm-6">
-         <div class="alert alert-danger">
-            Sorry, an error has occurred. @errorMessage
+<section id="main_content">
+   <div class="container">
+      <div class="row">
+         <div class="grid_6">
+            <h3>Error</h3>
+            <h4>
+               An error occurred while processing your request.
+               @if(ViewData["ErrorMessage"] != null)
+               {
+                  @errorMessage
+               }
+            </h4>
          </div>
       </div>
    </div>
-</div>
+</section>

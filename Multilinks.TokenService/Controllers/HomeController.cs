@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Multilinks.TokenService.Models;
 
 namespace Multilinks.TokenService.Controllers
 {
@@ -12,7 +11,7 @@ namespace Multilinks.TokenService.Controllers
 
         public IActionResult Error()
         {
-            return View(new ErrorViewModel());
+            return View();
         }
     }
 }

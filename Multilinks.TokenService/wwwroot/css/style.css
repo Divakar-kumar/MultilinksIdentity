@@ -957,6 +957,31 @@ header {
 /*========================================================
                      CONTENT  Section
 =========================================================*/
+#main_content {
+   margin-top: -60px;
+   padding-left: 10px;
+   padding-bottom: 135px;
+}
+
+   #main_content .row {
+      text-align: left;
+   }
+
+      #main_content .row .btnicon {
+         margin-top: 15px;
+         margin-right: 25px;
+      }
+
+      #main_content .row h4 {
+         color: #00a1d9;
+         font-weight: 400;
+         margin-top: 9px;
+      }
+
+   #main_content .message {
+      margin-bottom: 20px;
+   }
+
 main {
    display: block;
    background: #fff;
@@ -2101,3 +2126,5 @@ footer {
       padding-left: 40px;
    }
 }
+
+
