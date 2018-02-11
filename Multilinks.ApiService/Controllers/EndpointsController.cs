@@ -14,7 +14,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   //[Authorize]
+   [Authorize]
    public class EndpointsController : Controller
    {
       static public readonly Guid defaultServiceAreaId = new Guid("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF");

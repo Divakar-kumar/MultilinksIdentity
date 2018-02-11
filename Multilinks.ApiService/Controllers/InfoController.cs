@@ -8,7 +8,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   //[Authorize]
+   [Authorize]
    public class InfoController : Controller
    {
       private readonly MultilinksInfoViewModel _multilinksInfo;

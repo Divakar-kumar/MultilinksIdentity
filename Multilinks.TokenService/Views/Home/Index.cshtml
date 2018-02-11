@@ -1,108 +1,210 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-        <li data-target="#myCarousel" data-slide-to="3"></li>
-    </ol>
-    <div class="carousel-inner" role="listbox">
-        <div class="item active">
-            <img src="~/images/banner1.svg" alt="ASP.NET" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how to build ASP.NET apps that can run anywhere.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525028&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
+﻿<section class="cam">
+   <div class="camera_container">
+      <div id="camera" class="camera_wrap">
+         <div data-src="images/slide_1.jpg">
+            <div class="camera_caption fadeIn">
+               <div class="container">
+                  <h2>Create</h2>
+                  <p>Climb leg rub face on everything give attitude nap all day for under the bed.</p>
+               </div>
             </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner2.svg" alt="Visual Studio" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    There are powerful new features in Visual Studio for building modern web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
+         </div>
+         <div data-src="images/slide_2.jpg">
+            <div class="camera_caption fadeIn">
+               <div class="container">
+                  <h2>Connect</h2>
+                  <p>Efficiently unleash cross-media information without cross-media value.</p>
+               </div>
             </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner3.svg" alt="Package Management" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Bring in libraries from NuGet, Bower, and npm, and automate tasks using Grunt or Gulp.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525029&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
+         </div>
+         <div data-src="images/slide_3.jpg">
+            <div class="camera_caption fadeIn">
+               <div class="container">
+                  <h2>Communicate</h2>
+                  <p>Bacon swine leberkas, ham hock flank beef venison pork belly.</p>
+               </div>
             </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner4.svg" alt="Microsoft Azure" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how Microsoft's Azure cloud platform allows you to build, deploy, and scale web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525027&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
+         </div>
+      </div>
+   </div>
+</section>
+<section class="well">
+   <div class="container">
+      <div class="row">
+         <div class="grid_3 skin_blue">
+            <h3>
+               Trading
+               platforms
+            </h3>
+            <h4>For all OS</h4>
+            <p>
+               We can offer several modern and powerful trading platforms to satisfy any trader's needs and
+               requirements.
+            </p>
+            <a class="fa-user btnicon" href="#"></a>
+         </div>
+         <div class="grid_3 skin_red">
+            <h3>
+               Trading
+               conditions
+            </h3>
+            <h4>trading shoulder</h4>
+            <p>
+               You can start your trading using trading shoulder from 10 000 USD and more with minimal
+               risk.
+            </p>
+            <a class="fa-file-text  btnicon" href="#"></a>
+         </div>
+         <div class="grid_3 skin_green">
+            <h3>
+               Analysis
+               reports
+            </h3>
+            <h4>Compact format</h4>
+            <p>
+               Our expert staff will happily help you make the timely and right decision to increase your
+               profit.
+            </p>
+            <a class="fa-file-text  btnicon" href="#"></a>
+         </div>
+         <div class="grid_3 skin_yellow">
+            <h3>profit calculation</h3>
+            <h4>User friendly</h4>
+            <p>
+               Standard service for any trader, who wants to count, how much money he has earned for a
+               certain period.
+            </p>
+            <a class="fa-file-text  btnicon" href="#"></a>
+         </div>
+      </div>
+   </div>
+</section>
+<section class="parallax" data-url="images/banner_1.jpg" data-mobile="true" data-speed="0.8">
+   <div class="container">
+      <i class="fa-money bnricon"></i>
+      <div class="bannerwrapper">
+         <div class="banner1_text1">100</div>
+         <div class="banner1_text2">Investing ideas</div>
+      </div>
+      <p>Learn huge quantity of different trading systems<br>and choose what suits you most.</p>
+   </div>
+</section>
+<section class="difbg">
+   <div class="container">
+      <div class="row">
+         <div class="grid_4">
+            <div class="difbgwrapper">
+               <i class="fa-group btnicon"></i>
+               <h3>
+                  Broker
+                  comparison
+               </h3>
+               <h4>Competitors</h4>
+               <p>
+                  We are committed to the developed standards set forth by government regulators and
+                  our company’s priority is to conduct business in strict compliance with current
+                  regulatory requirements of the markets.
+               </p>
+               <a class="btn" href="#">More info</a>
             </div>
-        </div>
-    </div>
-    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
-
-<div class="row">
-    <div class="col-md-3">
-        <h2>Application uses</h2>
-        <ul>
-            <li>Sample pages using ASP.NET Core MVC</li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518004">Bower</a> for managing client-side libraries</li>
-            <li>Theming using <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>How to</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398600">Add a Controller and View</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699315">Manage User Secrets using Secret Manager.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699316">Use logging to log a message.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699317">Add packages using NuGet.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699318">Add client packages using Bower.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699319">Target development, staging or production environment.</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Overview</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of what is ASP.NET Core</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Run &amp; Deploy</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-        </ul>
-    </div>
-</div>
+         </div>
+         <div class="grid_4">
+            <div class="difbgwrapper">
+               <i class=" fa-desktop btnicon"></i>
+               <h3>
+                  Online
+                  trading
+               </h3>
+               <h4>Risk warning</h4>
+               <p>
+                  The purpose of this warning is to inform the Client of the risks connected with deals in
+                  the international financial markets as well as to inform the Client of a possibility of
+                  financial losses due to the above risks.
+               </p>
+               <a class="btn" href="#">More info</a>
+            </div>
+         </div>
+         <div class="grid_4">
+            <div class="difbgwrapper">
+               <i class="fa-database btnicon"></i>
+               <h3>Comission structure</h3>
+               <h4>General</h4>
+               <p>
+                  While it's hard to earn money in real estate with the price of homes in the tens of
+                  thousands, and it's even harder to start up a business, the opportunity to make money on
+                  the market always exists.
+               </p>
+               <a class="btn" href="#">More info</a>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+<section class="well well__ins1">
+   <div class="container">
+      <div class="row">
+         <div class="grid_6">
+            <h3>New Features &amp; Updates</h3>
+            <div class="pricing_wrapper">
+               <div class="pricing_leftblock">
+                  <h4>Spread</h4>
+                  <a href="#">view fees</a>
+               </div>
+               <div class="pricing_rightblock">
+                  <strong>$0.0045</strong>
+                  <span>Per trade</span>
+               </div>
+            </div>
+            <div class="pricing_wrapper">
+               <div class="pricing_leftblock">
+                  <h4>Scheduled order</h4>
+                  <a href="#">view fees</a>
+               </div>
+               <div class="pricing_rightblock">
+                  <strong>$7.50</strong>
+                  <span>Per trade</span>
+               </div>
+            </div>
+            <div class="pricing_wrapper">
+               <div class="pricing_leftblock">
+                  <h4>Buy stop</h4>
+                  <a href="#">view fees</a>
+               </div>
+               <div class="pricing_rightblock">
+                  <strong>$10.33</strong>
+                  <span>Per trade</span>
+               </div>
+            </div>
+            <a class="content_btn" href="#">view all</a>
+         </div>
+         <div class="grid_6">
+            <h3>Support</h3>
+            <div class="platform_wrapper">
+               <h4>Take advantage of trading systems and get expert tips on profitable deals.</h4>
+               <p>
+                  Each trading system creates an experienced trader and passes rigorous selection in the
+                  initial stage. As a result, only the efficiency and profitability of the system are
+                  available to customers and can be monitored during operation.
+               </p>
+            </div>
+            <div class="row">
+               <div class="grid_3">
+                  <ul class="features">
+                     <li>Advanced charting</li>
+                     <li>Complex options trading</li>
+                     <li>Front-end API</li>
+                  </ul>
+               </div>
+               <div class="grid_3">
+                  <ul class="features">
+                     <li>Hot key shortcuts</li>
+                     <li>Customizable layouts</li>
+                     <li>Complete stability</li>
+                  </ul>
+               </div>
+            </div>
+            <a class="content_btn" href="#">view all</a>
+         </div>
+      </div>
+   </div>
+</section>
