@@ -904,8 +904,7 @@ h2 + h2 {
 =========================================================*/
 header {
    background: #fff;
-   padding-top: 120px;
-   background-image: url("../images/header_1.jpg");
+   padding-top: 32px;
 }
 
    header .brand {
@@ -920,7 +919,7 @@ header {
       color: #fff;
       font-weight: 600;
       text-transform: uppercase;
-      margin-top: 132px;
+      margin-top: 60px;
       z-index: 2;
       position: relative;
    }
@@ -932,6 +931,10 @@ header {
 @media (max-width: 767px) {
    text-align: center; .brand, .nav {
       float: none;
+   }
+
+   header .nav {
+      padding-top: 60px;
    }
 }
 
@@ -1584,11 +1587,11 @@ footer {
 
 @media (min-width: 980px) and (max-width: 1199px) {
    header {
-      padding-top: 80px;
+      padding-top: 32px;
    }
 
       header .nav {
-         margin-top: 72px;
+         margin-top: 60px;
       }
 
    h3 {
@@ -1651,11 +1654,11 @@ footer {
 
 @media (min-width: 768px) and (max-width: 979px) {
    header {
-      padding-top: 50px;
+      padding-top: 32px;
    }
 
       header .nav {
-         margin-top: 40px;
+         margin-top: 32px;
       }
 
    .btn {
@@ -1940,11 +1943,11 @@ footer {
 
 @media (max-width: 479px) {
    header {
-      padding-top: 20px;
+      padding-top: 32px;
    }
 
       header .nav {
-         margin-top: 0;
+         padding-top: 0px;
       }
 
       header .btn {
@@ -1967,7 +1970,16 @@ footer {
       padding-left: 65px;
    }
 
-      .brand:before, .brand__footer:before {
+      .brand:before {
+         content: url(../images/mds_logo.png);
+         width: 80px;
+         height: auto;
+         text-align: center;
+         left: -50px;
+         top: -10px;
+      }
+
+      .brand__footer:before {
          font-size: 47px;
          height: 89px;
          left: -18px;
@@ -1975,11 +1987,6 @@ footer {
          top: -3px;
          width: 84px;
       }
-
-   .brand_name {
-      font-size: 68px;
-      line-height: 68px;
-   }
 
    .parallax {
       padding: 40px 0 90px;
