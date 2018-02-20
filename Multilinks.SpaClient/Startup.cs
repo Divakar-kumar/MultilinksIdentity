@@ -31,7 +31,7 @@ namespace Multilinks.SpaClient
                {
                   var launchJsonConfig = new ConfigurationBuilder()
                         .SetBasePath(_env.ContentRootPath)
-                        .AddJsonFile("Properties\\launchSettings.json")
+                        .AddJsonFile("Properties\\launchSettings.json", optional: true)
                         .Build();
                   opt.SslPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
                }
