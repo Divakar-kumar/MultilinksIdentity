@@ -6,22 +6,24 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
+import { HeaderComponent } from './components/shared/header/header.component'
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        HomeComponent
-    ],
-    imports: [
-        CommonModule,
-        HttpModule,
-        FormsModule,
-        RouterModule.forRoot([
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
-            { path: 'home', component: HomeComponent },
-            { path: '**', redirectTo: 'home' }
-        ])
-    ]
+   declarations: [
+      AppComponent,
+      HomeComponent,
+      HeaderComponent
+   ],
+   imports: [
+      CommonModule,
+      HttpModule,
+      FormsModule,
+      RouterModule.forRoot([
+         { path: '', redirectTo: 'home', pathMatch: 'full' },
+         { path: 'home', component: HomeComponent },
+         { path: '**', redirectTo: 'home' }
+      ])
+   ]
 })
 export class AppModuleShared {
 }
