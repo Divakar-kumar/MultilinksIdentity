@@ -6,13 +6,15 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
-import { HeaderComponent } from './components/shared/header/header.component'
+import { HeaderComponent } from './components/shared/header/header.component';
+import { FooterComponent } from './components/shared/footer/footer.component';
 
 @NgModule({
    declarations: [
       AppComponent,
       HomeComponent,
-      HeaderComponent
+      HeaderComponent,
+      FooterComponent
    ],
    imports: [
       CommonModule,
