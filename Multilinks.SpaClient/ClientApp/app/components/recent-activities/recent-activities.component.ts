@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
    selector: 'recent-activities',
     templateUrl: './recent-activities.component.html'
 })
+
 export class RecentActivitiesComponent {
 }
