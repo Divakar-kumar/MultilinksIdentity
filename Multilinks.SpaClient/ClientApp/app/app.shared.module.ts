@@ -5,14 +5,14 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
-import { HomeComponent } from './components/home/home.component';
+import { RecentActivitiesComponent } from './components/recent-activities/recent-activities.component';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
 
 @NgModule({
    declarations: [
       AppComponent,
-      HomeComponent,
+      RecentActivitiesComponent,
       HeaderComponent,
       FooterComponent
    ],
@@ -21,9 +21,9 @@ import { FooterComponent } from './components/shared/footer/footer.component';
       HttpModule,
       FormsModule,
       RouterModule.forRoot([
-         { path: '', redirectTo: 'home', pathMatch: 'full' },
-         { path: 'home', component: HomeComponent },
-         { path: '**', redirectTo: 'home' }
+         { path: '', redirectTo: 'recent-activities', pathMatch: 'full' },
+         { path: 'recent-activities', component: RecentActivitiesComponent },
+         { path: '**', redirectTo: 'recent-activities' }
       ])
    ]
 })
