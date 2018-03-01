@@ -1492,7 +1492,8 @@ dd {
 
 /*==================      Well     ======================*/
 .well {
-   padding-bottom: 135px;
+   padding: 40px 0 135px 0;
+   background-image: url(../images/banner_1.jpg);
 }
 
 .well__ins1 {
@@ -1778,7 +1779,8 @@ footer {
    }
 
    .well {
-      padding-bottom: 75px;
+      padding: 40px 0 90px 0;
+      background-image: url(../images/banner_1.jpg);
    }
 
    .brand:before {
@@ -2058,7 +2060,8 @@ footer {
    }
 
    .well {
-      padding-bottom: 85px;
+      padding: 40px 0 75px 0;
+      background-image: url(../images/banner_1.jpg);
    }
 
    .btnicon + h5 {
