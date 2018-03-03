@@ -9,18 +9,18 @@ function isIE() {
 
 /* cookie.JS
  ========================================================*/
-include('../js/jquery.cookie.js');
+include('js/jquery.cookie.js');
 
 /* Easing library
  ========================================================*/
-include('../js/jquery.easing.1.3.js');
+include('js/jquery.easing.1.3.js');
 
 /* PointerEvents
  ========================================================*/
 ;
 (function ($) {
     if (isIE() && isIE() < 11) {
-        include('../js/pointer-events.js');
+        include('js/pointer-events.js');
         $('html').addClass('lt-ie11');
         $(document).ready(function () {
             PointerEventsPolyfill.initialize({});
@@ -34,7 +34,7 @@ include('../js/jquery.easing.1.3.js');
 (function ($) {
     var o = $('html');
     if (o.hasClass('desktop')) {
-        include('../js/tmstickup.js');
+        include('js/tmstickup.js');
 
         $(document).ready(function () {
             $('#stuck_container').TMStickUp({})
@@ -48,7 +48,7 @@ include('../js/jquery.easing.1.3.js');
 (function ($) {
     var o = $('html');
     if (o.hasClass('desktop')) {
-        include('../js/jquery.ui.totop.js');
+        include('js/jquery.ui.totop.js');
 
         $(document).ready(function () {
             $().UItoTop({
@@ -65,7 +65,7 @@ include('../js/jquery.easing.1.3.js');
 (function ($) {
     var o = $('[data-equal-group]');
     if (o.length > 0) {
-        include('../js/jquery.equalheights.js');
+        include('js/jquery.equalheights.js');
     }
 })(jQuery);
 
@@ -84,14 +84,14 @@ include('../js/jquery.easing.1.3.js');
  ========================================================*/
 ;
 (function ($) {
-    include('../js/superfish.js');
+    include('js/superfish.js');
 })(jQuery);
 
 /* Navbar
  ========================================================*/
 ;
 (function ($) {
-    include('../js/jquery.rd-navbar.js');
+    include('js/jquery.rd-navbar.js');
 })(jQuery);
 
 
@@ -102,7 +102,7 @@ include('../js/jquery.easing.1.3.js');
     var o = document.getElementById("google-map");
     if (o) {
         include('//maps.google.com/maps/api/js?sensor=false');
-        include('../js/jquery.rd-google-map.js');
+        include('js/jquery.rd-google-map.js');
 
         $(document).ready(function () {
             var o = $('#google-map');
@@ -158,7 +158,7 @@ include('../js/jquery.easing.1.3.js');
 
     if ((navigator.userAgent.toLowerCase().indexOf('msie') == -1 ) || (isIE() && isIE() > 9)) {
         if (o.hasClass('desktop')) {
-            include('../js/wow.js');
+            include('js/wow.js');
 
             $(document).ready(function () {
                 new WOW().init();
@@ -171,8 +171,8 @@ include('../js/jquery.easing.1.3.js');
  =============================================*/
 ;
 (function ($) {
-    include('../js/mailform/jquery.form.min.js');
-    include('../js/mailform/jquery.rd-mailform.min.c.js');
+    include('js/mailform/jquery.form.min.js');
+    include('js/mailform/jquery.rd-mailform.min.c.js');
 })(jQuery);
 
 /* Orientation tablet fix
@@ -231,10 +231,10 @@ document.write('<meta name="viewport" content="width=device-width,initial-scale=
     var o = $('#camera');
     if (o.length > 0) {
         if (!(isIE() && (isIE() > 9))) {
-            include('../js/jquery.mobile.customized.min.js');
+            include('js/jquery.mobile.customized.min.js');
         }
 
-        include('../js/camera.js');
+        include('js/camera.js');
 
         $(document).ready(function () {
             o.camera({
@@ -259,7 +259,7 @@ document.write('<meta name="viewport" content="width=device-width,initial-scale=
  =============================================*/
 ;
 (function ($) {
-    include('../js/jquery.rd-parallax.js');
+    include('js/jquery.rd-parallax.js');
 })(jQuery);
 
 
@@ -267,8 +267,8 @@ document.write('<meta name="viewport" content="width=device-width,initial-scale=
  =============================================*/
 ;
 (function ($) {
-    include('../js/mailform/jquery.form.min.js');
-    include('../js/mailform/jquery.rd-mailform.min.c.js');
+    include('js/mailform/jquery.form.min.js');
+    include('js/mailform/jquery.rd-mailform.min.c.js');
 })(jQuery);
 
 
