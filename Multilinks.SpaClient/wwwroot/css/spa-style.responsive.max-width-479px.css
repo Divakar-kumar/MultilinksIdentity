@@ -6,7 +6,8 @@
    }
 
       header .nav {
-         padding-top: 0px;
+         padding-top: 32px;
+         margin-bottom: 32px;
       }
 
       header .btn {

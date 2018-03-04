@@ -7,11 +7,12 @@
    }
 
    header {
-      padding-top: 30px;
+      padding-top: 32px;
    }
 
       header .nav {
-         padding-top: 60px;
+         padding-top: 32px;
+         margin-bottom: 32px;
       }
 
    .sf-menu {
