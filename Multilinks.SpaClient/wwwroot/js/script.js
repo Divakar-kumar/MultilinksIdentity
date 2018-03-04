@@ -167,14 +167,6 @@ include('js/jquery.easing.1.3.js');
     }
 })(jQuery);
 
-/* Mailform
- =============================================*/
-;
-(function ($) {
-    include('js/mailform/jquery.form.min.js');
-    include('js/mailform/jquery.rd-mailform.min.c.js');
-})(jQuery);
-
 /* Orientation tablet fix
  ========================================================*/
 $(function () {
@@ -261,14 +253,4 @@ document.write('<meta name="viewport" content="width=device-width,initial-scale=
 (function ($) {
     include('js/jquery.rd-parallax.js');
 })(jQuery);
-
-
-/* Mailform
- =============================================*/
-;
-(function ($) {
-    include('js/mailform/jquery.form.min.js');
-    include('js/mailform/jquery.rd-mailform.min.c.js');
-})(jQuery);
-
 

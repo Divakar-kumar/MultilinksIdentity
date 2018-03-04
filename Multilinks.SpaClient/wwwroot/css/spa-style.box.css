@@ -1,0 +1,19 @@
+﻿@charset "UTF-8";
+
+.box:before, .box:after {
+   display: table;
+   content: "";
+   line-height: 0;
+}
+
+.box:after {
+   clear: both;
+}
+
+.box_aside {
+   float: left;
+}
+
+.box_cnt__no-flow {
+   overflow: hidden;
+}
