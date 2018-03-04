@@ -1,9 +1,29 @@
 ﻿@charset "UTF-8";
 
 .parallax {
+   padding: 40px 0 210px 0;
    position: relative;
    overflow: hidden;
 }
+
+   .parallax p {
+      text-transform: uppercase;
+      color: #DBD7D2;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 25px;
+      margin: -140px 0 0 404px;
+   }
+
+   .parallax .bannerwrapper:before, .parallax .bannerwrapper:after {
+      display: table;
+      content: "";
+      line-height: 0;
+   }
+
+   .parallax .bannerwrapper:after {
+      clear: both;
+   }
 
 .parallax_image, .parallax_pattern {
    position: absolute;

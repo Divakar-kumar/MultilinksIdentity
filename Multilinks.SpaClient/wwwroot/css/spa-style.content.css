@@ -31,29 +31,6 @@ main {
    background: #fff;
 }
 
-.parallax {
-   padding: 40px 0 210px 0;
-}
-
-   .parallax p {
-      text-transform: uppercase;
-      color: #DBD7D2;
-      font-weight: 400;
-      font-size: 20px;
-      line-height: 25px;
-      margin: -140px 0 0 404px;
-   }
-
-   .parallax .bannerwrapper:before, .parallax .bannerwrapper:after {
-      display: table;
-      content: "";
-      line-height: 0;
-   }
-
-   .parallax .bannerwrapper:after {
-      clear: both;
-   }
-
 .special h5 {
    margin-top: 25px;
    color: #43464c;
