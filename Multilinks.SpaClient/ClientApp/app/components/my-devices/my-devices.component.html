@@ -1,1 +1,8 @@
-<h2>My Devices</h2>
+<div>
+   <h2>{{title}}</h2>
+</div>
+<div>
+   <p *ngIf="!devices">No devices</p>
+   <device-detail *ngFor="let device of devices" [device]="device"></device-detail>
+</div>
+

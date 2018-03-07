@@ -11,6 +11,7 @@ import { MyLinksComponent } from './components/my-links/my-links.component';
 import { MyServicesComponent } from './components/my-services/my-services.component';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
+import { DeviceDetailComponent } from './components/my-devices/device-detail/device-detail.component';
 
 @NgModule({
    declarations: [
@@ -20,7 +21,8 @@ import { FooterComponent } from './components/shared/footer/footer.component';
       MyLinksComponent,
       MyServicesComponent,
       HeaderComponent,
-      FooterComponent
+      FooterComponent,
+      DeviceDetailComponent
    ],
    imports: [
       CommonModule,
