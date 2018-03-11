@@ -70,6 +70,16 @@ namespace Multilinks.ApiService
                opt.CacheProfiles.Add("Resource", new CacheProfile { Duration = 60 });
             });
 
+         /* TODO: CORS policy will need to be updated before deployment. */
+         services.AddCors(options => options.AddPolicy("CorsAny", builder =>
+         {
+            builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .AllowAnyHeader();
+         }));
+
          services.AddRouting(opt => opt.LowercaseUrls = true);
 
          services.AddApiVersioning(opt =>
@@ -115,6 +125,8 @@ namespace Multilinks.ApiService
             opt.IncludeSubdomains();
             opt.Preload();
          });
+
+         app.UseCors("CorsAny");
 
          app.UseMvc();
       }
