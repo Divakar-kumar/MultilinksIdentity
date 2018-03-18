@@ -32,7 +32,6 @@ namespace Multilinks.ApiService.Controllers
       [HttpGet(Name = nameof(GetEndpointsAsync))]
       [ResponseCache(CacheProfileName = "Collection")]
       [Etag]
-      [AllowAnonymous]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,
          [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
