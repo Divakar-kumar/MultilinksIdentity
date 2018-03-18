@@ -10,25 +10,12 @@
 using Multilinks.ApiService.Infrastructure;
 using Newtonsoft.Json;
 using System;
-using static Multilinks.DataService.Entities.EndpointEntity;
 
 namespace Multilinks.ApiService.Models
 {
    public class EndpointViewModel : Resource, IEtaggable
    {
-      public Guid ServiceAreaId { get; set; }
-
       public Guid CreatorId { get; set; }
-
-      [Sortable]
-      [SearchableBoolean]
-      public bool IsCloudConnected { get; set; }
-
-      [Sortable]
-      [SearchableBoolean]
-      public bool IsGateway { get; set; }
-
-      public CommsDirectionCapabilities DirectionCapability { get; set; }
 
       [Sortable(Default = true)]
       [Searchable]

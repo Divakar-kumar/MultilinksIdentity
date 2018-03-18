@@ -38,14 +38,6 @@ namespace Multilinks.ApiService.Services
          return true;
       }
 
-      public async Task<bool> CheckGatewayExistsAsync(Guid serviceAreaId, CancellationToken ct)
-      {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.ServiceAreaId == serviceAreaId, ct);
-         if(entity == null) return false;
-
-         return true;
-      }
-
       public async Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(
          PagingOptions pagingOptions,
          SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
@@ -71,27 +63,17 @@ namespace Multilinks.ApiService.Services
          };
       }
 
-      public async Task<Guid> CreateEndpointAsync(Guid serviceAreaId,
-                                     Guid creatorId,
-                                     bool isCloudConnected,
-                                     bool isGateway,
-                                     EndpointEntity.CommsDirectionCapabilities commCapability,
+      public async Task<Guid> CreateEndpointAsync(Guid creatorId,
                                      string name,
                                      string description,
                                      CancellationToken ct)
       {
          var endpointId = Guid.NewGuid();
 
-         if(isGateway) serviceAreaId = endpointId;
-
          var newEndpoint = new EndpointEntity
          {
             EndpointId = endpointId,
-            ServiceAreaId = serviceAreaId,
             CreatorId = creatorId,
-            IsCloudConnected = isCloudConnected,
-            IsGateway = isGateway,
-            DirectionCapability = commCapability,
             Name = name,
             Description = description
          };
@@ -121,11 +103,7 @@ namespace Multilinks.ApiService.Services
       }
 
       public async Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
-                                                                    Guid serviceAreaId,
                                                                     Guid creatorId,
-                                                                    bool isCloudConnected,
-                                                                    bool isGateway,
-                                                                    EndpointEntity.CommsDirectionCapabilities commCapability,
                                                                     string name,
                                                                     string description,
                                                                     CancellationToken ct)
@@ -134,11 +112,7 @@ namespace Multilinks.ApiService.Services
 
          if(entity == null) return null;
 
-         entity.ServiceAreaId = serviceAreaId;
          entity.CreatorId = creatorId;
-         entity.IsCloudConnected = isCloudConnected;
-         entity.IsGateway = isGateway;
-         entity.DirectionCapability = commCapability;
          entity.Name = name;
          entity.Description = description;
 

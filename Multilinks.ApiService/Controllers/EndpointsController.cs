@@ -17,8 +17,6 @@ namespace Multilinks.ApiService.Controllers
    [Authorize]
    public class EndpointsController : Controller
    {
-      static public readonly Guid defaultServiceAreaId = new Guid("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF");
-
       private readonly IEndpointService _endpointService;
       private readonly PagingOptions _defaultPagingOptions;
 
@@ -102,47 +100,10 @@ namespace Multilinks.ApiService.Controllers
          if(endpointExist)
             return BadRequest(new ApiError("A device with the same name already exists"));
 
-         /* We need to determine what type of endpoint we are creating and do some sanity check
-          * before we attempt to create it.
-          */
-         if(newEndpoint.IsGateway)
-         {
-            /* We want to create a gateway. */
-            if(newEndpoint.DirectionCapability != EndpointEntity.CommsDirectionCapabilities.transmitAndReceive)
-               return BadRequest(new ApiError("Gateways needs to be able to communicate both ways"));
-
-            if(!newEndpoint.IsCloudConnected)
-               return BadRequest(new ApiError("Gateways needs to be cloud-connected"));
-         }
-         else if(newEndpoint.IsCloudConnected)
-         {
-            /* We want to create a client. */
-            if(newEndpoint.DirectionCapability != EndpointEntity.CommsDirectionCapabilities.transmitAndReceive)
-               return BadRequest(new ApiError("Clients needs to be able to communicate both ways"));
-
-            if(!newEndpoint.IsCloudConnected)
-               return BadRequest(new ApiError("Clients needs to be cloud-connected"));
-
-            if(newEndpoint.ServiceAreaId != defaultServiceAreaId)
-               return BadRequest(new ApiError("Bad service area Id"));
-         }
-         else
-         {
-            /* We want to create a managed device. */
-            var gatewayExist = await _endpointService.CheckGatewayExistsAsync(newEndpoint.ServiceAreaId, ct);
-
-            if(!gatewayExist)
-               return BadRequest(new ApiError("Gateway to manage this device does not exists"));
-         }
-
-         var endpointId = await _endpointService.CreateEndpointAsync(newEndpoint.ServiceAreaId,
-                                                                        newEndpoint.CreatorId,
-                                                                        newEndpoint.IsCloudConnected,
-                                                                        newEndpoint.IsGateway,
-                                                                        newEndpoint.DirectionCapability,
-                                                                        newEndpoint.Name,
-                                                                        newEndpoint.Description,
-                                                                        ct);
+         var endpointId = await _endpointService.CreateEndpointAsync(newEndpoint.CreatorId,
+                                                                     newEndpoint.Name,
+                                                                     newEndpoint.Description,
+                                                                     ct);
 
          /* This is a workaround to build the link of the new endpoint. */
          var newEndpointUrl = Url.Link(nameof(EndpointsController.CreateEndpointAsync), null);
@@ -186,11 +147,7 @@ namespace Multilinks.ApiService.Controllers
          if(existingEndpoint == null) return NotFound(new ApiError("Device does not exists"));
 
          /* We will only allow name and description to be changed (for now). */
-         if(newEndpoint.ServiceAreaId != existingEndpoint.ServiceAreaId ||
-            newEndpoint.CreatorId != existingEndpoint.CreatorId ||
-            newEndpoint.IsCloudConnected != existingEndpoint.IsCloudConnected ||
-            newEndpoint.IsGateway != existingEndpoint.IsGateway ||
-            newEndpoint.DirectionCapability != existingEndpoint.DirectionCapability)
+         if(newEndpoint.CreatorId != existingEndpoint.CreatorId)
          {
             return BadRequest(new ApiError("One or more fields cannot be modified"));
          }
@@ -201,11 +158,7 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("A device with the same name already exists"));
 
          var replacedEndpoint = await _endpointService.ReplaceEndpointByIdAsync(endpointId,
-                                                                                newEndpoint.ServiceAreaId,
                                                                                 newEndpoint.CreatorId,
-                                                                                newEndpoint.IsCloudConnected,
-                                                                                newEndpoint.IsGateway,
-                                                                                newEndpoint.DirectionCapability,
                                                                                 newEndpoint.Name,
                                                                                 newEndpoint.Description,
                                                                                 ct);
