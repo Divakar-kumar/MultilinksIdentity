@@ -12,11 +12,16 @@ namespace Multilinks.ApiService.Services
 
       Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct);
 
-      Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(
-         PagingOptions pagingOptions,
-         SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
-         SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
-         CancellationToken ct);
+      Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(PagingOptions pagingOptions,
+                                                              SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+                                                              SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
+                                                              CancellationToken ct);
+
+      Task<PagedResults<EndpointViewModel>> GetEndpointsByCreatorIdAsync(Guid creatorId,
+                                                                         PagingOptions pagingOptions,
+                                                                         SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+                                                                         SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
+                                                                         CancellationToken ct);
 
       Task<Guid> CreateEndpointAsync(Guid creatorId,
                                      string name,

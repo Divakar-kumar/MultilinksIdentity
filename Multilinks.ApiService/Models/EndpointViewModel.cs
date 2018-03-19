@@ -15,6 +15,8 @@ namespace Multilinks.ApiService.Models
 {
    public class EndpointViewModel : Resource, IEtaggable
    {
+      public Guid EndpointId { get; set; }
+
       public Guid CreatorId { get; set; }
 
       [Sortable(Default = true)]

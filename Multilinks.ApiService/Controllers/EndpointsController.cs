@@ -14,7 +14,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   [Authorize]
+   //[Authorize]
    public class EndpointsController : Controller
    {
       private readonly IEndpointService _endpointService;
@@ -30,7 +30,6 @@ namespace Multilinks.ApiService.Controllers
       [HttpGet(Name = nameof(GetEndpointsAsync))]
       [ResponseCache(CacheProfileName = "Collection")]
       [Etag]
-      [AllowAnonymous]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,
          [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
@@ -43,6 +42,47 @@ namespace Multilinks.ApiService.Controllers
          pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
          var endpoints = await _endpointService.GetEndpointsAsync(pagingOptions, sortOptions, searchOptions, ct);
+
+         var collection = PagedCollection<EndpointViewModel>.Create<EndpointsResponse>(Link.ToCollection(nameof(GetEndpointsAsync)),
+                                                                                       endpoints.Items.ToArray(),
+                                                                                       endpoints.TotalSize,
+                                                                                       pagingOptions);
+
+         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(nameof(GetEndpointsAsync),
+                                                                                         null,
+                                                                                         Link.GetMethod,
+                                                                                         Form.QueryRelation));
+
+         collection.SubmitForm = FormMetadata.FromModel(new NewEndpointForm(),
+                                                        Link.ToForm(nameof(EndpointsController.CreateEndpointAsync),
+                                                                    null,
+                                                                    Link.PostMethod,
+                                                                    Form.CreateRelation));
+
+         if(!Request.GetEtagHandler().NoneMatch(collection))
+         {
+            return StatusCode(304, collection);
+         }
+
+         return Ok(collection);
+      }
+
+      // GET api/endpoints/created-by/{creatorId}
+      [HttpGet("created-by/{creatorId}", Name = nameof(GetEndpointsByCreatorIdAsync))]
+      [ResponseCache(CacheProfileName = "Collection")]
+      [Etag]
+      public async Task<IActionResult> GetEndpointsByCreatorIdAsync(Guid creatorId,
+                                                                    [FromQuery] PagingOptions pagingOptions,
+                                                                    [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+                                                                    [FromQuery] SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
+                                                                    CancellationToken ct)
+      {
+         if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
+
+         pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+         pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+
+         var endpoints = await _endpointService.GetEndpointsByCreatorIdAsync(creatorId, pagingOptions, sortOptions, searchOptions, ct);
 
          var collection = PagedCollection<EndpointViewModel>.Create<EndpointsResponse>(Link.ToCollection(nameof(GetEndpointsAsync)),
                                                                                        endpoints.Items.ToArray(),
