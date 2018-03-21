@@ -25,6 +25,7 @@ namespace Multilinks.SpaClient
       {
          services.AddMvcCore()
             .AddRazorViewEngine()
+            .AddJsonFormatters()
             .AddMvcOptions(opt =>
             {
                if(!_env.IsProduction())
