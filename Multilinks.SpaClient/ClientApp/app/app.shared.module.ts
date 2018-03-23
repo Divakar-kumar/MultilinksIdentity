@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
@@ -12,6 +12,8 @@ import { MyServicesComponent } from './components/my-services/my-services.compon
 import { HeaderComponent } from './components/shared/header/header.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { DeviceDetailComponent } from './components/my-devices/device-detail/device-detail.component';
+
+import { DevicesService } from './services/devices.service';
 
 @NgModule({
    declarations: [
@@ -26,7 +28,7 @@ import { DeviceDetailComponent } from './components/my-devices/device-detail/dev
    ],
    imports: [
       CommonModule,
-      HttpModule,
+      HttpClientModule,
       FormsModule,
       RouterModule.forRoot([
          { path: '', redirectTo: 'recent-activities', pathMatch: 'full' },
@@ -36,6 +38,9 @@ import { DeviceDetailComponent } from './components/my-devices/device-detail/dev
          { path: 'my-services', component: MyServicesComponent },
          { path: '**', redirectTo: 'recent-activities' }
       ])
+   ],
+   providers: [
+      DevicesService
    ]
 })
 export class AppModuleShared {
