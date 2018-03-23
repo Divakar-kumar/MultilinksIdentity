@@ -88,16 +88,12 @@ namespace Multilinks.SpaClient.Controllers
 
       public string Size { get; set; }
 
-      public IEnumerable<DeviceDetail> Value { get; set; }
+      public IEnumerable<DeviceDetail> Value { get; set; }  /* Devices */
    }
 
    public class DeviceDetail
    {
-      //public string Href { get; set; } /* TODO: Do we need this? */
-
       public string EndpointId { get; set; }
-
-      public string CreatorId { get; set; }
 
       public string Name { get; set; }
 
