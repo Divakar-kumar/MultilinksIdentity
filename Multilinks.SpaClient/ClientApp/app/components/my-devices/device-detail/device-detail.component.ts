@@ -1,5 +1,5 @@
 ﻿import { Component, Input } from '@angular/core';
-import { DeviceDetail } from '../../../types/device-detail.type';
+import { DeviceDetail } from '../../../services/devices.service';
 
 @Component({
    selector: 'device-detail',

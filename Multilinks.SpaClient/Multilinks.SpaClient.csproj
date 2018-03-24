@@ -31,7 +31,6 @@
    <ItemGroup>
       <TypeScriptCompile Include="ClientApp\app\components\my-devices\device-detail\device-detail.component.ts" />
       <TypeScriptCompile Include="ClientApp\app\services\devices.service.ts" />
-      <TypeScriptCompile Include="ClientApp\app\types\device-detail.type.ts" />
       <TypeScriptCompile Include="ClientApp\app\components\shared\footer\footer.component.ts" />
       <TypeScriptCompile Include="ClientApp\app\components\shared\header\header.component.ts" />
    </ItemGroup>
