@@ -2,7 +2,7 @@
 
 #main_content {
    margin-top: -60px;
-   padding-left: 10px;
+   padding-left: 40px;
    padding-bottom: 135px;
    background-image: url(../images/banner_1.jpg);
    min-height: 55vh;
@@ -216,7 +216,7 @@ main {
 }
 
    .pricing_leftblock:before {
-      content: '\f15b';
+      content: '\f10a';
       font-size: 40px;
       line-height: 53px;
       color: #464646;
