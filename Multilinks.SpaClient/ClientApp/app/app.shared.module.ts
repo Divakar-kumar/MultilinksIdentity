@@ -12,6 +12,7 @@ import { MyServicesComponent } from './components/my-services/my-services.compon
 import { HeaderComponent } from './components/shared/header/header.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { DeviceDetailComponent } from './components/my-devices/device-detail/device-detail.component';
+import { LoadingComponent } from './components/shared/loading/loading.component';
 
 import { DevicesService } from './services/devices.service';
 
@@ -24,7 +25,8 @@ import { DevicesService } from './services/devices.service';
       MyServicesComponent,
       HeaderComponent,
       FooterComponent,
-      DeviceDetailComponent
+      DeviceDetailComponent,
+      LoadingComponent
    ],
    imports: [
       CommonModule,

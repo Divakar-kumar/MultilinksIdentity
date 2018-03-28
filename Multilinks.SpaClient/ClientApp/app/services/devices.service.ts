@@ -14,9 +14,9 @@ export interface DeviceDetail {
 
 export interface GetDevicesResponse {
 
-   offset: string;
-   limit: string;
-   size: string;
+   offset: number;
+   limit: number;
+   size: number;
 
    value: DeviceDetail[];
 }

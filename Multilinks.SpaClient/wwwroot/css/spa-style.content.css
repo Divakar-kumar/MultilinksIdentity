@@ -5,6 +5,7 @@
    padding-left: 10px;
    padding-bottom: 135px;
    background-image: url(../images/banner_1.jpg);
+   min-height: 55vh;
 }
 
    #main_content .row {
@@ -553,3 +554,28 @@ dd {
    .privacy a:hover {
       color: #00a1d9;
    }
+
+/* Styles for loading animation */
+/* ---------------------------- */
+#loading {
+   margin: 50px;
+}
+
+   #loading .rotate {
+      background-image: url(../images/mds_loader_outer_128x128.png);
+      width: 128px;
+      height: 128px;
+      display: block;
+      margin: auto;
+      -webkit-animation: rotation 2s infinite linear;
+   }
+
+@-webkit-keyframes rotation {
+   from {
+      -webkit-transform: rotate(0deg);
+   }
+
+   to {
+      -webkit-transform: rotate(359deg);
+   }
+}
