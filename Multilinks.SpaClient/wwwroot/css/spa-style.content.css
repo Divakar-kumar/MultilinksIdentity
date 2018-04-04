@@ -505,7 +505,7 @@ dd {
 
 /*==================      Well     ======================*/
 .well {
-   padding: 60px 0 135px 0;
+   padding: 60px 0 35px 0;
 }
 
 .well__ins1 {
@@ -577,3 +577,45 @@ dd {
       -webkit-transform: rotate(359deg);
    }
 }
+
+/* Styles for my devices page */
+/* -------------------------- */
+.my_devices {
+   padding-bottom: 35px;
+}
+
+
+/* Styles for pagination */
+/* --------------------- */
+.pagination {
+   text-align: center;
+}
+
+   .pagination a {
+      cursor: pointer;
+   }
+
+   .pagination ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+   }
+
+      .pagination ul li {
+         float: left;
+         display: block;
+         text-align: center;
+         font-size: 24px;
+         padding: 16px;
+         text-decoration: none;
+      }
+
+         .pagination ul li .active {
+            color: black;
+         }
+
+         .pagination ul li .inactive {
+            background-color: black;
+            font-size: 12px;
+         }

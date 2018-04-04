@@ -33,5 +33,12 @@ export class DevicesService {
                Get all devices for now. */
       return this.http.get<GetDevicesResponse>('https://localhost:44302/api/devices/');
    }
+
+   getSpecificPageOfDevices(limit: number, offset: number) {
+      /* TODO: If current user is an admin, get all devices.
+         Else get only devices created by this user.
+         Get all devices for now. */
+      return this.http.get<GetDevicesResponse>(`https://localhost:44302/api/devices?limit=${limit}&offset=${offset}`);
+   }
 }
 

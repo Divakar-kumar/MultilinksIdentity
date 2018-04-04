@@ -14,7 +14,8 @@ namespace Multilinks.SpaClient.Controllers
       /* TODO: Only admin should be able to access this API */
       // GET api/devices/
       [HttpGet(Name = nameof(GetDevicesAsync))]
-      public async Task<IActionResult> GetDevicesAsync()
+      public async Task<IActionResult> GetDevicesAsync([FromQuery(Name = "limit")] string limit,
+                                                       [FromQuery(Name = "offset")] string offset)
       {
          /* TODO: Is this the correct way to handle SSL? */
          using(var handler = new HttpClientHandler())
@@ -27,8 +28,30 @@ namespace Multilinks.SpaClient.Controllers
             {
                try
                {
+                  limit = limit ?? "";
+                  offset = offset ?? "";
+
+                  var requestUrl = "";
+
+                  if(limit == "" && offset == "")
+                  {
+                     requestUrl = "https://localhost:44301/api/endpoints/";
+                  }
+                  else if(limit != "" && offset != "")
+                  {
+                     requestUrl = $"https://localhost:44301/api/endpoints?limit={limit}&offset={offset}";
+                  }
+                  else if(limit != "")
+                  {
+                     requestUrl = $"https://localhost:44301/api/endpoints?limit={limit}";
+                  }
+                  else if(offset != "")
+                  {
+                     requestUrl = $"https://localhost:44301/api/endpoints?offset={offset}";
+                  }
+
                   /* TODO: Will need to update api address */
-                  var response = await client.GetAsync($"https://localhost:44301/api/endpoints/");
+                  var response = await client.GetAsync(requestUrl);
 
                   response.EnsureSuccessStatusCode();
 

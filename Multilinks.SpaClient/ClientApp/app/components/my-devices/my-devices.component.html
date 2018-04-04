@@ -2,10 +2,26 @@
    <shared-loading></shared-loading>
 </div>
 <ng-template #workCompleted>
-   <div>
+   <div class="my_devices">
       <p *ngIf="!devices">No devices</p>
       <device-detail *ngFor="let device of devices" [device]="device"></device-detail>
    </div>
+      <ul *ngIf="paginationProperties.pages && paginationProperties.pages.length" class="pagination">
+         <li [ngClass]="{disabled:paginationProperties.currentPage === 1}">
+            <a (click)="setPage(1)">First</a>
+         </li>
+         <li [ngClass]="{disabled:paginationProperties.currentPage === 1}">
+            <a (click)="setPage(paginationProperties.currentPage - 1)">Previous</a>
+         </li>
+         <li *ngFor="let page of paginationProperties.pages" [ngClass]="{active:paginationProperties.currentPage === page}">
+            <a (click)="setPage(page)">{{page}}</a>
+         </li>
+         <li [ngClass]="{disabled:paginationProperties.currentPage === paginationProperties.totalPages}">
+            <a (click)="setPage(paginationProperties.currentPage + 1)">Next</a>
+         </li>
+         <li [ngClass]="{disabled:paginationProperties.currentPage === paginationProperties.totalPages}">
+            <a (click)="setPage(paginationProperties.totalPages)">Last</a>
+         </li>
+      </ul>
 </ng-template>
-
 
