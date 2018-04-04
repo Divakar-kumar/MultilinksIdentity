@@ -588,6 +588,7 @@ dd {
 /* Styles for pagination */
 /* --------------------- */
 .pagination {
+   float: none;
    text-align: center;
 }
 
@@ -595,27 +596,42 @@ dd {
       cursor: pointer;
    }
 
-   .pagination ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+   .pagination ul li {
+      display: inline;
    }
 
-      .pagination ul li {
-         float: left;
-         display: block;
-         text-align: center;
-         font-size: 24px;
-         padding: 16px;
-         text-decoration: none;
+   .pagination .pagination-button {
+      background: #43464c;
+      font-size: 14px;
+      line-height: 60px;
+      font-family: "Open Sans", sans-serif;
+      color: #fff;
+      padding: 20px 25px;
+      font-weight: 600;
+      text-transform: uppercase;
+   }
+
+   .pagination .outer-left-button {
+      border-top-left-radius: 35px;
+      border-bottom-left-radius: 35px;
+   }
+
+   .pagination .outer-right-button {
+      border-top-right-radius: 35px;
+      border-bottom-right-radius: 35px;
+   }
+
+      .pagination .pagination-button:hover {
+         background: #00a1d9;
       }
 
-         .pagination ul li .active {
-            color: black;
-         }
+      .pagination .pagination-button:active {
+         background: #007ba6;
+      }
 
-         .pagination ul li .inactive {
-            background-color: black;
-            font-size: 12px;
-         }
+      .pagination .pagination-button:before {
+         font-size: 14px;
+         line-height: 60px;
+         color: #fff;
+         padding-right: 13px;
+      }
