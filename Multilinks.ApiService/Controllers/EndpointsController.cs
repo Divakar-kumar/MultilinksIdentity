@@ -14,7 +14,7 @@ namespace Multilinks.ApiService.Controllers
 {
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
-   //[Authorize]
+   [Authorize]
    public class EndpointsController : Controller
    {
       private readonly IEndpointService _endpointService;

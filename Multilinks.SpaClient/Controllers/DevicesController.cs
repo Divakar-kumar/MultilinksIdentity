@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace Multilinks.SpaClient.Controllers
 {
    [Route("api/[Controller]")]
-   //[Authorize]
+   [Authorize]
    public class DevicesController : Controller
    {
       /* TODO: Only admin should be able to access this API */
@@ -17,7 +18,9 @@ namespace Multilinks.SpaClient.Controllers
       public async Task<IActionResult> GetDevicesAsync([FromQuery(Name = "limit")] string limit,
                                                        [FromQuery(Name = "offset")] string offset)
       {
-         /* TODO: Is this the correct way to handle SSL? */
+         /* TODO: Is this the correct way to handle SSL?
+          * According to dependency injection definition we should avoid newing up objects and
+          * pass it in the constructor instead. */
          using(var handler = new HttpClientHandler())
          {
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
