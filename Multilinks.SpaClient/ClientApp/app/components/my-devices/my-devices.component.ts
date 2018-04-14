@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DevicesService, DeviceDetail, GetDevicesResponse } from '../../services/devices.service';
 
 import * as _ from 'underscore';
+import { HttpErrorResponse } from '@angular/common/http/src/response';
 
 @Component({
    selector: 'my-devices',
@@ -29,7 +30,7 @@ export class MyDevicesComponent
       this.workInProgress = true;
       this.deviceService.getDevices()
          .subscribe(data => this.getDevicesResponse = { ...data },
-         err => console.error(err),
+         err => this.handleError(err),
          () => {
             this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
             this.devices = this.getDevicesResponse.value;   /* Value contains devices. */
@@ -83,7 +84,7 @@ export class MyDevicesComponent
 
       this.deviceService.getSpecificPageOfDevices(this.paginationProperties.pageSize, this.getFirstItemIndexOfPage(page))
          .subscribe(data => this.getDevicesResponse = { ...data },
-         err => console.error(err),
+         err => this.handleError(err),
          () => {
             this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
             this.devices = this.getDevicesResponse.value;   /* value contains devices */
@@ -95,6 +96,12 @@ export class MyDevicesComponent
    {
       /* Return the 0-indexed first item of current page. */
       return (page * this.paginationProperties.pageSize) - this.paginationProperties.pageSize;
+   }
+
+   private handleError(err: HttpErrorResponse) {
+      /* TODO: We should redirect to error page with the reason while. */
+      console.log(err);
+      this.workInProgress = false;
    }
 }
 
