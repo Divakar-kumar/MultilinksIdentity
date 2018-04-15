@@ -31,11 +31,7 @@ export class DevicesService {
    constructor(private http: HttpClient) {
    }
 
-   getDevices() {
-      return this.getDevicesWithOptions(0, 0);
-   }
-
-   getSpecificPageOfDevices(limit: number, offset: number) {
+   getDevices(limit: number, offset: number) {
       return this.getDevicesWithOptions(limit, offset);
    }
 

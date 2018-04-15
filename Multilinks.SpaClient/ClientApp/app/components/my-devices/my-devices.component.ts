@@ -27,15 +27,17 @@ export class MyDevicesComponent
 
    ngOnInit()
    {
-      this.workInProgress = true;
-      this.deviceService.getDevices()
-         .subscribe(data => this.getDevicesResponse = { ...data },
-         err => this.handleError(err),
-         () => {
-            this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
-            this.devices = this.getDevicesResponse.value;   /* Value contains devices. */
-            this.workInProgress = false;
-         });
+      this.getDevices(0, 0);
+   }
+
+   setPage(page: number) {
+      if (this.paginationProperties.currentPage == page) return;
+
+      if (page < 1) return;
+
+      if (page > this.paginationProperties.totalPages) return;
+
+      this.getDevices(this.paginationProperties.pageSize, this.getFirstItemIndexOfPage(page));
    }
 
    updatePaginationDetails(offset: number, limit: number, size: number)
@@ -72,30 +74,22 @@ export class MyDevicesComponent
       this.paginationProperties.pages = _.range(this.paginationProperties.startPage, this.paginationProperties.endPage + 1);
    }
 
-   setPage(page: number)
-   {
-      if (this.paginationProperties.currentPage == page) return;
-
-      if (page < 1) return;
-
-      if (page > this.paginationProperties.totalPages) return;
-
-      this.workInProgress = true;
-
-      this.deviceService.getSpecificPageOfDevices(this.paginationProperties.pageSize, this.getFirstItemIndexOfPage(page))
-         .subscribe(data => this.getDevicesResponse = { ...data },
-         err => this.handleError(err),
-         () => {
-            this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
-            this.devices = this.getDevicesResponse.value;   /* value contains devices */
-            this.workInProgress = false;
-         });
-   }
-
    getFirstItemIndexOfPage(page: number)
    {
       /* Return the 0-indexed first item of current page. */
       return (page * this.paginationProperties.pageSize) - this.paginationProperties.pageSize;
+   }
+
+   private getDevices(limit: number, offset: number) {
+      this.workInProgress = true;
+      this.deviceService.getDevices(limit, offset)
+         .subscribe(data => this.getDevicesResponse = { ...data },
+         err => this.handleError(err),
+         () => {
+            this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
+            this.devices = this.getDevicesResponse.value;   /* Value contains devices. */
+            this.workInProgress = false;
+         });
    }
 
    private handleError(err: HttpErrorResponse) {
