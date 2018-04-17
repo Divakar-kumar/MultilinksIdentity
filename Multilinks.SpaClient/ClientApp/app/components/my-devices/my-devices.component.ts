@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DevicesService, DeviceDetail, GetDevicesResponse } from '../../services/devices.service';
-
-import * as _ from 'underscore';
 import { HttpErrorResponse } from '@angular/common/http/src/response';
+import * as _ from 'underscore';
+
+import { DevicesService } from '../../services/devices.service';
+import { IDeviceDetail } from '../../interfaces/device-detail.interface';
+import { IGetDevicesResponse } from '../../interfaces/get-device-response.interface';
+import { IPaginationProperties } from '../../interfaces/pagination-properties.interface';
 
 @Component({
    selector: 'my-devices',
@@ -13,16 +16,26 @@ export class MyDevicesComponent
 {
    title = "My Devices";
    workInProgress: boolean;
-   getDevicesResponse: GetDevicesResponse;
+   getDevicesResponse: IGetDevicesResponse;
 
    /* The following are used for pagination navigation. */
-   paginationProperties: PaginationProperties;
+   paginationProperties: IPaginationProperties;
 
-   @Input() devices: DeviceDetail[];
+   @Input() devices: IDeviceDetail[];
 
    constructor(private deviceService: DevicesService)
    {
-      this.paginationProperties = new PaginationProperties();
+      this.paginationProperties = {
+         totalItems: 0,
+         currentPage: 0,
+         pageSize: 0,
+         totalPages: 0,
+         startPage: 0,
+         endPage: 0,
+         startIndex: 0,
+         endIndex: 0,
+         pages: []
+      };
    }
 
    ngOnInit()
@@ -97,17 +110,4 @@ export class MyDevicesComponent
       console.log(err);
       this.workInProgress = false;
    }
-}
-
-export class PaginationProperties
-{
-   totalItems: number;
-   currentPage: number;
-   pageSize: number;
-   totalPages: number;
-   startPage: number;
-   endPage: number;
-   startIndex: number;
-   endIndex: number;
-   pages: number[]
 }

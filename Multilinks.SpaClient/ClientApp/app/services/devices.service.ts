@@ -1,29 +1,11 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 
-export interface DeviceDetail {
-
-   /* The properties in this class should match those of Endpoint object in
-    * the backend (i.e. device == endpoint).
-    */
-   endpointId: string;    /* String representation of GUID. */
-   name: string;
-   description: string;
-}
-
-export interface GetDevicesResponse {
-
-   offset: number;
-   limit: number;
-   size: number;
-
-   value: DeviceDetail[];
-}
+import { IGetDevicesResponse } from '../interfaces/get-device-response.interface';
 
 @Injectable()
 export class DevicesService {
@@ -45,7 +27,7 @@ export class DevicesService {
       /* TODO: If current user is an admin, get all devices.
       Else get only devices created by this user.
       Get all devices for now. */
-      return this.http.get<GetDevicesResponse>(resourceUrl)
+      return this.http.get<IGetDevicesResponse>(resourceUrl)
          .pipe(
          //retry(3),   /* TODO: Retry doesn't work (is it due to self signed SSL?) */
          catchError(this.handleError)  /* Then handle the error */
