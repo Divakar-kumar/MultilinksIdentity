@@ -12,8 +12,7 @@ import { PaginationProperties } from '../../models/pagination-properties.model';
    templateUrl: './my-devices.component.html'
 })
 
-export class MyDevicesComponent
-{
+export class MyDevicesComponent {
    title = "My Devices";
    workInProgress: boolean;
    getDevicesResponse: GetDevicesResponse;
@@ -23,8 +22,7 @@ export class MyDevicesComponent
 
    @Input() devices: DeviceDetail[];
 
-   constructor(private deviceService: DevicesService)
-   {
+   constructor(private deviceService: DevicesService) {
       this.paginationProperties = {
          totalItems: 0,
          currentPage: 0,
@@ -38,8 +36,7 @@ export class MyDevicesComponent
       };
    }
 
-   ngOnInit()
-   {
+   ngOnInit() {
       this.getDevices(0, 0);
    }
 
@@ -53,8 +50,7 @@ export class MyDevicesComponent
       this.getDevices(this.paginationProperties.pageSize, this.getFirstItemIndexOfPage(page));
    }
 
-   updatePaginationDetails(offset: number, limit: number, size: number)
-   {
+   updatePaginationDetails(offset: number, limit: number, size: number) {
       this.paginationProperties.pageSize = limit;
       this.paginationProperties.totalItems = size;
       this.paginationProperties.totalPages = Math.ceil(size / limit);
@@ -87,8 +83,7 @@ export class MyDevicesComponent
       this.paginationProperties.pages = _.range(this.paginationProperties.startPage, this.paginationProperties.endPage + 1);
    }
 
-   getFirstItemIndexOfPage(page: number)
-   {
+   getFirstItemIndexOfPage(page: number) {
       /* Return the 0-indexed first item of current page. */
       return (page * this.paginationProperties.pageSize) - this.paginationProperties.pageSize;
    }
@@ -96,8 +91,13 @@ export class MyDevicesComponent
    private getDevices(limit: number, offset: number) {
       this.workInProgress = true;
       this.deviceService.getDevices(limit, offset)
-         .subscribe(data => this.getDevicesResponse = { ...data },
-         err => this.handleError(err),
+         .subscribe(
+         (data: GetDevicesResponse) => {
+            this.getDevicesResponse = data
+         },
+         (err: HttpErrorResponse) => {
+            this.handleError(err)
+         },
          () => {
             this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
             this.devices = this.getDevicesResponse.value;   /* Value contains devices. */

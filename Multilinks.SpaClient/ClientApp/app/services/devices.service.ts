@@ -13,11 +13,7 @@ export class DevicesService {
    constructor(private http: HttpClient) {
    }
 
-   getDevices(limit: number, offset: number) {
-      return this.getDevicesWithOptions(limit, offset);
-   }
-
-   private getDevicesWithOptions(limit: number, offset: number) {
+   getDevices(limit: number, offset: number): Observable<GetDevicesResponse> {
       var resourceUrl = "https://localhost:44302/api/devices";
 
       if (limit != 0) {
