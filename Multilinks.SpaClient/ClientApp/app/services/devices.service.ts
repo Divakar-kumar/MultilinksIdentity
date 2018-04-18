@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 
-import { IGetDevicesResponse } from '../interfaces/get-device-response.interface';
+import { GetDevicesResponse } from '../models/get-device-response.model';
 
 @Injectable()
 export class DevicesService {
@@ -27,7 +27,7 @@ export class DevicesService {
       /* TODO: If current user is an admin, get all devices.
       Else get only devices created by this user.
       Get all devices for now. */
-      return this.http.get<IGetDevicesResponse>(resourceUrl)
+      return this.http.get<GetDevicesResponse>(resourceUrl)
          .pipe(
          //retry(3),   /* TODO: Retry doesn't work (is it due to self signed SSL?) */
          catchError(this.handleError)  /* Then handle the error */

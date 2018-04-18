@@ -3,9 +3,9 @@ import { HttpErrorResponse } from '@angular/common/http/src/response';
 import * as _ from 'underscore';
 
 import { DevicesService } from '../../services/devices.service';
-import { IDeviceDetail } from '../../interfaces/device-detail.interface';
-import { IGetDevicesResponse } from '../../interfaces/get-device-response.interface';
-import { IPaginationProperties } from '../../interfaces/pagination-properties.interface';
+import { DeviceDetail } from '../../models/device-detail.model';
+import { GetDevicesResponse } from '../../models/get-device-response.model';
+import { PaginationProperties } from '../../models/pagination-properties.model';
 
 @Component({
    selector: 'my-devices',
@@ -16,12 +16,12 @@ export class MyDevicesComponent
 {
    title = "My Devices";
    workInProgress: boolean;
-   getDevicesResponse: IGetDevicesResponse;
+   getDevicesResponse: GetDevicesResponse;
 
    /* The following are used for pagination navigation. */
-   paginationProperties: IPaginationProperties;
+   paginationProperties: PaginationProperties;
 
-   @Input() devices: IDeviceDetail[];
+   @Input() devices: DeviceDetail[];
 
    constructor(private deviceService: DevicesService)
    {

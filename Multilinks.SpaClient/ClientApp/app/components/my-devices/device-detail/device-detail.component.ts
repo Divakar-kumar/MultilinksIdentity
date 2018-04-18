@@ -1,6 +1,6 @@
 ﻿import { Component, Input } from '@angular/core';
 
-import { IDeviceDetail } from '../../../interfaces/device-detail.interface';
+import { DeviceDetail } from '../../../models/device-detail.model';
 
 @Component({
    selector: 'device-detail',
@@ -9,5 +9,5 @@ import { IDeviceDetail } from '../../../interfaces/device-detail.interface';
 
 export class DeviceDetailComponent {
 
-   @Input() device: IDeviceDetail;
+   @Input() device: DeviceDetail;
 }

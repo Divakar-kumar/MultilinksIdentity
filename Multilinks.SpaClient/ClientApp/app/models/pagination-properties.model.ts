@@ -1,4 +1,4 @@
-﻿export interface IPaginationProperties {
+﻿export class PaginationProperties {
    totalItems: number;
    currentPage: number;
    pageSize: number;
