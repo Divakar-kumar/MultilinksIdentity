@@ -26,7 +26,7 @@ export class DevicesService {
       return this.http.get<GetDevicesResponse>(resourceUrl)
          .pipe(
          //retry(3),   /* TODO: Retry doesn't work (is it due to self signed SSL?) */
-         catchError(this.handleError)  /* Then handle the error */
+         catchError((error: HttpErrorResponse) => this.handleError(error))  /* Then handle the error */
          );
    }
 
