@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,6 +15,7 @@ import { DeviceDetailComponent } from './components/my-devices/device-detail/dev
 import { LoadingComponent } from './components/shared/loading/loading.component';
 
 import { DevicesService } from './services/devices.service';
+import { ErrorsHandler } from './services/errors-handler.service';
 
 @NgModule({
    declarations: [
@@ -42,6 +43,7 @@ import { DevicesService } from './services/devices.service';
       ])
    ],
    providers: [
+      { provide: ErrorHandler, useClass: ErrorsHandler },
       DevicesService
    ]
 })

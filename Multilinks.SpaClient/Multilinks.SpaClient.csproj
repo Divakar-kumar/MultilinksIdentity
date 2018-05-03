@@ -30,6 +30,7 @@
       <None Remove="ClientApp\app\models\get-device-response.model.ts" />
       <None Remove="ClientApp\app\models\pagination-properties.model.ts" />
       <None Remove="ClientApp\app\services\devices.service.ts" />
+      <None Remove="ClientApp\app\services\errors-handler.service.ts" />
    </ItemGroup>
 
    <ItemGroup>
@@ -41,6 +42,7 @@
       <TypeScriptCompile Include="ClientApp\app\services\devices.service.ts" />
       <TypeScriptCompile Include="ClientApp\app\components\shared\footer\footer.component.ts" />
       <TypeScriptCompile Include="ClientApp\app\components\shared\header\header.component.ts" />
+      <TypeScriptCompile Include="ClientApp\app\services\errors-handler.service.ts" />
    </ItemGroup>
 
    <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
