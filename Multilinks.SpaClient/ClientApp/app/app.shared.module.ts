@@ -16,6 +16,7 @@ import { LoadingComponent } from './components/shared/loading/loading.component'
 
 import { DevicesService } from './services/devices.service';
 import { ErrorsHandler } from './services/errors-handler.service';
+import { ErrorComponent } from './components/error/error.component';
 
 @NgModule({
    declarations: [
@@ -24,6 +25,7 @@ import { ErrorsHandler } from './services/errors-handler.service';
       MyDevicesComponent,
       MyLinksComponent,
       MyServicesComponent,
+      ErrorComponent,
       HeaderComponent,
       FooterComponent,
       DeviceDetailComponent,
@@ -39,7 +41,8 @@ import { ErrorsHandler } from './services/errors-handler.service';
          { path: 'my-devices', component: MyDevicesComponent },
          { path: 'my-links', component: MyLinksComponent },
          { path: 'my-services', component: MyServicesComponent },
-         { path: '**', redirectTo: 'recent-activities' }
+         { path: 'error', component: ErrorComponent },
+         { path: '**', redirectTo: 'error' }
       ])
    ],
    providers: [
