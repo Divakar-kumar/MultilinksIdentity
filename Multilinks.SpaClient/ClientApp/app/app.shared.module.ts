@@ -44,7 +44,8 @@ import { ErrorsHandler } from './services/errors-handler.service';
    ],
    providers: [
       { provide: ErrorHandler, useClass: ErrorsHandler },
-      DevicesService
+      DevicesService,
+      ErrorsHandler
    ]
 })
 export class AppModuleShared {

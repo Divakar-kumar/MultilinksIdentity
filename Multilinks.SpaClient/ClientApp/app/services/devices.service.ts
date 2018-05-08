@@ -6,14 +6,16 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 
 import { GetDevicesResponse } from '../models/get-device-response.model';
+import { ErrorsHandler } from './errors-handler.service';
+import { ErrorMessage } from '../models/error-message.model';
 
 @Injectable()
 export class DevicesService {
 
-   constructor(private http: HttpClient) {
+   constructor(private http: HttpClient, private errorsHandler: ErrorsHandler) {
    }
 
-   getDevices(limit: number, offset: number): Observable<GetDevicesResponse> {
+   getDevices(limit: number, offset: number): Observable<GetDevicesResponse | ErrorMessage> {
       var resourceUrl = "https://localhost:44302/api/devices";
 
       if (limit != 0) {
@@ -26,24 +28,13 @@ export class DevicesService {
       return this.http.get<GetDevicesResponse>(resourceUrl)
          .pipe(
          //retry(3),   /* TODO: Retry doesn't work (is it due to self signed SSL?) */
-         catchError((error: HttpErrorResponse) => this.handleError(error))  /* Then handle the error */
+         catchError((error: Error | HttpErrorResponse) => this.handleError(error))  /* Then handle the error */
          );
    }
 
-   private handleError(error: HttpErrorResponse) {
-      if (error.error instanceof ErrorEvent) {
-         // A client-side or network error occurred. Handle it accordingly.
-         console.error('An error occurred:', error.error.message);
-      } else {
-         // The backend returned an unsuccessful response code.
-         // The response body may contain clues as to what went wrong,
-         console.error(
-            `Backend returned code ${error.status}, ` +
-            `body was: ${error.error}`);
-      }
-      // return an ErrorObservable with a user-facing error message
-      return new ErrorObservable(
-         'Something bad happened; please try again later.');
+   private handleError(error: Error | HttpErrorResponse): Observable<ErrorMessage> {
+
+      return new ErrorObservable(this.errorsHandler.handleCaughtError(error));
    }
 }
 

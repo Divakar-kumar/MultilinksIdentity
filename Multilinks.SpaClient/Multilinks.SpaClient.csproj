@@ -27,6 +27,7 @@
       <None Remove="ClientApp\app\components\shared\header\header.component.ts" />
       <None Remove="ClientApp\app\components\shared\loading\loading.component.ts" />
       <None Remove="ClientApp\app\models\device-detail.model.ts" />
+      <None Remove="ClientApp\app\models\error-message.model.ts" />
       <None Remove="ClientApp\app\models\get-device-response.model.ts" />
       <None Remove="ClientApp\app\models\pagination-properties.model.ts" />
       <None Remove="ClientApp\app\services\devices.service.ts" />
@@ -36,6 +37,7 @@
    <ItemGroup>
       <TypeScriptCompile Include="ClientApp\app\components\my-devices\device-detail\device-detail.component.ts" />
       <TypeScriptCompile Include="ClientApp\app\components\shared\loading\loading.component.ts" />
+      <TypeScriptCompile Include="ClientApp\app\models\error-message.model.ts" />
       <TypeScriptCompile Include="ClientApp\app\models\pagination-properties.model.ts" />
       <TypeScriptCompile Include="ClientApp\app\models\get-device-response.model.ts" />
       <TypeScriptCompile Include="ClientApp\app\models\device-detail.model.ts" />

@@ -6,6 +6,7 @@ import { DevicesService } from '../../services/devices.service';
 import { DeviceDetail } from '../../models/device-detail.model';
 import { GetDevicesResponse } from '../../models/get-device-response.model';
 import { PaginationProperties } from '../../models/pagination-properties.model';
+import { ErrorMessage } from '../../models/error-message.model';
 
 @Component({
    selector: 'my-devices',
@@ -92,11 +93,13 @@ export class MyDevicesComponent {
       this.workInProgress = true;
       this.deviceService.getDevices(limit, offset)
          .subscribe(
-         (data: GetDevicesResponse) => {
-            this.getDevicesResponse = data
+         (data: GetDevicesResponse | ErrorMessage) => {
+            if (data instanceof GetDevicesResponse) {
+               this.getDevicesResponse = data
+            }
          },
-         (err: HttpErrorResponse) => {
-            this.handleError(err)
+         (error: ErrorMessage) => {
+            this.handleError(error)
          },
          () => {
             this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
@@ -105,9 +108,10 @@ export class MyDevicesComponent {
          });
    }
 
-   private handleError(err: HttpErrorResponse) {
-      /* TODO: We should redirect to error page with the reason while. */
-      console.log(err);
+   private handleError(error: ErrorMessage) {
+
+      console.log(error.errorType);
+      console.log(error.errorCode);
       this.workInProgress = false;
    }
 }
