@@ -17,22 +17,21 @@ export class ErrorsHandler implements ErrorHandler {
 
       if (error instanceof HttpErrorResponse) {     
          if (!navigator.onLine) {
-            this.errorMessage.errorType = "Unexpected Connection Error"
-            this.errorMessage.errorCode = 0;
-            console.log("No Internet connection failure");
+            console.error("unexpected-connection-error");
+            console.error(0);
             return;
          }
 
-         this.errorMessage.errorType = "Unexpected HTTP Error";
-         this.errorMessage.errorCode = error.status;
-         console.log(`Unexpected HTTP failure response: ${error.status}`);
+         this.errorMessage.errorType = "unexpected-http-error";
+         this.errorMessage.errorCode = String(error.status);
       }
       else {
-         this.errorMessage.errorType = "Unexpected Client Error";
-         this.errorMessage.errorCode = 0;
-         console.log("Unexpected failure occurred");
+         this.errorMessage.errorType = "unexpected-client-error";
+         this.errorMessage.errorCode = "1";
       }
 
+      console.error(this.errorMessage.errorType);
+      console.error(this.errorMessage.errorCode);
       this.logError(error);
    }
 
@@ -41,17 +40,17 @@ export class ErrorsHandler implements ErrorHandler {
 
       if (error instanceof HttpErrorResponse) {
          if (!navigator.onLine) {
-            this.errorMessage.errorType = "No Connection"
-            this.errorMessage.errorCode = 1;
+            this.errorMessage.errorType = "connection-error"
+            this.errorMessage.errorCode = "2";
             return this.errorMessage;
          }
 
-         this.errorMessage.errorType = "HTTP Error";
-         this.errorMessage.errorCode = error.status;
+         this.errorMessage.errorType = "http-error";
+         this.errorMessage.errorCode = String(error.status);
       }
       else {
-         this.errorMessage.errorType = "Client Error";
-         this.errorMessage.errorCode = 1;
+         this.errorMessage.errorType = "client-error";
+         this.errorMessage.errorCode = "3";
       }
 
       this.logError(error);

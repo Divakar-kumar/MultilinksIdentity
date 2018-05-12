@@ -1,5 +1,5 @@
 ﻿export class ErrorMessage {
 
-   errorType: string;
-   errorCode: number;
+   errorType: string | undefined;
+   errorCode: string | undefined;
 }

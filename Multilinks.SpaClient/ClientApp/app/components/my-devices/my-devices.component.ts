@@ -7,6 +7,7 @@ import { DeviceDetail } from '../../models/device-detail.model';
 import { GetDevicesResponse } from '../../models/get-device-response.model';
 import { PaginationProperties } from '../../models/pagination-properties.model';
 import { ErrorMessage } from '../../models/error-message.model';
+import { Router } from '@angular/router';
 
 @Component({
    selector: 'my-devices',
@@ -15,26 +16,15 @@ import { ErrorMessage } from '../../models/error-message.model';
 
 export class MyDevicesComponent {
    title = "My Devices";
-   workInProgress: boolean;
-   getDevicesResponse: GetDevicesResponse;
+   workInProgress: boolean = false;
+   getDevicesResponse: GetDevicesResponse = new GetDevicesResponse;
 
    /* The following are used for pagination navigation. */
-   paginationProperties: PaginationProperties;
+   paginationProperties: PaginationProperties = new PaginationProperties;
 
-   @Input() devices: DeviceDetail[];
+   @Input() devices: DeviceDetail[] = [];
 
-   constructor(private deviceService: DevicesService) {
-      this.paginationProperties = {
-         totalItems: 0,
-         currentPage: 0,
-         pageSize: 0,
-         totalPages: 0,
-         startPage: 0,
-         endPage: 0,
-         startIndex: 0,
-         endIndex: 0,
-         pages: []
-      };
+   constructor(private router: Router, private deviceService: DevicesService) {
    }
 
    ngOnInit() {
@@ -110,8 +100,7 @@ export class MyDevicesComponent {
 
    private handleError(error: ErrorMessage) {
 
-      console.log(error.errorType);
-      console.log(error.errorCode);
       this.workInProgress = false;
+      this.router.navigate(['error', { type: error.errorType, code: String(error.errorCode) }]);
    }
 }

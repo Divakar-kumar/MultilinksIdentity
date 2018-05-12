@@ -9,5 +9,6 @@ import { DeviceDetail } from '../../../models/device-detail.model';
 
 export class DeviceDetailComponent {
 
-   @Input() device: DeviceDetail;
+   @Input()
+   device: DeviceDetail = new DeviceDetail;
 }
