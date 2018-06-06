@@ -1,0 +1,7 @@
+﻿@charset "UTF-8";
+
+@media (max-width: 359px) {
+   .rd-mobilepanel_title {
+      font-size: 18px;
+   }
+}
