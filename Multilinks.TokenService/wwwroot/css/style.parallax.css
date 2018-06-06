@@ -1,0 +1,50 @@
+﻿@charset "UTF-8";
+
+.parallax {
+   padding: 40px 0 210px 0;
+   position: relative;
+   overflow: hidden;
+}
+
+   .parallax p {
+      text-transform: uppercase;
+      color: #DBD7D2;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 25px;
+      margin: -140px 0 0 404px;
+   }
+
+   .parallax .bannerwrapper:before, .parallax .bannerwrapper:after {
+      display: table;
+      content: "";
+      line-height: 0;
+   }
+
+   .parallax .bannerwrapper:after {
+      clear: both;
+   }
+
+.parallax_image, .parallax_pattern {
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   height: 100%;
+   background-position: center center;
+   will-change: transform;
+}
+
+.parallax_image {
+   background-repeat: no-repeat;
+   -webkit-background-size: cover;
+   background-size: cover;
+}
+
+.parallax_pattern {
+   background-repeat: repeat;
+}
+
+.parallax_cnt {
+   position: relative;
+}

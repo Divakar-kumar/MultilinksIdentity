@@ -1,0 +1,63 @@
+﻿@charset "UTF-8";
+
+.brand {
+   display: inline-block;
+   position: relative;
+   padding-left: 125px;
+   font-family: "Open Sans", sans-serif;
+   font-weight: 300;
+}
+
+   .brand:before {
+      content: url(../images/mds_logo.png);
+      width: 115px;
+      height: 115px;
+      text-align: center;
+      position: absolute;
+      left: 10px;
+      top: -10px;
+   }
+
+.brand_name {
+   overflow: hidden;
+   color: #43464c;
+   font-size: 80px;
+   line-height: 80px;
+   padding-left: 10px;
+}
+
+.brand_name_a {
+   overflow: hidden;
+   color: #00a1d9;
+   font-size: 80px;
+   line-height: 80px;
+}
+
+.brand_name_b {
+   overflow: hidden;
+   color: #43464c;
+   font-size: 80px;
+   line-height: 80px;
+}
+
+.brand.brand__footer {
+   float: left;
+   margin-top: 112px;
+   margin-right: 40px;
+}
+
+   .brand.brand__footer .brand_name, .brand.brand__footer .brand_slogan {
+      color: #fff;
+   }
+
+.brand_slogan {
+   text-transform: uppercase;
+   font-size: 19px;
+   line-height: 19px;
+   color: #c7c8c9;
+   padding-left: 7px;
+   font-family: "Open Sans", sans-serif;
+   font-weight: 300;
+   margin-top: 0;
+   padding-left: 15px;
+}

@@ -1,0 +1,68 @@
+﻿@charset "UTF-8";
+
+@media (min-width: 980px) and (max-width: 1199px) {
+   header {
+      padding-top: 32px;
+   }
+
+      header .nav {
+         margin-top: 32px;
+      }
+
+   h3 {
+      font-size: 35px;
+   }
+
+   .banner1_text1 {
+      font-size: 160px;
+   }
+
+   .banner1_text2 {
+      font-size: 60px;
+      margin: 108px 0 0 663px;
+   }
+
+   .features li {
+      font-size: 12px;
+   }
+
+   .pricing_wrapper {
+      margin-bottom: 33px;
+   }
+
+   .bannerwrapper_2 h2 {
+      font-size: 86px;
+      padding-right: 15%;
+   }
+
+   .difbgwrapper {
+      margin-top: 50px;
+      text-align: center;
+      padding: 30px 30px;
+   }
+
+   h5 {
+      margin-top: 75px;
+   }
+
+   .brand__footer {
+      margin-bottom: 40px;
+   }
+
+   .curve_page3 {
+      text-align: center;
+      padding-left: 0;
+   }
+
+   .pricing_rightblock {
+      padding-left: 22px;
+   }
+
+   .pricing_leftblock h4 {
+      font-size: 16px;
+   }
+
+   #toTop {
+      display: none;
+   }
+}

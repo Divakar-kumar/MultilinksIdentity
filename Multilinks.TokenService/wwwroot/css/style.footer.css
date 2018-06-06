@@ -1,0 +1,39 @@
+﻿@charset "UTF-8";
+
+footer {
+   background: #27292c;
+   padding-bottom: 20px;
+   text-align: center;
+}
+
+.copyright {
+   font-size: 14px;
+   line-height: 24px;
+   color: #43464c;
+   margin-top: 20px;
+}
+
+   .copyright a:hover {
+      color: #00a1d9;
+      text-decoration: underline;
+   }
+
+.contact h3 {
+   color: #fff;
+   margin-top: 92px;
+}
+
+.form_btn {
+   background: #F2D03B;
+   font-size: 15px;
+   line-height: 32px;
+   padding: 25px 40px;
+   margin-top: 34px;
+   border-radius: 40px;
+   color: #fff;
+}
+
+   .form_btn:hover {
+      background: #00a1d9;
+      transition: 1s;
+   }
