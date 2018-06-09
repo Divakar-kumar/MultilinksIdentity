@@ -1,9 +1,8 @@
 ﻿@charset "UTF-8";
 
 #main_content {
-   margin-top: -60px;
-   padding-left: 40px;
-   min-height: 55vh;
+   margin-top: 70px;
+   min-height: 70vh;
 }
 
    #main_content .row {
@@ -15,7 +14,7 @@
          margin-right: 25px;
       }
 
-      #main_content .row h4 {
+      #main_content .row h3 {
          color: #00a1d9;
          font-weight: 400;
          margin-top: 9px;
@@ -635,3 +634,102 @@ dd {
          color: #fff;
          padding-right: 13px;
       }
+
+/* Styles for form box */
+/* --------------------- */
+.form-box {
+   background-color: white;
+   max-width: 340px;
+   height: auto;
+   margin: 0 auto;
+   position: relative;
+   padding-bottom: 10px;
+   border-radius: 10px;
+   box-shadow: 0 5px 50px rgba(0,0,0,0.4);
+   text-align: center;
+   -webkit-animation-duration: 1s;
+   -webkit-animation-delay: 0s;
+}
+
+   .form-box .box-header {
+      background-color: #00a1d9;
+      margin-top: 0;
+      margin-bottom: 20px;
+      border-radius: 10px 10px 0 0;
+   }
+
+      .form-box .box-header h3 {
+         color: #fff;
+         font-size: 20px;
+         padding: 18px;
+      }
+
+   .form-box #form_message {
+      padding-bottom: 18px;
+   }
+
+   .form-box label {
+      font-weight: 700;
+      font-size: .8em;
+      color: #888;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 2em;
+   }
+
+   .form-box input {
+      margin-bottom: 20px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: .9em;
+      color: #888;
+      width: 240px;
+   }
+
+      .form-box input:focus {
+         outline: none;
+         border-color: #665851;
+         transition: 0.5s;
+         color: #665851;
+      }
+
+   .form-box button {
+      margin-top: 0px;
+      margin-bottom: 10px;
+      border: 0;
+      border-radius: 25px;
+      color: white;
+      padding: 15px;
+      text-transform: uppercase;
+      font-weight: 400;
+      font-size: 0.8em;
+      letter-spacing: 1px;
+      background-color: #fac900;
+      cursor: pointer;
+      outline: none;
+      position: center;
+   }
+
+      .form-box button:hover {
+         transition: 0.5s;
+         background-color: #00a1d9;
+      }
+
+      .form-box button:active {
+         opacity: 0.7;
+      }
+
+   .form-box a {
+      margin-top: 0px;
+   }
+
+      .form-box a:hover {
+         color: #00a1d9;
+         text-decoration: underline;
+      }
+
+.selected {
+   color: #665851 !important;
+   transition: 0.5s;
+}
