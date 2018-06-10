@@ -3,8 +3,8 @@
    ViewData["Title"] = "Register";
 }
 
-<section id="main_content" data-url="../images/login_banner.jpg" data-mobile="true" data-speed="2.0">
-   <div class="container">
+<section id="main_content">
+   <div id="intro">
       <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-box animated fadeIn">
          <div class="box-header">
             <h3>Account registration</h3>

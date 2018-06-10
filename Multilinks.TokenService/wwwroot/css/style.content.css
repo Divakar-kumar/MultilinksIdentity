@@ -1,28 +1,21 @@
 ﻿@charset "UTF-8";
 
 #main_content {
-   margin-top: 70px;
-   min-height: 70vh;
+   margin-top: 10px;
+   min-height: 75vh;
+   background-image: -moz-linear-gradient(45deg, #16a080 2%, #14966e 100%);
+   background-image: -webkit-linear-gradient(45deg, #16a085 2%, #14966e 100%);
+   background-image: linear-gradient(45deg, #16a085 2%, #14966e 100%);
 }
 
-   #main_content .row {
-      text-align: left;
-   }
-
-      #main_content .row .btnicon {
-         margin-top: 15px;
-         margin-right: 25px;
-      }
-
-      #main_content .row h3 {
-         color: #00a1d9;
-         font-weight: 400;
-         margin-top: 9px;
-      }
-
-   #main_content .message {
-      margin-bottom: 20px;
-   }
+#intro {
+   position: absolute;
+   left: 0;
+   top: 45%;
+   padding: 0;
+   width: 100%;
+   text-align: center;
+}
 
 main {
    display: block;
@@ -642,8 +635,6 @@ dd {
    max-width: 340px;
    height: auto;
    margin: 0 auto;
-   position: relative;
-   padding-bottom: 10px;
    border-radius: 10px;
    box-shadow: 0 5px 50px rgba(0,0,0,0.4);
    text-align: center;
