@@ -37,6 +37,7 @@
       <None Remove="ClientApp\app\models\error-message.model.ts" />
       <None Remove="ClientApp\app\models\get-device-response.model.ts" />
       <None Remove="ClientApp\app\models\pagination-properties.model.ts" />
+      <None Remove="ClientApp\app\services\auth.service.ts" />
       <None Remove="ClientApp\app\services\devices.service.ts" />
       <None Remove="ClientApp\app\services\errors-handler.service.ts" />
    </ItemGroup>
@@ -48,6 +49,7 @@
       <TypeScriptCompile Include="ClientApp\app\models\pagination-properties.model.ts" />
       <TypeScriptCompile Include="ClientApp\app\models\get-device-response.model.ts" />
       <TypeScriptCompile Include="ClientApp\app\models\device-detail.model.ts" />
+      <TypeScriptCompile Include="ClientApp\app\services\auth.service.ts" />
       <TypeScriptCompile Include="ClientApp\app\services\devices.service.ts" />
       <TypeScriptCompile Include="ClientApp\app\components\shared\footer\footer.component.ts" />
       <TypeScriptCompile Include="ClientApp\app\components\shared\header\header.component.ts" />

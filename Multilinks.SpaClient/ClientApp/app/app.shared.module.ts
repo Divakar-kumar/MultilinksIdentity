@@ -17,6 +17,7 @@ import { LoadingComponent } from './components/shared/loading/loading.component'
 import { DevicesService } from './services/devices.service';
 import { ErrorsHandler } from './services/errors-handler.service';
 import { ErrorComponent } from './components/error/error.component';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
    declarations: [
@@ -48,6 +49,7 @@ import { ErrorComponent } from './components/error/error.component';
    providers: [
       { provide: ErrorHandler, useClass: ErrorsHandler },
       DevicesService,
+      AuthService,
       ErrorsHandler
    ]
 })
