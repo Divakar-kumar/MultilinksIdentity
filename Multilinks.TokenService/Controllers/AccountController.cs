@@ -239,43 +239,49 @@ namespace Multilinks.TokenService.Controllers
          return View();
       }
 
-      //[HttpPost]
-      //[AllowAnonymous]
-      //[ValidateAntiForgeryToken]
-      //public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-      //{
-      //   ViewData["ReturnUrl"] = returnUrl;
-      //   if(ModelState.IsValid)
-      //   {
-      //      var user = new UserEntity
-      //      {
-      //         UserName = model.Email,
-      //         Email = model.Email,
-      //         ApplicationUserId = Guid.NewGuid(),
-      //         Firstname = model.Firstname,
-      //         Lastname = model.Lastname,
-      //         StartDate = DateTimeOffset.UtcNow
-      //      };
+      [HttpPost]
+      [AllowAnonymous]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+      {
+         ViewData["ReturnUrl"] = returnUrl;
+         if(ModelState.IsValid)
+         {
+            var user = new UserEntity
+            {
+               UserName = model.Email,
+               Email = model.Email,
+               ApplicationUserId = Guid.NewGuid(),
+               StartDate = DateTimeOffset.UtcNow
+            };
 
-      //      var result = await _userManager.CreateAsync(user, model.Password);
-      //      if(result.Succeeded)
-      //      {
-      //         _logger.LogInformation("User created a new account with password.");
+            var result = await _userManager.CreateAsync(user);
 
-      //         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-      //         var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-      //         await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+            if(result.Succeeded)
+            {
+               _logger.LogInformation("User created a new account.");
 
-      //         await _signInManager.SignInAsync(user, isPersistent: false);
-      //         _logger.LogInformation("User created a new account with password.");
-      //         return RedirectToLocal(returnUrl);
-      //      }
-      //      AddErrors(result);
-      //   }
+               var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+               var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+               await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-      //   // If we got this far, something failed, redisplay form
-      //   return View(model);
-      //}
+               return RedirectToAction(nameof(AccountController.RegisterConfirmationPending), "Account");
+            }
+
+            AddErrors(result);
+         }
+
+         // If we got this far, something failed, redisplay form
+         return View(model);
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public IActionResult RegisterConfirmationPending(string returnUrl = null)
+      {
+         ViewData["ReturnUrl"] = returnUrl;
+         return View();
+      }
 
       //[HttpGet]
       //[AllowAnonymous]
