@@ -38,8 +38,13 @@ header {
 
 .btn-wr {
    float: right;
-   padding-top: 24px;
 }
+
+   .btn-wr li {
+      float: left;
+      padding-left: 20px;
+      cursor: pointer;
+   }
 
    .btn-wr .btn + .btn {
       margin-left: 21px;
