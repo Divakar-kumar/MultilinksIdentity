@@ -129,10 +129,14 @@ namespace Multilinks.DataService.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<bool>("Activated");
+
                     b.Property<Guid>("ApplicationUserId");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
+
+                    b.Property<bool>("Deactivated");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);

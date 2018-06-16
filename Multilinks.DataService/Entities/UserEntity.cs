@@ -33,5 +33,9 @@ namespace Multilinks.DataService.Entities
       public DateTimeOffset StartDate { get; set; }
 
       public DateTimeOffset EndDate { get; set; }
+
+      public bool Activated { get; set; }
+
+      public bool Deactivated { get; set; }
    }
 }
