@@ -8,12 +8,9 @@
  *                An UserEntity will use an endpoint they have access to to communicate with
  *                another endpoint.
  *             
- *    Property:   - An UserEntity will have an Id (AUID), AUID is unique within the system.
- *                - An UserEntity will have a Firstname
- *                - An UserEntity will have a Lastname
- *                - An UserEntity will have an Email address (exists in IdentityUser)
- *                - An UserEntity will have a StartDate
- *                - An UserEntity will have an EndDate
+ *    Property:   - An UserEntity will have an Id (ApplicationUserId), 
+ *                  ApplicationUserId is unique within the system.
+ *    
  *************************************************************************************************/
 
 using Microsoft.AspNetCore.Identity;
@@ -33,8 +30,6 @@ namespace Multilinks.DataService.Entities
       public DateTimeOffset StartDate { get; set; }
 
       public DateTimeOffset EndDate { get; set; }
-
-      public bool Activated { get; set; }
 
       public bool Deactivated { get; set; }
    }
