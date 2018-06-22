@@ -5,9 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
+import { RegistrationConfirmationSuccessfulComponent } from './components/registration-confirmation-successful/registration-confirmation-successful.component';
 import { RecentActivitiesComponent } from './components/recent-activities/recent-activities.component';
 import { MyDevicesComponent } from './components/my-devices/my-devices.component';
-import { MyLinksComponent } from './components/my-links/my-links.component';
 import { MyServicesComponent } from './components/my-services/my-services.component';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
@@ -22,9 +22,9 @@ import { AuthService } from './services/auth.service';
 @NgModule({
    declarations: [
       AppComponent,
+      RegistrationConfirmationSuccessfulComponent,
       RecentActivitiesComponent,
       MyDevicesComponent,
-      MyLinksComponent,
       MyServicesComponent,
       ErrorComponent,
       HeaderComponent,
@@ -38,9 +38,9 @@ import { AuthService } from './services/auth.service';
       FormsModule,
       RouterModule.forRoot([
          { path: '', redirectTo: 'recent-activities', pathMatch: 'full' },
+         { path: 'registration-confirmation-successful', component: RegistrationConfirmationSuccessfulComponent },
          { path: 'recent-activities', component: RecentActivitiesComponent },
          { path: 'my-devices', component: MyDevicesComponent },
-         { path: 'my-links', component: MyLinksComponent },
          { path: 'my-services', component: MyServicesComponent },
          { path: 'error', component: ErrorComponent },
          { path: '**', redirectTo: 'error' }

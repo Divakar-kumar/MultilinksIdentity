@@ -17,9 +17,16 @@ export class ErrorComponent {
    }
 
    ngOnInit() {
+
       this.routes.params.subscribe(params => {
-         this.errorMessage.errorType = params["type"];
-         this.errorMessage.errorCode = params["code"];
+         if (params["type"] == null || params["type"] == undefined) {
+            this.errorMessage.errorType = "Error";
+            this.errorMessage.errorCode = "Oops, something unexpected went wrong.";
+         }
+         else {
+            this.errorMessage.errorType = params["type"];
+            this.errorMessage.errorCode = params["code"];
+         }
       });
    }
 }

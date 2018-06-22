@@ -514,11 +514,15 @@ namespace Multilinks.TokenService.Controllers
             {
                _logger.LogInformation("User details updated.");
 
-               result = await _userManager.ConfirmEmailAsync(user, model.Code);
+               var confirmationResult = await _userManager.ConfirmEmailAsync(user, model.Code);
 
-               /* The RegisterConfirmationSuccess should live on the web client which should
-                * in turn redirect to the login page. */
-               return View(result.Succeeded ? "RegisterConfirmationSuccess" : "Error");
+               if(confirmationResult.Succeeded)
+               {
+                  return Redirect("https://localhost:44302/registration-confirmation-successful");
+               }
+
+               /* Failed to confirm email code. */
+               return View("Error");
             }
 
             /* Failed to update user details. */
