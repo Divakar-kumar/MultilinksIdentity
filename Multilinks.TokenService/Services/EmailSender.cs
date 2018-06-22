@@ -15,6 +15,12 @@ namespace Multilinks.TokenService.Services
          var apiKey = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SENDGRID_API_KEY");
          var supportEmail = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SUPPORT_EMAIL_ADDRESS");
          var supportName = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SUPPORT_NAME");
+
+         if(apiKey == null || supportEmail == null || supportName == null)
+         {
+            throw new ApplicationException("Email service info not found.");
+         }
+
          var client = new SendGridClient(apiKey);
          var from = new EmailAddress(supportEmail, supportName);
          var to = new EmailAddress(email);
