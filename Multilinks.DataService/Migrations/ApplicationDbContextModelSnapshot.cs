@@ -134,6 +134,8 @@ namespace Multilinks.DataService.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<bool>("Deactivated");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 

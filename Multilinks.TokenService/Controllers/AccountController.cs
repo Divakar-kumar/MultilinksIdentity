@@ -262,7 +262,7 @@ namespace Multilinks.TokenService.Controllers
                _logger.LogInformation("User created a new account.");
 
                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-               var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+               var callbackUrl = Url.RegisterConfirmationLink(user.Id, code, Request.Scheme);
                await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
                return RedirectToAction(nameof(AccountController.RegisterConfirmationPending), "Account");
@@ -466,20 +466,77 @@ namespace Multilinks.TokenService.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      public async Task<IActionResult> ConfirmEmail(string userId, string code)
+      public async Task<IActionResult> RegisterConfirmation(string userId, string code)
       {
          if(userId == null || code == null)
          {
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            throw new ApplicationException("User Id and code shouldn't be null.");
          }
+
          var user = await _userManager.FindByIdAsync(userId);
+
          if(user == null)
          {
             throw new ApplicationException($"Unable to load user with ID '{userId}'.");
          }
-         var result = await _userManager.ConfirmEmailAsync(user, code);
-         return View(result.Succeeded ? "ConfirmEmail" : "Error");
+
+         ViewData["UserId"] = userId;
+         ViewData["Code"] = code;
+
+         return View("RegisterConfirmation");
       }
+
+      [HttpPost]
+      [AllowAnonymous]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> RegisterConfirmation(RegisterConfirmationViewModel model, string returnUrl = null)
+      {
+         if(model.UserId == null || model.Code == null)
+         {
+            throw new ApplicationException("User Id and code shouldn't be null.");
+         }
+
+         var user = await _userManager.FindByIdAsync(model.UserId);
+
+         if(user == null)
+         {
+            throw new ApplicationException($"Unable to load user with ID '{model.UserId}'.");
+         }
+
+         if(ModelState.IsValid)
+         {
+            user.Firstname = model.FirstName;
+            user.Lastname = model.LastName;
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+            var result = await _userManager.UpdateAsync(user);
+
+            if(result.Succeeded)
+            {
+               _logger.LogInformation("User details updated.");
+
+               var confirmationResult = await _userManager.ConfirmEmailAsync(user, model.Code);
+
+               if(confirmationResult.Succeeded)
+               {
+                  return Redirect("https://localhost:44302/registration-confirmation-successful");
+               }
+
+               /* Failed to confirm email code. */
+               return View("Error");
+            }
+
+            /* Failed to update user details. */
+            return View("Error");
+         }
+
+         ViewData["UserId"] = model.UserId;
+         ViewData["Code"] = model.Code;
+         ViewData["ReturnUrl"] = returnUrl;
+
+         /* If we got this far, something failed, redisplay form. */
+         return View(model);
+      }
+
 
       //[HttpGet]
       //[AllowAnonymous]
