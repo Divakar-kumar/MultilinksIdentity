@@ -6,9 +6,8 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
 import { RegistrationConfirmationSuccessfulComponent } from './components/registration-confirmation-successful/registration-confirmation-successful.component';
-import { RecentActivitiesComponent } from './components/recent-activities/recent-activities.component';
+import { HomeComponent } from './components/home/home.component';
 import { MyDevicesComponent } from './components/my-devices/my-devices.component';
-import { MyServicesComponent } from './components/my-services/my-services.component';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { DeviceDetailComponent } from './components/my-devices/device-detail/device-detail.component';
@@ -23,9 +22,8 @@ import { AuthService } from './services/auth.service';
    declarations: [
       AppComponent,
       RegistrationConfirmationSuccessfulComponent,
-      RecentActivitiesComponent,
+      HomeComponent,
       MyDevicesComponent,
-      MyServicesComponent,
       ErrorComponent,
       HeaderComponent,
       FooterComponent,
@@ -37,11 +35,10 @@ import { AuthService } from './services/auth.service';
       HttpClientModule,
       FormsModule,
       RouterModule.forRoot([
-         { path: '', redirectTo: 'recent-activities', pathMatch: 'full' },
+         { path: '', redirectTo: 'home', pathMatch: 'full' },
          { path: 'registration-confirmation-successful', component: RegistrationConfirmationSuccessfulComponent },
-         { path: 'recent-activities', component: RecentActivitiesComponent },
+         { path: 'home', component: HomeComponent },
          { path: 'my-devices', component: MyDevicesComponent },
-         { path: 'my-services', component: MyServicesComponent },
          { path: 'error', component: ErrorComponent },
          { path: '**', redirectTo: 'error' }
       ])
