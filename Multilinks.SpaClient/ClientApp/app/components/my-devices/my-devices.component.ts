@@ -27,8 +27,8 @@ export class MyDevicesComponent {
    constructor(private router: Router, private deviceService: DevicesService) {
    }
 
-   ngOnInit() {
-      this.getDevices(0, 0);
+    ngOnInit() {
+       this.getDevices(0, 0);
    }
 
    setPage(page: number) {
@@ -41,13 +41,13 @@ export class MyDevicesComponent {
       this.getDevices(this.paginationProperties.pageSize, this.getFirstItemIndexOfPage(page));
    }
 
-   updatePaginationDetails(offset: number, limit: number, size: number) {
+    updatePaginationDetails(offset: number, limit: number, size: number) {
       this.paginationProperties.pageSize = limit;
       this.paginationProperties.totalItems = size;
       this.paginationProperties.totalPages = Math.ceil(size / limit);
       this.paginationProperties.currentPage = (offset / limit) + 1;
 
-      if (this.paginationProperties.totalPages <= 10) {
+       if (this.paginationProperties.totalPages <= 10) {
          /* Less than 10 total pages so show all. */
          this.paginationProperties.startPage = 1;
          this.paginationProperties.endPage = this.paginationProperties.totalPages;
@@ -71,7 +71,9 @@ export class MyDevicesComponent {
       this.paginationProperties.endIndex = Math.min(this.paginationProperties.startIndex + this.paginationProperties.pageSize - 1, this.paginationProperties.totalItems - 1);
 
       /* Create an array of pages to ng-repeat in the pager control. */
-      this.paginationProperties.pages = _.range(this.paginationProperties.startPage, this.paginationProperties.endPage + 1);
+       if (this.paginationProperties.totalPages > 1) {
+           this.paginationProperties.pages = _.range(this.paginationProperties.startPage, this.paginationProperties.endPage + 1);
+       }
    }
 
    getFirstItemIndexOfPage(page: number) {
@@ -82,16 +84,17 @@ export class MyDevicesComponent {
    private getDevices(limit: number, offset: number) {
       this.workInProgress = true;
       this.deviceService.getDevices(limit, offset)
-         .subscribe(
-         (data: GetDevicesResponse | ErrorMessage) => {
-            if (data instanceof GetDevicesResponse) {
-               this.getDevicesResponse = data
-            }
+           .subscribe(
+          (data: GetDevicesResponse | ErrorMessage) => {
+             if (data instanceof GetDevicesResponse) {
+                 /*This condition is never met - need to fix this (see BUG 43) */
+                 this.getDevicesResponse = data
+              }
          },
-         (error: ErrorMessage) => {
+          (error: ErrorMessage) => {
             this.handleError(error)
          },
-         () => {
+          () => {
             this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
             this.devices = this.getDevicesResponse.value;   /* Value contains devices. */
             this.workInProgress = false;
