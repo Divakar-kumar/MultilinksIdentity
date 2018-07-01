@@ -102,7 +102,7 @@ namespace Multilinks.ApiService
                /* TODO: Remove when deployed. */
                options.RequireHttpsMetadata = false;
 
-               options.ApiName = "api1";
+               options.ApiName = "ApiService";
             });
 
          services.AddScoped<IEndpointService, EndpointService>();
