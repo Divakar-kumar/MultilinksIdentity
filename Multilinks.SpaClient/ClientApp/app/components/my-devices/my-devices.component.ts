@@ -84,24 +84,21 @@ export class MyDevicesComponent {
    private getDevices(limit: number, offset: number) {
       this.workInProgress = true;
       this.deviceService.getDevices(limit, offset)
-           .subscribe(
-          (data: GetDevicesResponse | ErrorMessage) => {
-             if (data instanceof GetDevicesResponse) {
-                 /*This condition is never met - need to fix this (see BUG 43) */
-                 this.getDevicesResponse = data
-              }
-         },
+          .subscribe(
+          (data: GetDevicesResponse) => {
+              this.getDevicesResponse = data;
+          },
           (error: ErrorMessage) => {
-            this.handleError(error)
-         },
+                this.handleError(error)
+          },
           () => {
-            this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
-            this.devices = this.getDevicesResponse.value;   /* Value contains devices. */
-            this.workInProgress = false;
-         });
+              this.updatePaginationDetails(this.getDevicesResponse.offset, this.getDevicesResponse.limit, this.getDevicesResponse.size);
+              this.devices = this.getDevicesResponse.value;   /* Value contains devices. */
+              this.workInProgress = false;
+          });
    }
 
-   private handleError(error: ErrorMessage) {
+    private handleError(error: ErrorMessage) {
 
       this.workInProgress = false;
       this.router.navigate(['error', { type: error.errorType, code: String(error.errorCode) }]);

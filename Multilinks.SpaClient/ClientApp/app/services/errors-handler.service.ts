@@ -24,15 +24,16 @@ export class ErrorsHandler implements ErrorHandler {
 
          this.errorMessage.errorType = "unexpected-http-error";
          this.errorMessage.errorCode = String(error.status);
+         this.logServerError(error);
       }
       else {
          this.errorMessage.errorType = "unexpected-client-error";
          this.errorMessage.errorCode = "1";
+         this.logClientError(error);
       }
 
       console.error(this.errorMessage.errorType);
       console.error(this.errorMessage.errorCode);
-      this.logError(error);
    }
 
    /* This will be called when an error is caught */
@@ -47,19 +48,24 @@ export class ErrorsHandler implements ErrorHandler {
 
          this.errorMessage.errorType = "http-error";
          this.errorMessage.errorCode = String(error.status);
+         this.logServerError(error);
       }
       else {
          this.errorMessage.errorType = "client-error";
          this.errorMessage.errorCode = "3";
+         this.logClientError(error);
       }
 
-      this.logError(error);
 
       return this.errorMessage;
    }
 
-   logError(error: Error | HttpErrorResponse) {
+    logServerError(error: Error | HttpErrorResponse) {
 
       console.log("We should log this error somewhere on the server.");
    }
+
+    logClientError(error: Error) {
+        console.error("Client error message:", error.message);
+    }
 }
