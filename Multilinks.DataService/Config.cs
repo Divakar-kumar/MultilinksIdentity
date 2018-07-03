@@ -1,5 +1,5 @@
-﻿using IdentityServer4.Models;
-using System;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
 using System.Collections.Generic;
 
 namespace Multilinks.DataService
@@ -20,6 +20,7 @@ namespace Multilinks.DataService
       {
          return new List<ApiResource>
          {
+            /* TODO: What about ApiSecrets? */
             new ApiResource("ApiService", "Multilinks API Service"),
             new ApiResource("SpaClientBackend", "Multilinks SPA Client Backend API Service")
          };
@@ -28,31 +29,28 @@ namespace Multilinks.DataService
       // clients want to access resources (aka scopes)
       public static IEnumerable<Client> GetClients()
       {
-         var spaClientKey = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SPACLIENT_KEY");
-
-         if(spaClientKey == null)
-         {
-            throw new ApplicationException("Required keys missing.");
-         }
-
          // client credentials client
          return new List<Client>
          {
             new Client
             {
                ClientId = "SpaClient",
- 
-               /* TODO: Is this the right grant type for an Angular app? */
-               AllowedGrantTypes = GrantTypes.ClientCredentials,
- 
-               // secret for authentication
-               ClientSecrets =
-               {
-                  new Secret(spaClientKey.Sha256())
-               },
+               ClientName = "Angular Web Client",
+               AllowAccessTokensViaBrowser = true,
+               AllowedGrantTypes = GrantTypes.Implicit,
+
+               RedirectUris = { "https://notused" },
+               PostLogoutRedirectUris = { "https://notused" },
+               FrontChannelLogoutUri = "http://localhost:5000/signout-idsrv", // for testing identityserver on localhost
  
                // scopes that client has access to
-               AllowedScopes = { "ApiService", "SpaClientBackend" }
+               AllowedScopes =
+               {
+                  IdentityServerConstants.StandardScopes.OpenId,
+                  IdentityServerConstants.StandardScopes.Profile,
+                  "ApiService",
+                  "SpaClientBackend"
+               },
             }
          };
       }
