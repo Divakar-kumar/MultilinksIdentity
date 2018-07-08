@@ -6,13 +6,13 @@ namespace Multilinks.DataService
 {
    public class Config
    {
-      // scopes define the resources in your system
       public static IEnumerable<IdentityResource> GetIdentityResources()
       {
          return new List<IdentityResource>
          {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
+            new IdentityResource("roles", "User role(s)", new List<string> { "role" })
          };
       }
 
@@ -20,37 +20,43 @@ namespace Multilinks.DataService
       {
          return new List<ApiResource>
          {
-            /* TODO: What about ApiSecrets? */
-            new ApiResource("ApiService", "Multilinks API Service"),
-            new ApiResource("SpaClientBackend", "Multilinks SPA Client Backend API Service")
+            new ApiResource("ApiService", "Multilinks API Service", new List<string> { "role" })
          };
       }
 
       // clients want to access resources (aka scopes)
       public static IEnumerable<Client> GetClients()
       {
-         // client credentials client
          return new List<Client>
          {
             new Client
             {
                ClientId = "SpaClient",
-               ClientName = "Angular Web Client",
+               ClientName = "SPA Web Client",
                AllowAccessTokensViaBrowser = true,
                AllowedGrantTypes = GrantTypes.Implicit,
+               RequireConsent = false,
+               AccessTokenLifetime = 180,
 
-               RedirectUris = { "https://notused" },
-               PostLogoutRedirectUris = { "https://notused" },
-               FrontChannelLogoutUri = "http://localhost:5000/signout-idsrv", // for testing identityserver on localhost
+               RedirectUris =
+               {
+                  "https://localhost:44302/signin-oidc",
+                  "https://localhost:44302/redirect-silent-renew"
+               },
+
+               PostLogoutRedirectUris =
+               {
+                  "https://localhost:44302/"
+               },
  
                // scopes that client has access to
                AllowedScopes =
                {
                   IdentityServerConstants.StandardScopes.OpenId,
                   IdentityServerConstants.StandardScopes.Profile,
-                  "ApiService",
-                  "SpaClientBackend"
-               },
+                  "roles",
+                  "ApiService"
+               }
             }
          };
       }
