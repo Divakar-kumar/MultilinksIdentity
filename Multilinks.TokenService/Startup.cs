@@ -74,11 +74,21 @@ namespace Multilinks.TokenService
                    builder.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString"),
                        sql => sql.MigrationsAssembly(migrationsAssembly));
 
-               // this enables automatic token cleanup. this is optional.
-               options.EnableTokenCleanup = true;
-               options.TokenCleanupInterval = 30;
+               /* TODO: This is optional, it enables automatic token cleanup.*/
+               //options.EnableTokenCleanup = true;
+               //options.TokenCleanupInterval = 30;
             })
             .AddAspNetIdentity<UserEntity>();
+
+         /* TODO: CORS policy will need to be updated before deployment. */
+         services.AddCors(options => options.AddPolicy("CorsAny", builder =>
+         {
+            builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .AllowAnyHeader();
+         }));
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,6 +104,8 @@ namespace Multilinks.TokenService
          {
             app.UseExceptionHandler("/Home/Error");
          }
+
+         app.UseCors("CorsAny");
 
          app.UseStaticFiles();
 

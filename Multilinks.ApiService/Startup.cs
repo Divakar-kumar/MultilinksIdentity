@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 using Multilinks.ApiService.Filters;
 using Multilinks.ApiService.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using Multilinks.ApiService.Services;
 using AutoMapper;
 using Multilinks.DataService.Entities;
 using Multilinks.DataService;
 using Microsoft.AspNetCore.Identity;
+using IdentityServer4.AccessTokenValidation;
 
 namespace Multilinks.ApiService
 {
@@ -94,15 +94,11 @@ namespace Multilinks.ApiService
          services.Configure<MultilinksInfoViewModel>(_configuration.GetSection("Info"));
          services.Configure<PagingOptions>(_configuration.GetSection("DefaultPagingOptions"));
 
-         services.AddAuthentication("Bearer")
+         services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
             .AddIdentityServerAuthentication(options =>
             {
-               options.Authority = "http://localhost:5000";
-
-               /* TODO: Remove when deployed. */
-               options.RequireHttpsMetadata = false;
-
-               options.ApiName = "api1";
+               options.Authority = "https://localhost:44300";
+               options.ApiName = "ApiService";
             });
 
          services.AddScoped<IEndpointService, EndpointService>();
@@ -117,8 +113,6 @@ namespace Multilinks.ApiService
             app.UseDeveloperExceptionPage();
          }
 
-         app.UseAuthentication();
-
          app.UseHsts(opt =>
          {
             opt.MaxAge(days: 365);
@@ -127,6 +121,8 @@ namespace Multilinks.ApiService
          });
 
          app.UseCors("CorsAny");
+
+         app.UseAuthentication();
 
          app.UseMvc();
       }
