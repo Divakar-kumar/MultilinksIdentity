@@ -97,8 +97,8 @@ namespace Multilinks.ApiService
          services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
             .AddIdentityServerAuthentication(options =>
             {
-               options.Authority = "https://localhost:44300";
-               options.ApiName = "ApiService";
+               options.Authority = _configuration.GetValue<string>("TokenServiceInfo:AuthorityUrl");
+               options.ApiName = _configuration.GetValue<string>("TokenServiceInfo:ApiName");
             });
 
          services.AddScoped<IEndpointService, EndpointService>();
