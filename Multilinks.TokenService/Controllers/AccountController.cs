@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +11,8 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using Multilinks.DataService.Entities;
+using IdentityServer4.Models;
+using IdentityServer4.Events;
 
 namespace Multilinks.TokenService.Controllers
 {
@@ -22,11 +23,15 @@ namespace Multilinks.TokenService.Controllers
       private readonly UserManager<UserEntity> _userManager;
       private readonly RoleManager<UserRoleEntity> _roleManager;
       private readonly SignInManager<UserEntity> _signInManager;
+
       private readonly IEmailSender _emailSender;
       private readonly ILogger _logger;
 
+      private readonly IClientStore _clientStore;
       private readonly IIdentityServerInteractionService _interaction;
-      private readonly AccountService _account;
+      private readonly IHttpContextAccessor _httpContextAccessor;
+      private readonly IAuthenticationSchemeProvider _schemeProvider;
+      private readonly IEventService _events;
 
       public AccountController(
           UserManager<UserEntity> userManager,
@@ -34,6 +39,7 @@ namespace Multilinks.TokenService.Controllers
           SignInManager<UserEntity> signInManager,
           IEmailSender emailSender,
           ILogger<AccountController> logger,
+          IEventService events,
           IIdentityServerInteractionService interaction,
           IClientStore clientStore,
           IHttpContextAccessor httpContextAccessor,
@@ -43,19 +49,23 @@ namespace Multilinks.TokenService.Controllers
          _userManager = userManager;
          _roleManager = roleManager;
          _signInManager = signInManager;
+
          _emailSender = emailSender;
          _logger = logger;
 
-         AddRoles().Wait();
-
          _interaction = interaction;
-         _account = new AccountService(interaction, httpContextAccessor, schemeProvider, clientStore);
+         _httpContextAccessor = httpContextAccessor;
+         _schemeProvider = schemeProvider;
+         _clientStore = clientStore;
+         _events = events;
+
+         AddRoles().Wait();
       }
 
       private async Task AddRoles()
       {
          // Add roles to database if doesn't exist
-         foreach(string roleName in new[] { "System Admin" })
+         foreach(string roleName in new[] { "System Admin", "Standard" })
          {
             if(!await _roleManager.RoleExistsAsync(roleName))
             {
@@ -64,55 +74,89 @@ namespace Multilinks.TokenService.Controllers
          }
       }
 
-      [TempData]
-      public string ErrorMessage { get; set; }
+      [HttpGet]
+      [AllowAnonymous]
+      public async Task<IActionResult> Login(string returnUrl = null)
+      {
+         // Clear the existing external cookie to ensure a clean login process
+         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-      //[HttpGet]
-      //[AllowAnonymous]
-      //public async Task<IActionResult> Login(string returnUrl = null)
-      //{
-      //   // Clear the existing external cookie to ensure a clean login process
-      //   await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+         ViewData["ReturnUrl"] = returnUrl;
+         return View();
+      }
 
-      //   ViewData["ReturnUrl"] = returnUrl;
-      //   return View();
-      //}
+      [HttpPost]
+      [AllowAnonymous]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> Login(LoginViewModel model, string button, string returnUrl = null)
+      {
+         if(button != "login")
+         {
+            /* The user clicked the "cancel" button */
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
 
-      //[HttpPost]
-      //[AllowAnonymous]
-      //[ValidateAntiForgeryToken]
-      //public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
-      //{
-      //   ViewData["ReturnUrl"] = returnUrl;
-      //   if(ModelState.IsValid)
-      //   {
-      //      // This doesn't count login failures towards account lockout
-      //      // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-      //      var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-      //      if(result.Succeeded)
-      //      {
-      //         _logger.LogInformation("User logged in.");
-      //         return RedirectToLocal(returnUrl);
-      //      }
-      //      if(result.RequiresTwoFactor)
-      //      {
-      //         return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
-      //      }
-      //      if(result.IsLockedOut)
-      //      {
-      //         _logger.LogWarning("User account locked out.");
-      //         return RedirectToAction(nameof(Lockout));
-      //      }
-      //      else
-      //      {
-      //         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-      //         return View(model);
-      //      }
-      //   }
+            if(context == null)
+            {
+               return View("Error");
+            }
 
-      //   // If we got this far, something failed, redisplay form
-      //   return View(model);
-      //}
+            /* If the user cancels, send a result back into IdentityServer as if they 
+             * denied the consent (even if this client does not require consent).
+             * this will send back an access denied OIDC error response to the client. */
+            await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+
+            /* we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null. */
+            return Redirect(returnUrl);
+         }
+
+         if(ModelState.IsValid)
+         {
+            /* Require the user to have completed registration before they can log on. */
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if(user != null)
+            {
+               if(!await _userManager.IsEmailConfirmedAsync(user))
+               {
+                  ModelState.AddModelError(string.Empty, "You must have a confirmed email to log in.");
+
+                  return View(model);
+               }
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, lockoutOnFailure: true);
+
+            if(result.Succeeded)
+            {
+               if(_interaction.IsValidReturnUrl(returnUrl))
+               {
+                  await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.ApplicationUserId.ToString(), user.Firstname + " " + user.Lastname));
+
+                  return Redirect(returnUrl);
+               }
+
+               /* TODO: Should always be a valid return url? */
+               return Redirect("~/");
+            }
+
+            if(result.IsLockedOut)
+            {
+               await _events.RaiseAsync(new UserLoginFailureEvent(model.Email, "locked out"));
+
+               return RedirectToAction(nameof(Lockout));
+            }
+            else
+            {
+               await _events.RaiseAsync(new UserLoginFailureEvent(model.Email, "invalid credentials"));
+               ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
+               return View(model);
+            }
+         }
+
+         await _events.RaiseAsync(new UserLoginFailureEvent(model.Email, "something went wrong"));
+         return View(model);
+      }
 
       //[HttpGet]
       //[AllowAnonymous]
@@ -224,12 +268,12 @@ namespace Multilinks.TokenService.Controllers
       //   }
       //}
 
-      //[HttpGet]
-      //[AllowAnonymous]
-      //public IActionResult Lockout()
-      //{
-      //   return View();
-      //}
+      [HttpGet]
+      [AllowAnonymous]
+      public IActionResult Lockout()
+      {
+         return View();
+      }
 
       [HttpGet]
       [AllowAnonymous]

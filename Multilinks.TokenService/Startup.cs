@@ -9,6 +9,9 @@ using System.Reflection;
 using Multilinks.DataService.Entities;
 using Multilinks.DataService;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using IdentityServer4;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Multilinks.TokenService
 {
@@ -26,8 +29,11 @@ namespace Multilinks.TokenService
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
+         var connectionString = _configuration.GetConnectionString("MultilinksConnectionString");
+         var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
          services.AddDbContext<ApplicationDbContext>(options =>
-             options.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString")));
+             options.UseSqlServer(connectionString));
 
          services.AddIdentity<UserEntity, UserRoleEntity>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -39,6 +45,9 @@ namespace Multilinks.TokenService
             o.Password.RequireNonAlphanumeric = false;
             o.Password.RequireUppercase = false;
             o.Password.RequiredLength = 8;
+
+            o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+            o.Lockout.MaxFailedAccessAttempts = 5;
          });
 
          // Add application services.
@@ -46,7 +55,7 @@ namespace Multilinks.TokenService
 
          services.AddMvc(opt =>
          {
-            if(!_env.IsProduction())
+            if(_env.IsDevelopment())
             {
                var launchJsonConfig = new ConfigurationBuilder()
                      .SetBasePath(_env.ContentRootPath)
@@ -58,27 +67,39 @@ namespace Multilinks.TokenService
             opt.Filters.Add(new RequireHttpsAttribute());
          });
 
-         var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
-         services.AddIdentityServer()
-            .AddDeveloperSigningCredential()
+         var identityServerbuilder = services.AddIdentityServer(options =>
+            {
+               options.Events.RaiseErrorEvents = true;
+               options.Events.RaiseInformationEvents = true;
+               options.Events.RaiseFailureEvents = true;
+               options.Events.RaiseSuccessEvents = true;
+            })
             .AddConfigurationStore(options =>
             {
                options.ConfigureDbContext = builder =>
-                   builder.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString"),
+                   builder.UseSqlServer(connectionString,
                        sql => sql.MigrationsAssembly(migrationsAssembly));
             })
             .AddOperationalStore(options =>
             {
                options.ConfigureDbContext = builder =>
-                   builder.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString"),
+                   builder.UseSqlServer(connectionString,
                        sql => sql.MigrationsAssembly(migrationsAssembly));
 
                /* TODO: This is optional, it enables automatic token cleanup.*/
-               //options.EnableTokenCleanup = true;
-               //options.TokenCleanupInterval = 30;
+               options.EnableTokenCleanup = true;
+               options.TokenCleanupInterval = 30;
             })
             .AddAspNetIdentity<UserEntity>();
+
+         if(_env.IsDevelopment())
+         {
+            identityServerbuilder.AddDeveloperSigningCredential();
+         }
+         else
+         {
+            throw new Exception("need to configure key material");
+         }
 
          /* TODO: CORS policy will need to be updated before deployment. */
          services.AddCors(options => options.AddPolicy("CorsAny", builder =>
