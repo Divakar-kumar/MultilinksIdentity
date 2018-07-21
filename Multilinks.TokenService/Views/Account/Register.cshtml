@@ -1,11 +1,8 @@
 ﻿@model RegisterViewModel
-@{
-   ViewData["Title"] = "Register";
-}
 
 <section id="main_content">
    <div id="intro">
-      <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-box animated fadeIn">
+      <form asp-controller="Account" asp-action="Register" method="post" class="form-box animated fadeIn">
          <div class="box-header">
             <h3>Account registration</h3>
          </div>
