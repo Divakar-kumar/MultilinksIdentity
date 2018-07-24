@@ -77,7 +77,7 @@ namespace Multilinks.DataService
 
          app.Run(async (context) =>
          {
-            await context.Response.WriteAsync("DataService should not be started!");
+            await context.Response.WriteAsync("Seeding database complete!");
          });
       }
 

@@ -37,6 +37,7 @@ namespace Multilinks.DataService
                AllowedGrantTypes = GrantTypes.Implicit,
                RequireConsent = false,
                AccessTokenLifetime = 180,
+               AllowedCorsOrigins = { "https://localhost:44302" },
 
                RedirectUris =
                {

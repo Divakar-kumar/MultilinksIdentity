@@ -1,19 +1,12 @@
-﻿@{
-   var errorMessage = ViewData["ErrorMessage"];
-}
-
-<section id="main_content">
-   <div class="container">
-      <div class="row">
-         <div class="grid_6">
-            <h3>Error</h3>
-            <h4>
-               An error occurred while processing your request.
-               @if(ViewData["ErrorMessage"] != null)
-               {
-                  @errorMessage
-               }
-            </h4>
+﻿<section id="main_content">
+   <div id="intro">
+      <div class="form-box animated fadeIn">
+         <div class="box-header">
+            <h3>Request Error</h3>
+         </div>
+         <div>
+            <p>An error occurred while processing your request.</p>
+            <br />
          </div>
       </div>
    </div>
