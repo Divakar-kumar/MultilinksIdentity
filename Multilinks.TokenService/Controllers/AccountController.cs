@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Http;
 using Multilinks.DataService.Entities;
 using IdentityServer4.Models;
 using IdentityServer4.Events;
+using System.Linq;
+using System.Security.Claims;
+using IdentityModel;
 
 namespace Multilinks.TokenService.Controllers
 {
@@ -21,7 +24,6 @@ namespace Multilinks.TokenService.Controllers
    public class AccountController : Controller
    {
       private readonly UserManager<UserEntity> _userManager;
-      private readonly RoleManager<UserRoleEntity> _roleManager;
       private readonly SignInManager<UserEntity> _signInManager;
 
       private readonly IEmailSender _emailSender;
@@ -35,7 +37,6 @@ namespace Multilinks.TokenService.Controllers
 
       public AccountController(
           UserManager<UserEntity> userManager,
-          RoleManager<UserRoleEntity> roleManager,
           SignInManager<UserEntity> signInManager,
           IEmailSender emailSender,
           ILogger<AccountController> logger,
@@ -47,7 +48,6 @@ namespace Multilinks.TokenService.Controllers
       )
       {
          _userManager = userManager;
-         _roleManager = roleManager;
          _signInManager = signInManager;
 
          _emailSender = emailSender;
@@ -58,20 +58,6 @@ namespace Multilinks.TokenService.Controllers
          _schemeProvider = schemeProvider;
          _clientStore = clientStore;
          _events = events;
-
-         AddRoles().Wait();
-      }
-
-      private async Task AddRoles()
-      {
-         // Add roles to database if doesn't exist
-         foreach(string roleName in new[] { "System Admin", "Standard" })
-         {
-            if(!await _roleManager.RoleExistsAsync(roleName))
-            {
-               await _roleManager.CreateAsync(new UserRoleEntity(roleName));
-            }
-         }
       }
 
       [HttpGet]
@@ -130,7 +116,12 @@ namespace Multilinks.TokenService.Controllers
             {
                if(_interaction.IsValidReturnUrl(returnUrl))
                {
-                  await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.ApplicationUserId.ToString(), user.Firstname + " " + user.Lastname));
+                  var principal = await _signInManager.CreateUserPrincipalAsync(user);
+
+                  var email = principal.Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.Email).Value;
+                  var name = principal.Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.Name).Value;
+
+                  await _events.RaiseAsync(new UserLoginSuccessEvent(email, user.Id, name));
 
                   return Redirect(returnUrl);
                }
@@ -294,9 +285,7 @@ namespace Multilinks.TokenService.Controllers
             var user = new UserEntity
             {
                UserName = model.Email,
-               Email = model.Email,
-               ApplicationUserId = Guid.NewGuid(),
-               StartDate = DateTimeOffset.UtcNow
+               Email = model.Email
             };
 
             var result = await _userManager.CreateAsync(user);
@@ -304,6 +293,17 @@ namespace Multilinks.TokenService.Controllers
             if(result.Succeeded)
             {
                _logger.LogInformation("User created a new account.");
+
+               result = _userManager.AddClaimsAsync(user, new Claim[]{
+                  new Claim(JwtClaimTypes.Email, model.Email),
+                  new Claim(JwtClaimTypes.Role, "Standard User"),
+                  new Claim("RegisteredDateTimeOffsetUtc", DateTimeOffset.UtcNow.ToString())
+               }).Result;
+
+               if(!result.Succeeded)
+               {
+                  throw new Exception(result.Errors.First().Description);
+               }
 
                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                var callbackUrl = Url.RegisterConfirmationLink(user.Id, code, Request.Scheme);
@@ -549,13 +549,23 @@ namespace Multilinks.TokenService.Controllers
 
          if(ModelState.IsValid)
          {
-            user.Firstname = model.FirstName;
-            user.Lastname = model.LastName;
             user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
             var result = await _userManager.UpdateAsync(user);
 
             if(result.Succeeded)
             {
+               result = _userManager.AddClaimsAsync(user, new Claim[]{
+                  new Claim(JwtClaimTypes.GivenName, model.FirstName),
+                  new Claim(JwtClaimTypes.FamilyName, model.LastName),
+                  new Claim(JwtClaimTypes.Name, model.FirstName + " " + model.LastName),
+                  new Claim("RegisterConfirmationDateTimeOffsetUtc", DateTimeOffset.UtcNow.ToString())
+               }).Result;
+
+               if(!result.Succeeded)
+               {
+                  throw new Exception(result.Errors.First().Description);
+               }
+
                _logger.LogInformation("User details updated.");
 
                var confirmationResult = await _userManager.ConfirmEmailAsync(user, model.Code);

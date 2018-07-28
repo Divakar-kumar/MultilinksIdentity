@@ -13,10 +13,7 @@ namespace Multilinks.ApiService.Infrastructure
             .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
                Link.To(nameof(Controllers.EndpointsController.GetEndpointByIdAsync), new { endpointId = src.EndpointId })));
 
-         CreateMap<UserEntity, UserViewModel>()
-                .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
-                    Link.To(nameof(Controllers.UsersController.GetUserByIdAsync), new { userId = src.ApplicationUserId })))
-                .ForMember(dest => dest.ApplicationUserId, opt => opt.MapFrom(src => src.ApplicationUserId));
+         CreateMap<UserEntity, UserViewModel>();
       }
    }
 }

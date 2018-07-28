@@ -36,7 +36,7 @@ namespace Multilinks.ApiService
          services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString")));
 
-         services.AddIdentity<UserEntity, UserRoleEntity>()
+         services.AddIdentity<UserEntity, IdentityRole>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
              .AddDefaultTokenProviders();
 
