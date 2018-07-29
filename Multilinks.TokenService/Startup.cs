@@ -35,7 +35,7 @@ namespace Multilinks.TokenService
          services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(connectionString));
 
-         services.AddIdentity<UserEntity, UserRoleEntity>()
+         services.AddIdentity<UserEntity, IdentityRole>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
              .AddDefaultTokenProviders();
 
