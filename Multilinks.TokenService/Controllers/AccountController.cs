@@ -389,6 +389,7 @@ namespace Multilinks.TokenService.Controllers
 
       [HttpGet]
       [AllowAnonymous]
+      [ValidateAntiForgeryToken]
       public async Task<IActionResult> Logout(string logoutId)
       {
          var viewModel = await BuildLoggedOutViewModelAsync(logoutId);
@@ -397,35 +398,8 @@ namespace Multilinks.TokenService.Controllers
          _logger.LogInformation("User logged out.");
 
          return Redirect(viewModel.PostLogoutRedirectUri);
-        }
+      }
       
-      // Not sure if we need this anymore but leaving it in for now
-      //[HttpPost]
-      //[AllowAnonymous]
-      //[ValidateAntiForgeryToken]
-      //public async Task<IActionResult> Logout(LogoutInputModel model)
-      //{
-      //   var vm = await _account.BuildLoggedOutViewModelAsync(model.LogoutId);
-
-      //   await _signInManager.SignOutAsync();
-      //   _logger.LogInformation("User logged out.");
-
-      //   // check if we need to trigger sign-out at an upstream identity provider
-      //   if(vm.TriggerExternalSignout)
-      //   {
-      //      // build a return URL so the upstream provider will redirect back
-      //      // to us after the user has logged out. this allows us to then
-      //      // complete our single sign-out processing.
-      //      string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
-
-      //      // this triggers a redirect to the external provider for sign-out
-      //      // hack: try/catch to handle social providers that throw
-      //      return SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);
-      //   }
-
-      //   return View("LoggedOut", vm);
-      //}
-
       private async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
       {
          // get context information (client name, post logout redirect URI and iframe for federated signout)
@@ -433,36 +407,11 @@ namespace Multilinks.TokenService.Controllers
 
          var vm = new LoggedOutViewModel
          {
-             AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut,
              PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
-             ClientName = logout?.ClientId,
-             SignOutIframeUrl = logout?.SignOutIFrameUrl,
-             LogoutId = logoutId
          };
 
-         if (User?.Identity.IsAuthenticated == true)
-         {
-             var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-             if (idp != null && idp != IdentityServer4.IdentityServerConstants.LocalIdentityProvider)
-             {
-                 var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
-                 if (providerSupportsSignout)
-                 {
-                     if (vm.LogoutId == null)
-                     {
-                         // if there's no current logout context, we need to create one
-                         // this captures necessary info from the current logged in user
-                         // before we signout and redirect away to the external IdP for signout
-                         vm.LogoutId = await _interaction.CreateLogoutContextAsync();
-                     }
-
-                     vm.ExternalAuthenticationScheme = idp;
-                 }
-             }
-         }
-
          return vm;
-     }
+      }
 
       //[HttpPost]
       //[AllowAnonymous]
