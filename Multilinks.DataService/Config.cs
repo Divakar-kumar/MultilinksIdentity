@@ -47,7 +47,7 @@ namespace Multilinks.DataService
 
                PostLogoutRedirectUris =
                {
-                  "https://localhost:44302/"
+                  "https://localhost:44302/signout-oidc"
                },
  
                // scopes that client has access to
