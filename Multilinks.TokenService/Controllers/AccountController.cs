@@ -389,13 +389,20 @@ namespace Multilinks.TokenService.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      [ValidateAntiForgeryToken]
       public async Task<IActionResult> Logout(string logoutId)
       {
          var viewModel = await BuildLoggedOutViewModelAsync(logoutId);
 
-         await _signInManager.SignOutAsync();
+         if (User?.Identity.IsAuthenticated == true)
+         {
+              await _signInManager.SignOutAsync();
+         }
          _logger.LogInformation("User logged out.");
+
+         if (viewModel.PostLogoutRedirectUri == null)
+         {
+             return View("Error");
+         }
 
          return Redirect(viewModel.PostLogoutRedirectUri);
       }
