@@ -16,6 +16,7 @@ using Multilinks.DataService.Entities;
 using Multilinks.DataService;
 using Microsoft.AspNetCore.Identity;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Multilinks.ApiService
 {
@@ -94,7 +95,11 @@ namespace Multilinks.ApiService
          services.Configure<MultilinksInfoViewModel>(_configuration.GetSection("Info"));
          services.Configure<PagingOptions>(_configuration.GetSection("DefaultPagingOptions"));
 
-         services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+         services.AddAuthentication(options =>
+            {
+               options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+               options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddIdentityServerAuthentication(options =>
             {
                options.Authority = _configuration.GetValue<string>("TokenServiceInfo:AuthorityUrl");
