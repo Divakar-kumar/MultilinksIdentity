@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Multilinks.TokenService.Services;
 using System.Reflection;
-using Multilinks.DataService.Entities;
-using Multilinks.DataService;
+using Multilinks.TokenService.Services;
+using Multilinks.TokenService.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using IdentityServer4;
-using Microsoft.IdentityModel.Tokens;
+using IdentityServer4.EntityFramework.DbContexts;
+using System.Linq;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace Multilinks.TokenService
 {
@@ -29,14 +29,14 @@ namespace Multilinks.TokenService
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
-         var connectionString = _configuration.GetConnectionString("MultilinksConnectionString");
+         var connectionString = _configuration.GetConnectionString("TokenServiceDb");
          var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-         services.AddDbContext<ApplicationDbContext>(options =>
+         services.AddDbContext<TokenServiceDbContext>(options =>
              options.UseSqlServer(connectionString));
 
          services.AddIdentity<UserEntity, IdentityRole>()
-             .AddEntityFrameworkStores<ApplicationDbContext>()
+             .AddEntityFrameworkStores<TokenServiceDbContext>()
              .AddDefaultTokenProviders();
 
          // Modify default password validation options.

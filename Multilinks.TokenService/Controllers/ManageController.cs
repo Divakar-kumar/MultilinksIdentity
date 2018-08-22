@@ -1,15 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Multilinks.DataService.Entities;
-using Multilinks.TokenService.Models.ManageViewModels;
+using Multilinks.TokenService.Entities;
 using Multilinks.TokenService.Services;
 
 namespace Multilinks.TokenService.Controllers
