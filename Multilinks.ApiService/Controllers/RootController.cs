@@ -19,8 +19,6 @@ namespace Multilinks.ApiService.Controllers
          var response = new RootResponse
          {
             Self = Link.To(nameof(GetRoot)),
-            Info = Link.To(nameof(InfoController.GetInfo)),
-            Users = Link.To(nameof(UsersController.GetVisibleUsersAsync)),
             Endpoints = Link.To(nameof(EndpointsController.GetEndpointsAsync))
          };
 

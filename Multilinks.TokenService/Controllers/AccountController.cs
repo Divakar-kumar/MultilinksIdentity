@@ -10,13 +10,11 @@ using Multilinks.TokenService.Services;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
-using Multilinks.DataService.Entities;
-using IdentityServer4.Models;
 using IdentityServer4.Events;
 using System.Linq;
 using System.Security.Claims;
 using IdentityModel;
-using IdentityServer4.Extensions;
+using Multilinks.TokenService.Entities;
 
 namespace Multilinks.TokenService.Controllers
 {

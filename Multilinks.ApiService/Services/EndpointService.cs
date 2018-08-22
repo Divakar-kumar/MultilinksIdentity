@@ -6,16 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using System.Linq;
-using Multilinks.DataService.Entities;
-using Multilinks.DataService;
+using Multilinks.ApiService.Entities;
 
 namespace Multilinks.ApiService.Services
 {
    public class EndpointService : IEndpointService
    {
-      private readonly ApplicationDbContext _context;
+      private readonly ApiServiceDbContext _context;
 
-      public EndpointService(ApplicationDbContext context)
+      public EndpointService(ApiServiceDbContext context)
       {
          _context = context;
       }

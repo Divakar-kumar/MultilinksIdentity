@@ -1,5 +1,5 @@
-﻿using Multilinks.ApiService.Models;
-using Multilinks.DataService.Entities;
+﻿using Multilinks.ApiService.Entities;
+using Multilinks.ApiService.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

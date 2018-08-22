@@ -12,9 +12,6 @@ using Multilinks.ApiService.Models;
 using Microsoft.EntityFrameworkCore;
 using Multilinks.ApiService.Services;
 using AutoMapper;
-using Multilinks.DataService.Entities;
-using Multilinks.DataService;
-using Microsoft.AspNetCore.Identity;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -34,12 +31,8 @@ namespace Multilinks.ApiService
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
-         services.AddDbContext<ApplicationDbContext>(options =>
-             options.UseSqlServer(_configuration.GetConnectionString("MultilinksConnectionString")));
-
-         services.AddIdentity<UserEntity, IdentityRole>()
-             .AddEntityFrameworkStores<ApplicationDbContext>()
-             .AddDefaultTokenProviders();
+         services.AddDbContext<ApiServiceDbContext>(options =>
+             options.UseSqlServer(_configuration.GetConnectionString("ApiServiceDb")));
 
          services.AddAutoMapper();
 
@@ -92,7 +85,6 @@ namespace Multilinks.ApiService
             opt.ApiVersionSelector = new CurrentImplementationApiVersionSelector(opt);
          });
 
-         services.Configure<MultilinksInfoViewModel>(_configuration.GetSection("Info"));
          services.Configure<PagingOptions>(_configuration.GetSection("DefaultPagingOptions"));
 
          services.AddAuthentication(options =>
@@ -107,7 +99,6 @@ namespace Multilinks.ApiService
             });
 
          services.AddScoped<IEndpointService, EndpointService>();
-         services.AddScoped<IUserService, UserService>();
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
