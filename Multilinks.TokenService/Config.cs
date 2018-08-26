@@ -31,8 +31,8 @@ namespace Multilinks.TokenService
          {
             new Client
             {
-               ClientId = "SpaClient",
-               ClientName = "SPA Web Client",
+               ClientId = "WebConsole",
+               ClientName = "Multilinks Web Console",
                AllowAccessTokensViaBrowser = true,
                AllowedGrantTypes = GrantTypes.Implicit,
                RequireConsent = false,
