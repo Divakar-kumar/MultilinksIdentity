@@ -48,17 +48,6 @@ namespace Multilinks.ApiService.Controllers
                                                                                        endpoints.TotalSize,
                                                                                        pagingOptions);
 
-         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(nameof(GetEndpointsAsync),
-                                                                                         null,
-                                                                                         Link.GetMethod,
-                                                                                         Form.QueryRelation));
-
-         collection.SubmitForm = FormMetadata.FromModel(new NewEndpointForm(),
-                                                        Link.ToForm(nameof(EndpointsController.CreateEndpointAsync),
-                                                                    null,
-                                                                    Link.PostMethod,
-                                                                    Form.CreateRelation));
-
          if(!Request.GetEtagHandler().NoneMatch(collection))
          {
             return StatusCode(304, collection);
@@ -88,17 +77,6 @@ namespace Multilinks.ApiService.Controllers
                                                                                        endpoints.Items.ToArray(),
                                                                                        endpoints.TotalSize,
                                                                                        pagingOptions);
-
-         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(nameof(GetEndpointsAsync),
-                                                                                         null,
-                                                                                         Link.GetMethod,
-                                                                                         Form.QueryRelation));
-
-         collection.SubmitForm = FormMetadata.FromModel(new NewEndpointForm(),
-                                                        Link.ToForm(nameof(EndpointsController.CreateEndpointAsync),
-                                                                    null,
-                                                                    Link.PostMethod,
-                                                                    Form.CreateRelation));
 
          if(!Request.GetEtagHandler().NoneMatch(collection))
          {
