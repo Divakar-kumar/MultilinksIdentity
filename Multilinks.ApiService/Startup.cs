@@ -99,6 +99,7 @@ namespace Multilinks.ApiService
             });
 
          services.AddScoped<IEndpointService, EndpointService>();
+         services.AddScoped<IUserInfoService, UserInfoService>();
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
