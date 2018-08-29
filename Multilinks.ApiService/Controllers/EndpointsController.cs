@@ -18,11 +18,15 @@ namespace Multilinks.ApiService.Controllers
    public class EndpointsController : Controller
    {
       private readonly IEndpointService _endpointService;
+      private readonly IUserInfoService _userInfoService;
       private readonly PagingOptions _defaultPagingOptions;
 
-      public EndpointsController(IEndpointService endpointService, IOptions<PagingOptions> defaultPagingOptions)
+      public EndpointsController(IEndpointService endpointService,
+         IUserInfoService userInfoService,
+         IOptions<PagingOptions> defaultPagingOptions)
       {
          _endpointService = endpointService;
+         _userInfoService = userInfoService;
          _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
@@ -38,6 +42,11 @@ namespace Multilinks.ApiService.Controllers
       {
          if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
 
+         if(_userInfoService.Role != "Administrator")
+         {
+            return Forbid();
+         }
+
          pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
          pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
@@ -47,17 +56,6 @@ namespace Multilinks.ApiService.Controllers
                                                                                        endpoints.Items.ToArray(),
                                                                                        endpoints.TotalSize,
                                                                                        pagingOptions);
-
-         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(nameof(GetEndpointsAsync),
-                                                                                         null,
-                                                                                         Link.GetMethod,
-                                                                                         Form.QueryRelation));
-
-         collection.SubmitForm = FormMetadata.FromModel(new NewEndpointForm(),
-                                                        Link.ToForm(nameof(EndpointsController.CreateEndpointAsync),
-                                                                    null,
-                                                                    Link.PostMethod,
-                                                                    Form.CreateRelation));
 
          if(!Request.GetEtagHandler().NoneMatch(collection))
          {
@@ -82,23 +80,17 @@ namespace Multilinks.ApiService.Controllers
          pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
          pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
+         if(_userInfoService.Role != "Administrator" && creatorId.ToString() != _userInfoService.UserId)
+         {
+            return Forbid();
+         }
+
          var endpoints = await _endpointService.GetEndpointsByCreatorIdAsync(creatorId, pagingOptions, sortOptions, searchOptions, ct);
 
          var collection = PagedCollection<EndpointViewModel>.Create<EndpointsResponse>(Link.ToCollection(nameof(GetEndpointsByCreatorIdAsync)),
                                                                                        endpoints.Items.ToArray(),
                                                                                        endpoints.TotalSize,
                                                                                        pagingOptions);
-
-         collection.QueryForm = FormMetadata.FromResource<EndpointViewModel>(Link.ToForm(nameof(GetEndpointsAsync),
-                                                                                         null,
-                                                                                         Link.GetMethod,
-                                                                                         Form.QueryRelation));
-
-         collection.SubmitForm = FormMetadata.FromModel(new NewEndpointForm(),
-                                                        Link.ToForm(nameof(EndpointsController.CreateEndpointAsync),
-                                                                    null,
-                                                                    Link.PostMethod,
-                                                                    Form.CreateRelation));
 
          if(!Request.GetEtagHandler().NoneMatch(collection))
          {
