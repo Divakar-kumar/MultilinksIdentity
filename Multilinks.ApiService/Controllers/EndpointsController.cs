@@ -218,12 +218,6 @@ namespace Multilinks.ApiService.Controllers
             return NotFound();
          }
 
-         /* We will only allow name and description to be changed (for now). */
-         if(newEndpoint.CreatorId != existingEndpoint.CreatorId)
-         {
-            return BadRequest(new ApiError("One or more fields cannot be modified"));
-         }
-
          /* Device name should be unique for the same user. */
          var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
          if(endpointExist)
