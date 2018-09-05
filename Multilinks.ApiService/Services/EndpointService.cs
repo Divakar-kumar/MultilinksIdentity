@@ -27,6 +27,36 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointViewModel>(entity);
       }
 
+      public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(Guid creatorId, string name, CancellationToken ct)
+      {
+         var entity = await _context.Endpoints.SingleOrDefaultAsync(
+            r => (r.CreatorId == creatorId && r.Name == name),
+            ct);
+
+         if(entity == null)
+         {
+            var endpointId = Guid.NewGuid();
+
+            var newEndpoint = new EndpointEntity
+            {
+               EndpointId = endpointId,
+               CreatorId = creatorId,
+               Name = name,
+               Description = ""
+            };
+
+            _context.Endpoints.Add(newEndpoint);
+
+            var created = await _context.SaveChangesAsync(ct);
+
+            if(created < 1) throw new InvalidOperationException("Could not create new endpoint.");
+
+            return Mapper.Map<EndpointViewModel>(entity);
+         }
+
+         return Mapper.Map<EndpointViewModel>(entity);
+      }
+
       public async Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(

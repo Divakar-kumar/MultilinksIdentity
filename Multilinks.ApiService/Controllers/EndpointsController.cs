@@ -100,14 +100,40 @@ namespace Multilinks.ApiService.Controllers
          return Ok(collection);
       }
 
-      // GET api/endpoints/{endpointId}
-      [HttpGet("{endpointId}", Name = nameof(GetEndpointByIdAsync))]
+      // GET api/endpoints/id/{endpointId}
+      [HttpGet("id/{endpointId}", Name = nameof(GetEndpointByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       [Etag]
       public async Task<IActionResult> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
          var endpointViewModel = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
-         if(endpointViewModel == null) return NotFound();
+
+         if((endpointViewModel == null) ||
+            (_userInfoService.Role != "Administrator" && endpointViewModel.CreatorId.ToString() != _userInfoService.UserId))
+         {
+            return NotFound();
+         }
+
+         if(!Request.GetEtagHandler().NoneMatch(endpointViewModel))
+         {
+            return StatusCode(304, endpointViewModel);
+         }
+
+         return Ok(endpointViewModel);
+      }
+
+      // GET api/endpoints/own-endpoint/{name}
+      [HttpGet("own-endpoint/{name}", Name = nameof(GetOwnEndpointByNameAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
+      [Etag]
+      public async Task<IActionResult> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
+      {
+         var endpointViewModel = await _endpointService.GetOwnEndpointByNameAsync(new Guid(_userInfoService.UserId), name, ct);
+
+         if(endpointViewModel == null)
+         {
+            return NotFound();
+         }
 
          if(!Request.GetEtagHandler().NoneMatch(endpointViewModel))
          {
@@ -124,14 +150,22 @@ namespace Multilinks.ApiService.Controllers
          [FromBody] NewEndpointForm newEndpoint,
          CancellationToken ct)
       {
-         if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
+         if(!ModelState.IsValid)
+         {
+            return BadRequest(new ApiError(ModelState));
+         }
 
-         /* TODO: Need to ensure creator Id matches authenticated user. */
+         if(newEndpoint.CreatorId.ToString() != _userInfoService.UserId)
+         {
+            return BadRequest(new ApiError("Bad creator Id input"));
+         }
 
          /* Device name should be unique for the same user. */
          var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
          if(endpointExist)
+         {
             return BadRequest(new ApiError("A device with the same name already exists"));
+         }
 
          var endpointId = await _endpointService.CreateEndpointAsync(newEndpoint.CreatorId,
                                                                      newEndpoint.Name,
@@ -145,16 +179,18 @@ namespace Multilinks.ApiService.Controllers
          return Created(newEndpointUrl, null);
       }
 
-      // DELETE api/endpoints/{endpointId}
-      [HttpDelete("{endpointId}", Name = nameof(DeleteEndpointByIdAsync))]
+      // DELETE api/endpoints/id/{endpointId}
+      [HttpDelete("id/{endpointId}", Name = nameof(DeleteEndpointByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
-         /* TODO: Need to ensure authenticated user is allowed to delete. */
-
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
-         if(existingEndpoint == null) return NotFound(new ApiError("Device does not exists"));
+         if((existingEndpoint == null) ||
+            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId.ToString() != _userInfoService.UserId))
+         {
+            return NotFound();
+         }
 
          var endpointDeleted = await _endpointService.DeleteEndpointByIdAsync(endpointId, ct);
 
@@ -164,8 +200,8 @@ namespace Multilinks.ApiService.Controllers
          return NoContent();
       }
 
-      // PUT api/endpoints/{endpointId}
-      [HttpPut("{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
+      // PUT api/endpoints/id/{endpointId}
+      [HttpPut("id/{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> UpdateEndpointByIdAsync(Guid endpointId,
          [FromBody] NewEndpointForm newEndpoint,
@@ -173,22 +209,20 @@ namespace Multilinks.ApiService.Controllers
       {
          if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
 
-         /* TODO: Need to ensure creator Id matches authenticated user. */
-
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
-         if(existingEndpoint == null) return NotFound(new ApiError("Device does not exists"));
-
-         /* We will only allow name and description to be changed (for now). */
-         if(newEndpoint.CreatorId != existingEndpoint.CreatorId)
+         if((existingEndpoint == null) ||
+            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId.ToString() != _userInfoService.UserId))
          {
-            return BadRequest(new ApiError("One or more fields cannot be modified"));
+            return NotFound();
          }
 
          /* Device name should be unique for the same user. */
          var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
          if(endpointExist)
+         {
             return BadRequest(new ApiError("A device with the same name already exists"));
+         }
 
          var replacedEndpoint = await _endpointService.ReplaceEndpointByIdAsync(endpointId,
                                                                                 newEndpoint.CreatorId,
@@ -197,7 +231,9 @@ namespace Multilinks.ApiService.Controllers
                                                                                 ct);
 
          if(replacedEndpoint == null)
+         {
             return BadRequest(new ApiError("Device failed to be updated"));
+         }
 
          return Ok(replacedEndpoint);
       }

@@ -11,9 +11,10 @@ using System;
 namespace Multilinks.ApiService.Services.Migrations
 {
     [DbContext(typeof(ApiServiceDbContext))]
-    partial class ApiServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180830081918_UpdateEndpointEntity")]
+    partial class UpdateEndpointEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
