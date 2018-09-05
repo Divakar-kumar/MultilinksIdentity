@@ -122,16 +122,15 @@ namespace Multilinks.ApiService.Controllers
          return Ok(endpointViewModel);
       }
 
-      // GET api/endpoints/name/{name}
-      [HttpGet("name/{name}", Name = nameof(GetEndpointByNameAsync))]
+      // GET api/endpoints/own-endpoint/{name}
+      [HttpGet("own-endpoint/{name}", Name = nameof(GetOwnEndpointByNameAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       [Etag]
-      public async Task<IActionResult> GetEndpointByNameAsync(string name, CancellationToken ct)
+      public async Task<IActionResult> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
       {
-         var endpointViewModel = await _endpointService.GetEndpointByNameAsync(name, ct);
+         var endpointViewModel = await _endpointService.GetOwnEndpointByNameAsync(new Guid(_userInfoService.UserId), name, ct);
 
-         if((endpointViewModel == null) ||
-            (_userInfoService.Role != "Administrator" && endpointViewModel.CreatorId.ToString() != _userInfoService.UserId))
+         if(endpointViewModel == null)
          {
             return NotFound();
          }
