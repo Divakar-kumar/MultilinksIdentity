@@ -128,7 +128,7 @@ namespace Multilinks.ApiService.Controllers
       [Etag]
       public async Task<IActionResult> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
       {
-         var endpointViewModel = await _endpointService.GetOwnEndpointByNameAsync(new Guid(_userInfoService.UserId), name, ct);
+         var endpointViewModel = await _endpointService.GetOwnEndpointByNameAsync(name, ct);
 
          if(endpointViewModel == null)
          {

@@ -10,7 +10,7 @@ namespace Multilinks.ApiService.Services
    {
       Task<EndpointViewModel> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct);
 
-      Task<EndpointViewModel> GetOwnEndpointByNameAsync(Guid creatorId, string name, CancellationToken ct);
+      Task<EndpointViewModel> GetOwnEndpointByNameAsync(string name, CancellationToken ct);
 
       Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct);
 
