@@ -13,10 +13,13 @@ namespace Multilinks.ApiService.Services
    public class EndpointService : IEndpointService
    {
       private readonly ApiServiceDbContext _context;
+      private readonly IUserInfoService _userInfoService;
 
-      public EndpointService(ApiServiceDbContext context)
+      public EndpointService(ApiServiceDbContext context,
+         IUserInfoService userInfoService)
       {
          _context = context;
+         _userInfoService = userInfoService;
       }
 
       public async Task<EndpointViewModel> GetEndpointByIdAsync(Guid id, CancellationToken ct)
@@ -27,31 +30,29 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointViewModel>(entity);
       }
 
-      public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(Guid creatorId, string name, CancellationToken ct)
+      public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(
-            r => (r.CreatorId == creatorId && r.Name == name),
+            r => (r.CreatorId.ToString() == _userInfoService.UserId && r.Name == name),
             ct);
 
          if(entity == null)
          {
-            var endpointId = Guid.NewGuid();
-
-            var newEndpoint = new EndpointEntity
+            entity = new EndpointEntity
             {
-               EndpointId = endpointId,
-               CreatorId = creatorId,
+               EndpointId = Guid.NewGuid(),
+               CreatorId = new Guid(_userInfoService.UserId),
+               ClientId = _userInfoService.ClientId,
+               ClientType = _userInfoService.ClientType,
                Name = name,
-               Description = ""
+               Description = "No description yet."
             };
 
-            _context.Endpoints.Add(newEndpoint);
+            _context.Endpoints.Add(entity);
 
             var created = await _context.SaveChangesAsync(ct);
 
             if(created < 1) throw new InvalidOperationException("Could not create new endpoint.");
-
-            return Mapper.Map<EndpointViewModel>(entity);
          }
 
          return Mapper.Map<EndpointViewModel>(entity);

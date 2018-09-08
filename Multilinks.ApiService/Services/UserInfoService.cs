@@ -12,6 +12,8 @@ namespace Multilinks.ApiService.Services
       public string FirstName { get; set; }
       public string LastName { get; set; }
       public string Role { get; set; }
+      public string ClientId { get; set; }
+      public string ClientType { get; set; }
 
       public UserInfoService(IHttpContextAccessor httpContextAccessor)
       {
@@ -37,6 +39,12 @@ namespace Multilinks.ApiService.Services
 
          Role = currentContext
            .User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+
+         ClientId = currentContext
+            .User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
+
+         ClientType = currentContext
+           .User.Claims.FirstOrDefault(c => c.Type == "client_Type")?.Value;
       }
    }
 }

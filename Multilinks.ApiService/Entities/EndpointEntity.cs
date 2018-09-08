@@ -16,6 +16,8 @@ namespace Multilinks.ApiService.Entities
 
       public string ClientId { get; set; }
 
+      public string ClientType { get; set; }
+
       public string Name { get; set; }
 
       public string Description { get; set; }

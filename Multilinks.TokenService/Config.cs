@@ -1,6 +1,7 @@
 ﻿using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Multilinks.TokenService
 {
@@ -57,7 +58,14 @@ namespace Multilinks.TokenService
                   IdentityServerConstants.StandardScopes.Profile,
                   "roles",
                   "ApiService"
-               }
+               },
+
+               /* Custom claims to include with access token for this client. */
+               Claims = new List<Claim>
+               {
+                  new Claim("Type", "SPA_CLIENT")
+               },
+               AlwaysSendClientClaims = true
             }
          };
       }
