@@ -8,7 +8,7 @@ namespace Multilinks.ApiService.Services
    {
       private readonly IHttpContextAccessor _httpContextAccessor;
 
-      public string UserId { get; set; }
+      public Guid UserId { get; set; }
       public string FirstName { get; set; }
       public string LastName { get; set; }
       public string Role { get; set; }
@@ -28,8 +28,8 @@ namespace Multilinks.ApiService.Services
             return;
          }
 
-         UserId = currentContext
-             .User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+         UserId = new Guid(currentContext
+             .User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value);
 
          FirstName = currentContext.User
              .Claims.FirstOrDefault(c => c.Type == "given_name")?.Value;
