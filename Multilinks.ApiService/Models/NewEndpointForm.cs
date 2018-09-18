@@ -1,14 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Multilinks.ApiService.Models
 {
    public class NewEndpointForm
    {
-      [Required]
-      [Display(Name = "creatorId", Description = "Creator Id")]
-      public Guid CreatorId { get; set; }
-
       [Required]
       [Display(Name = "name", Description = "Name of endpoint")]
       public string Name { get; set; }
