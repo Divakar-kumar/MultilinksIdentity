@@ -1,8 +1,10 @@
-﻿namespace Multilinks.ApiService.Services
+﻿using System;
+
+namespace Multilinks.ApiService.Services
 {
    public interface IUserInfoService
    {
-      string UserId { get; set; }
+      Guid UserId { get; set; }
       string FirstName { get; set; }
       string LastName { get; set; }
       string Role { get; set; }

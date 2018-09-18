@@ -80,7 +80,7 @@ namespace Multilinks.ApiService.Controllers
          pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
          pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-         if(_userInfoService.Role != "Administrator" && creatorId.ToString() != _userInfoService.UserId)
+         if(_userInfoService.Role != "Administrator" && creatorId != _userInfoService.UserId)
          {
             return Forbid();
          }
@@ -109,7 +109,7 @@ namespace Multilinks.ApiService.Controllers
          var endpointViewModel = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
          if((endpointViewModel == null) ||
-            (_userInfoService.Role != "Administrator" && endpointViewModel.CreatorId.ToString() != _userInfoService.UserId))
+            (_userInfoService.Role != "Administrator" && endpointViewModel.CreatorId != _userInfoService.UserId))
          {
             return NotFound();
          }
@@ -155,19 +155,14 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError(ModelState));
          }
 
-         if(newEndpoint.CreatorId.ToString() != _userInfoService.UserId)
-         {
-            return BadRequest(new ApiError("Bad creator Id input"));
-         }
-
          /* Device name should be unique for the same user. */
-         var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
+         var endpointExist = await _endpointService.CheckEndpointExistsAsync(_userInfoService.UserId, newEndpoint.Name, ct);
          if(endpointExist)
          {
             return BadRequest(new ApiError("A device with the same name already exists"));
          }
 
-         var endpointId = await _endpointService.CreateEndpointAsync(newEndpoint.CreatorId,
+         var endpointId = await _endpointService.CreateEndpointAsync(_userInfoService.UserId,
                                                                      newEndpoint.Name,
                                                                      newEndpoint.Description,
                                                                      ct);
@@ -187,7 +182,7 @@ namespace Multilinks.ApiService.Controllers
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
          if((existingEndpoint == null) ||
-            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId.ToString() != _userInfoService.UserId))
+            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId != _userInfoService.UserId))
          {
             return NotFound();
          }
@@ -212,20 +207,13 @@ namespace Multilinks.ApiService.Controllers
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
          if((existingEndpoint == null) ||
-            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId.ToString() != _userInfoService.UserId))
+            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId != _userInfoService.UserId))
          {
             return NotFound();
          }
 
-         /* Device name should be unique for the same user. */
-         var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
-         if(endpointExist)
-         {
-            return BadRequest(new ApiError("A device with the same name already exists"));
-         }
-
          var replacedEndpoint = await _endpointService.ReplaceEndpointByIdAsync(endpointId,
-                                                                                newEndpoint.CreatorId,
+                                                                                _userInfoService.UserId,
                                                                                 newEndpoint.Name,
                                                                                 newEndpoint.Description,
                                                                                 ct);

@@ -33,7 +33,7 @@ namespace Multilinks.ApiService.Services
       public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(
-            r => (r.CreatorId.ToString() == _userInfoService.UserId && r.Name == name),
+            r => (r.CreatorId == _userInfoService.UserId && r.Name == name),
             ct);
 
          if(entity == null)
@@ -41,7 +41,7 @@ namespace Multilinks.ApiService.Services
             entity = new EndpointEntity
             {
                EndpointId = Guid.NewGuid(),
-               CreatorId = new Guid(_userInfoService.UserId),
+               CreatorId = _userInfoService.UserId,
                ClientId = _userInfoService.ClientId,
                ClientType = _userInfoService.ClientType,
                Name = name,
