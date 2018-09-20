@@ -157,25 +157,21 @@ namespace Multilinks.ApiService.Services
          return true;
       }
 
-      public async Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
-                                                                    Guid creatorId,
-                                                                    string name,
-                                                                    string description,
-                                                                    CancellationToken ct)
+      public async Task<bool> UpdateEndpointByIdAsync(Guid endpointId,
+                                                      string description,
+                                                      CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.EndpointId == endpointId, ct);
 
-         if(entity == null) return null;
+         if(entity == null) return false;
 
-         entity.CreatorId = creatorId;
-         entity.Name = name;
          entity.Description = description;
 
-         var replaced = await _context.SaveChangesAsync();
+         var updated = await _context.SaveChangesAsync();
 
-         if(replaced < 1) return null;
+         if(updated < 1) return false;
 
-         return Mapper.Map<EndpointViewModel>(entity);
+         return true;
       }
    }
 }

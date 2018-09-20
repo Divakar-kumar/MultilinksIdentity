@@ -32,10 +32,8 @@ namespace Multilinks.ApiService.Services
 
       Task<bool> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct);
 
-      Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
-                                                       Guid creatorId,
-                                                       string name,
-                                                       string description,
-                                                       CancellationToken ct);
+      Task<bool> UpdateEndpointByIdAsync(Guid endpointId,
+                                         string description,
+                                         CancellationToken ct);
    }
 }
