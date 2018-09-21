@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Multilinks.ApiService.Entities;
+using Multilinks.ApiService.Helpers;
 using Multilinks.ApiService.Infrastructure;
 using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
@@ -45,7 +48,7 @@ namespace Multilinks.ApiService.Controllers
          pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
          pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-         var endpoints = await _endpointService.GetEndpointsByCreatorIdAsync(new Guid(_userInfoService.UserId),
+         var endpoints = await _endpointService.GetEndpointsByCreatorIdAsync(_userInfoService.UserId,
                                                                              pagingOptions,
                                                                              sortOptions,
                                                                              searchOptions,
@@ -73,7 +76,7 @@ namespace Multilinks.ApiService.Controllers
          var endpointViewModel = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
          if((endpointViewModel == null) ||
-            (_userInfoService.Role != "Administrator" && endpointViewModel.CreatorId.ToString() != _userInfoService.UserId))
+            (_userInfoService.Role != "Administrator" && endpointViewModel.CreatorId != _userInfoService.UserId))
          {
             return NotFound();
          }
@@ -86,11 +89,11 @@ namespace Multilinks.ApiService.Controllers
          return Ok(endpointViewModel);
       }
 
-      // GET api/endpoints/own-endpoint/{name}
-      [HttpGet("own-endpoint/{name}", Name = nameof(GetOwnEndpointByNameAsync))]
+      // GET api/endpoints/name/{name}
+      [HttpGet("name/{name}", Name = nameof(GetEndpointByNameAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       [Etag]
-      public async Task<IActionResult> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
+      public async Task<IActionResult> GetEndpointByNameAsync(string name, CancellationToken ct)
       {
          var endpointViewModel = await _endpointService.GetOwnEndpointByNameAsync(name, ct);
 
@@ -119,19 +122,14 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError(ModelState));
          }
 
-         if(newEndpoint.CreatorId.ToString() != _userInfoService.UserId)
-         {
-            return BadRequest(new ApiError("Bad creator Id input"));
-         }
-
          /* Device name should be unique for the same user. */
-         var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
+         var endpointExist = await _endpointService.CheckEndpointExistsAsync(_userInfoService.UserId, newEndpoint.Name, ct);
          if(endpointExist)
          {
             return BadRequest(new ApiError("A device with the same name already exists"));
          }
 
-         var endpointId = await _endpointService.CreateEndpointAsync(newEndpoint.CreatorId,
+         var endpointId = await _endpointService.CreateEndpointAsync(_userInfoService.UserId,
                                                                      newEndpoint.Name,
                                                                      newEndpoint.Description,
                                                                      ct);
@@ -151,7 +149,7 @@ namespace Multilinks.ApiService.Controllers
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
          if((existingEndpoint == null) ||
-            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId.ToString() != _userInfoService.UserId))
+            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId != _userInfoService.UserId))
          {
             return NotFound();
          }
@@ -164,42 +162,50 @@ namespace Multilinks.ApiService.Controllers
          return NoContent();
       }
 
-      // PUT api/endpoints/id/{endpointId}
-      [HttpPut("id/{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
+      // PATCH api/endpoints/id/{endpointId}
+      [HttpPatch("id/{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> UpdateEndpointByIdAsync(Guid endpointId,
-         [FromBody] NewEndpointForm newEndpoint,
+         [FromBody] JsonPatchDocument<UpdateEndpointForm> jsonPatchDocument,
          CancellationToken ct)
       {
-         if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
+         if(jsonPatchDocument == null)
+         {
+            return BadRequest();
+         }
 
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
          if((existingEndpoint == null) ||
-            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId.ToString() != _userInfoService.UserId))
+            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId != _userInfoService.UserId))
          {
             return NotFound();
          }
 
-         /* Device name should be unique for the same user. */
-         var endpointExist = await _endpointService.CheckEndpointExistsAsync(newEndpoint.CreatorId, newEndpoint.Name, ct);
-         if(endpointExist)
+         var endpointToPatch = Mapper.Map<UpdateEndpointForm>(existingEndpoint);
+
+         jsonPatchDocument.ApplyTo(endpointToPatch, ModelState);
+
+         if(!ModelState.IsValid)
          {
-            return BadRequest(new ApiError("A device with the same name already exists"));
+            return new UnprocessableEntityObjectResult(ModelState);
          }
 
-         var replacedEndpoint = await _endpointService.ReplaceEndpointByIdAsync(endpointId,
-                                                                                newEndpoint.CreatorId,
-                                                                                newEndpoint.Name,
-                                                                                newEndpoint.Description,
-                                                                                ct);
+         if(!TryValidateModel(endpointToPatch))
+         {
+            return new UnprocessableEntityObjectResult(ModelState);
+         }
 
-         if(replacedEndpoint == null)
+         var endpointUpdated = await _endpointService.UpdateEndpointByIdAsync(endpointId,
+                                                                              endpointToPatch.Description,
+                                                                              ct);
+
+         if(!endpointUpdated)
          {
             return BadRequest(new ApiError("Device failed to be updated"));
          }
 
-         return Ok(replacedEndpoint);
+         return NoContent();
       }
    }
 }
