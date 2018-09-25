@@ -35,7 +35,7 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/endpoints/my-endpoints
       [HttpGet("my-endpoints", Name = nameof(GetEndpointsAsync))]
-      [ResponseCache(CacheProfileName = "Collection")]
+      [ResponseCache(CacheProfileName = "EndpointCollection")]
       [Etag]
       public async Task<IActionResult> GetEndpointsAsync(
          [FromQuery] PagingOptions pagingOptions,
@@ -69,7 +69,7 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/endpoints/id/{endpointId}
       [HttpGet("id/{endpointId}", Name = nameof(GetEndpointByIdAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
+      [ResponseCache(CacheProfileName = "EndpointResource")]
       [Etag]
       public async Task<IActionResult> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
@@ -91,7 +91,7 @@ namespace Multilinks.ApiService.Controllers
 
       // GET api/endpoints/name/{name}
       [HttpGet("name/{name}", Name = nameof(GetEndpointByNameAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
+      [ResponseCache(CacheProfileName = "EndpointResource")]
       [Etag]
       public async Task<IActionResult> GetEndpointByNameAsync(string name, CancellationToken ct)
       {
@@ -112,7 +112,7 @@ namespace Multilinks.ApiService.Controllers
 
       // POST api/endpoints
       [HttpPost(Name = nameof(CreateEndpointAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
+      [ResponseCache(CacheProfileName = "EndpointResource")]
       public async Task<IActionResult> CreateEndpointAsync(
          [FromBody] NewEndpointForm newEndpoint,
          CancellationToken ct)
@@ -143,7 +143,7 @@ namespace Multilinks.ApiService.Controllers
 
       // DELETE api/endpoints/id/{endpointId}
       [HttpDelete("id/{endpointId}", Name = nameof(DeleteEndpointByIdAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
+      [ResponseCache(CacheProfileName = "EndpointResource")]
       public async Task<IActionResult> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
@@ -164,7 +164,7 @@ namespace Multilinks.ApiService.Controllers
 
       // PATCH api/endpoints/id/{endpointId}
       [HttpPatch("id/{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
+      [ResponseCache(CacheProfileName = "EndpointResource")]
       public async Task<IActionResult> UpdateEndpointByIdAsync(Guid endpointId,
          [FromBody] JsonPatchDocument<UpdateEndpointForm> jsonPatchDocument,
          CancellationToken ct)
