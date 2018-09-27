@@ -33,7 +33,7 @@ namespace Multilinks.ApiService.Services
       public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(
-            r => (r.CreatorId.ToString() == _userInfoService.UserId && r.Name == name),
+            r => (r.CreatorId == _userInfoService.UserId && r.Name == name),
             ct);
 
          if(entity == null)
@@ -41,7 +41,7 @@ namespace Multilinks.ApiService.Services
             entity = new EndpointEntity
             {
                EndpointId = Guid.NewGuid(),
-               CreatorId = new Guid(_userInfoService.UserId),
+               CreatorId = _userInfoService.UserId,
                ClientId = _userInfoService.ClientId,
                ClientType = _userInfoService.ClientType,
                Name = name,
@@ -157,25 +157,21 @@ namespace Multilinks.ApiService.Services
          return true;
       }
 
-      public async Task<EndpointViewModel> ReplaceEndpointByIdAsync(Guid endpointId,
-                                                                    Guid creatorId,
-                                                                    string name,
-                                                                    string description,
-                                                                    CancellationToken ct)
+      public async Task<bool> UpdateEndpointByIdAsync(Guid endpointId,
+                                                      string description,
+                                                      CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.EndpointId == endpointId, ct);
 
-         if(entity == null) return null;
+         if(entity == null) return false;
 
-         entity.CreatorId = creatorId;
-         entity.Name = name;
          entity.Description = description;
 
-         var replaced = await _context.SaveChangesAsync();
+         var updated = await _context.SaveChangesAsync();
 
-         if(replaced < 1) return null;
+         if(updated < 1) return false;
 
-         return Mapper.Map<EndpointViewModel>(entity);
+         return true;
       }
    }
 }
