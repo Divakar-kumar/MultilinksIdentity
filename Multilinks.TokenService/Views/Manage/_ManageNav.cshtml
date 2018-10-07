@@ -1,5 +1,5 @@
 ﻿@using Multilinks.TokenService.Views.Manage
-@using Multilinks.DataService.Entities;
+@using Multilinks.TokenService.Entities;
 @inject SignInManager<UserEntity> SignInManager
 @{
    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

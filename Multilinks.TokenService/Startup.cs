@@ -118,7 +118,6 @@ namespace Multilinks.TokenService
          if(_env.IsDevelopment())
          {
             app.UseDeveloperExceptionPage();
-            app.UseBrowserLink();
             app.UseDatabaseErrorPage();
          }
          else
