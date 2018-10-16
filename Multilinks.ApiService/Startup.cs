@@ -14,6 +14,7 @@ using Multilinks.ApiService.Services;
 using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 
 namespace Multilinks.ApiService
 {
@@ -98,6 +99,7 @@ namespace Multilinks.ApiService
                options.ApiName = _configuration.GetValue<string>("TokenServiceInfo:ApiName");
             });
 
+         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
          services.AddScoped<IEndpointService, EndpointService>();
          services.AddScoped<IUserInfoService, UserInfoService>();
       }
