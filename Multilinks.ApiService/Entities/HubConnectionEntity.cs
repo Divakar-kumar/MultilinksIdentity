@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Multilinks.ApiService.Entities
 {
-    public class HubConnectionsEntity
+    public class HubConnectionEntity
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
+        public long Id { get; set; }
         public string ConnectionID { get; set; }
         public Guid EndpointId { get; set; }
-        public bool Connected { get; set; }
     }
 }

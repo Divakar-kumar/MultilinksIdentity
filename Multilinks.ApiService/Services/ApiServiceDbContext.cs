@@ -13,7 +13,7 @@ namespace Multilinks.ApiService.Services
       {
       }
 
-      public DbSet<HubConnectionsEntity> HubConnections { get; set; }
+      public DbSet<HubConnectionEntity> HubConnections { get; set; }
       public DbSet<EndpointEntity> Endpoints { get; set; }
 
       protected override void OnModelCreating(ModelBuilder builder)
