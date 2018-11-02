@@ -15,6 +15,7 @@ using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Multilinks.ApiService.Hubs;
 
 namespace Multilinks.ApiService
 {
@@ -102,7 +103,9 @@ namespace Multilinks.ApiService
          services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
          services.AddScoped<IEndpointService, EndpointService>();
          services.AddScoped<IUserInfoService, UserInfoService>();
-      }
+
+         services.AddSignalR();
+        }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
       public void Configure(IApplicationBuilder app)
@@ -124,6 +127,11 @@ namespace Multilinks.ApiService
          app.UseAuthentication();
 
          app.UseMvc();
-      }
+
+         app.UseSignalR(routes =>
+         {
+             routes.MapHub<MainHub>("/hub/mainHub");
+         });
+        }
    }
 }

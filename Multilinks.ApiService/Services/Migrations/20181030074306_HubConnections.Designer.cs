@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Multilinks.ApiService.Services;
 
 namespace Multilinks.ApiService.Services.Migrations
 {
     [DbContext(typeof(ApiServiceDbContext))]
-    partial class ApiServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181030074306_HubConnections")]
+    partial class HubConnections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,23 +41,19 @@ namespace Multilinks.ApiService.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EndpointId")
-                        .IsUnique();
-
                     b.ToTable("Endpoints");
                 });
 
-            modelBuilder.Entity("Multilinks.ApiService.Entities.HubConnectionEntity", b =>
+            modelBuilder.Entity("Multilinks.ApiService.Entities.HubConnectionsEntity", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("ConnectionID")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ConnectionID");
+                    b.Property<bool>("Connected");
 
                     b.Property<Guid>("EndpointId");
 
-                    b.HasKey("Id");
+                    b.HasKey("ConnectionID");
 
                     b.ToTable("HubConnections");
                 });
