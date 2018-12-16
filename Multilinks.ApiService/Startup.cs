@@ -130,7 +130,7 @@ namespace Multilinks.ApiService
 
          app.UseSignalR(routes =>
          {
-             routes.MapHub<MainHub>("/hub/mainHub");
+             routes.MapHub<MainHub>("/hub/main");
          });
         }
    }
