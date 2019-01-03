@@ -9,9 +9,6 @@ using System.Reflection;
 using Multilinks.TokenService.Services;
 using Multilinks.TokenService.Entities;
 using Microsoft.AspNetCore.Mvc;
-using IdentityServer4.EntityFramework.DbContexts;
-using System.Linq;
-using IdentityServer4.EntityFramework.Mappers;
 
 namespace Multilinks.TokenService
 {
@@ -53,19 +50,21 @@ namespace Multilinks.TokenService
          // Add application services.
          services.AddTransient<IEmailSender, EmailSender>();
 
-         services.AddMvc(opt =>
-         {
-            if(_env.IsDevelopment())
+         services.AddMvc()
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            .AddMvcOptions(opt =>
             {
-               var launchJsonConfig = new ConfigurationBuilder()
-                     .SetBasePath(_env.ContentRootPath)
-                     .AddJsonFile("Properties\\launchSettings.json", optional: true)
-                     .Build();
-               opt.SslPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
+               if(_env.IsDevelopment())
+               {
+                  var launchJsonConfig = new ConfigurationBuilder()
+                        .SetBasePath(_env.ContentRootPath)
+                        .AddJsonFile("Properties\\launchSettings.json", optional: true)
+                        .Build();
+                  opt.SslPort = launchJsonConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
 
-            }
-            opt.Filters.Add(new RequireHttpsAttribute());
-         });
+               }
+               opt.Filters.Add(new RequireHttpsAttribute());
+            });
 
          var identityServerbuilder = services.AddIdentityServer(options =>
             {
@@ -102,14 +101,17 @@ namespace Multilinks.TokenService
          }
 
          /* TODO: CORS policy will need to be updated before deployment. */
-         services.AddCors(options => options.AddPolicy("CorsAny", builder =>
+         services.AddCors(options =>
          {
-            builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowCredentials()
-            .AllowAnyHeader();
-         }));
+            options.AddPolicy("CorsMyOrigins", builder =>
+            {
+               builder.WithOrigins(_configuration.GetValue<string>("CorsOrigins:WebApi"),
+                            _configuration.GetValue<string>("CorsOrigins:WebConsole"))
+               .AllowAnyMethod()
+               .AllowCredentials()
+               .AllowAnyHeader();
+            });
+         });
       }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -125,7 +127,7 @@ namespace Multilinks.TokenService
             app.UseExceptionHandler("/Home/Error");
          }
 
-         app.UseCors("CorsAny");
+         app.UseCors("CorsMyOrigins");
 
          app.UseStaticFiles();
 

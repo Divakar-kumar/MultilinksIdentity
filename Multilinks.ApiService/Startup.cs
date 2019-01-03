@@ -39,6 +39,7 @@ namespace Multilinks.ApiService
          services.AddAutoMapper();
 
          services.AddMvcCore()
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
             .AddAuthorization()
             .AddJsonFormatters()
             .AddDataAnnotations()
@@ -65,16 +66,6 @@ namespace Multilinks.ApiService
                opt.CacheProfiles.Add("EndpointCollection", new CacheProfile { Duration = 5 });
                opt.CacheProfiles.Add("EndpointResource", new CacheProfile { Duration = 10 });
             });
-
-         /* TODO: CORS policy will need to be updated before deployment. */
-         services.AddCors(options => options.AddPolicy("CorsAny", builder =>
-         {
-            builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowCredentials()
-            .AllowAnyHeader();
-         }));
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
 
@@ -105,7 +96,20 @@ namespace Multilinks.ApiService
          services.AddScoped<IUserInfoService, UserInfoService>();
 
          services.AddSignalR();
-        }
+
+         /* TODO: CORS policy will need to be updated before deployment. */
+         services.AddCors(options =>
+         {
+            options.AddPolicy("CorsMyOrigins", builder =>
+            {
+               builder.WithOrigins(_configuration.GetValue<string>("CorsOrigins:WebApi"),
+                            _configuration.GetValue<string>("CorsOrigins:WebConsole"))
+               .AllowAnyMethod()
+               .AllowCredentials()
+               .AllowAnyHeader();
+            });
+         });
+      }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
       public void Configure(IApplicationBuilder app)
@@ -122,7 +126,7 @@ namespace Multilinks.ApiService
             opt.Preload();
          });
 
-         app.UseCors("CorsAny");
+         app.UseCors("CorsMyOrigins");
 
          app.UseAuthentication();
 
@@ -130,8 +134,8 @@ namespace Multilinks.ApiService
 
          app.UseSignalR(routes =>
          {
-             routes.MapHub<MainHub>("/hub/main");
+            routes.MapHub<MainHub>("/hub/main");
          });
-        }
+      }
    }
 }
