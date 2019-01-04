@@ -87,7 +87,7 @@ namespace Multilinks.TokenService
 
                /* TODO: This is optional, it enables automatic token cleanup.*/
                options.EnableTokenCleanup = true;
-               options.TokenCleanupInterval = 30;
+               options.TokenCleanupInterval = 1800;
             })
             .AddAspNetIdentity<UserEntity>();
 
