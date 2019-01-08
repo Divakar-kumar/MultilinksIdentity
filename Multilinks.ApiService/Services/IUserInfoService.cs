@@ -4,13 +4,16 @@ namespace Multilinks.ApiService.Services
 {
    public interface IUserInfoService
    {
-      Guid UserId { get; set; }
-      string FirstName { get; set; }
-      string LastName { get; set; }
-      string Role { get; set; }
+      Guid UserId { get; }
+      string FirstName { get; }
+      string LastName { get; }
+      string Role { get; }
 
       /* The following are client details on behalf of the user */
-      string ClientId { get; set; }
-      string ClientType { get; set; }
+      string ClientId { get; }
+      string ClientType { get; }
+
+      /* The following are authorization details on behalf of the user */
+      string Token { get; }
    }
 }
