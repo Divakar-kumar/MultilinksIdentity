@@ -88,8 +88,8 @@ namespace Multilinks.ApiService.Controllers
          return Ok(endpointViewModel);
       }
 
-      // GET api/endpoints/name/{name}
-      [HttpGet("name/{name}", Name = nameof(GetEndpointByNameAsync))]
+      // GET api/endpoints/login/{name}
+      [HttpGet("login/{name}", Name = nameof(GetEndpointByNameAsync))]
       [ResponseCache(CacheProfileName = "EndpointResource")]
       [Etag]
       public async Task<IActionResult> GetEndpointByNameAsync(string name, CancellationToken ct)
