@@ -92,8 +92,9 @@ namespace Multilinks.ApiService
             });
 
          services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-         services.AddScoped<IEndpointService, EndpointService>();
          services.AddScoped<IUserInfoService, UserInfoService>();
+         services.AddScoped<IHubConnectionService, HubConnectionService>();
+         services.AddScoped<IEndpointService, EndpointService>();
 
          services.AddSignalR();
 

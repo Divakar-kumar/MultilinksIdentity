@@ -101,6 +101,8 @@ namespace Multilinks.ApiService.Controllers
             return NotFound();
          }
 
+         // Need to add record HubConnection record.
+
          if(!Request.GetEtagHandler().NoneMatch(endpointViewModel))
          {
             return StatusCode(304, endpointViewModel);
