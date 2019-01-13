@@ -48,7 +48,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<bool> DeleteHubConnectionReferenceAsync(string connectionId, CancellationToken ct)
       {
-         var entity = await _context.HubConnections.SingleOrDefaultAsync(r => r.ConnectionID == connectionId, ct);
+         var entity = await _context.HubConnections.SingleOrDefaultAsync(r => r.ConnectionId == connectionId, ct);
 
          if(entity != null)
          {
@@ -66,7 +66,7 @@ namespace Multilinks.ApiService.Services
 
          if(entity == null) return false;
 
-         entity.ConnectionID = connectionId;
+         entity.ConnectionId = connectionId;
          var updated = await _context.SaveChangesAsync();
          if(updated < 1) return false;
 
