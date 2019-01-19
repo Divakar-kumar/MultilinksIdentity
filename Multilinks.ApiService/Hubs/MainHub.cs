@@ -12,6 +12,7 @@ namespace Multilinks.ApiService.Hubs
       public override async Task OnConnectedAsync()
       {
          Context.Items["Role"] = Context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+         Context.Items["EndpointId"] = Context.GetHttpContext().Request.Query["ep"];
          await base.OnConnectedAsync();
       }
    }
