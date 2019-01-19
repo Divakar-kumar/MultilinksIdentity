@@ -21,6 +21,11 @@ namespace Multilinks.ApiService.Services
          builder.Entity<EndpointEntity>()
                .HasIndex(u => u.EndpointId)
                .IsUnique();
+
+         builder.Entity<HubConnectionEntity>()
+               .HasIndex(u => u.EndpointId)
+               .IsUnique();
+
          base.OnModelCreating(builder);
       }
    }

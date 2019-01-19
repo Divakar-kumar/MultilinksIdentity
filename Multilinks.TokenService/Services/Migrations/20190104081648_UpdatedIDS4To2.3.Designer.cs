@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Multilinks.TokenService.Services;
 
 namespace Multilinks.TokenService.Services.Migrations
 {
     [DbContext(typeof(TokenServiceDbContext))]
-    partial class TokenServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190104081648_UpdatedIDS4To2.3")]
+    partial class UpdatedIDS4To23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

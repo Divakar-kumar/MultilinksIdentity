@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Multilinks.ApiService.Services;
 
 namespace Multilinks.ApiService.Services.Migrations
 {
     [DbContext(typeof(ApiServiceDbContext))]
-    partial class ApiServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190112091957_UpdateHubConnectionSchema")]
+    partial class UpdateHubConnectionSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,9 +53,13 @@ namespace Multilinks.ApiService.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ConnectionId");
+                    b.Property<string>("AccessLevel");
+
+                    b.Property<string>("ConnectionID");
 
                     b.Property<Guid>("EndpointId");
+
+                    b.Property<string>("Token");
 
                     b.HasKey("Id");
 

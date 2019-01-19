@@ -12,10 +12,11 @@ using Multilinks.ApiService.Models;
 using Microsoft.EntityFrameworkCore;
 using Multilinks.ApiService.Services;
 using AutoMapper;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Multilinks.ApiService.Hubs;
+using System.Threading.Tasks;
+using Multilinks.ApiService.Infrastructure.Security;
 
 namespace Multilinks.ApiService
 {
@@ -39,6 +40,7 @@ namespace Multilinks.ApiService
          services.AddAutoMapper();
 
          services.AddMvcCore()
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
             .AddAuthorization()
             .AddJsonFormatters()
             .AddDataAnnotations()
@@ -66,16 +68,6 @@ namespace Multilinks.ApiService
                opt.CacheProfiles.Add("EndpointResource", new CacheProfile { Duration = 10 });
             });
 
-         /* TODO: CORS policy will need to be updated before deployment. */
-         services.AddCors(options => options.AddPolicy("CorsAny", builder =>
-         {
-            builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowCredentials()
-            .AllowAnyHeader();
-         }));
-
          services.AddRouting(opt => opt.LowercaseUrls = true);
 
          services.AddApiVersioning(opt =>
@@ -91,21 +83,36 @@ namespace Multilinks.ApiService
 
          services.AddAuthentication(options =>
             {
-               options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+               options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddIdentityServerAuthentication(options =>
+            .AddIdentityServerAuthentication(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                options.Authority = _configuration.GetValue<string>("TokenServiceInfo:AuthorityUrl");
                options.ApiName = _configuration.GetValue<string>("TokenServiceInfo:ApiName");
+               options.TokenRetriever = CustomTokenRetriever.FromHeaderAndQueryString;
             });
 
          services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-         services.AddScoped<IEndpointService, EndpointService>();
          services.AddScoped<IUserInfoService, UserInfoService>();
+         services.AddScoped<IHubConnectionService, HubConnectionService>();
+         services.AddScoped<IEndpointService, EndpointService>();
 
          services.AddSignalR();
-        }
+
+         /* TODO: CORS policy will need to be updated before deployment. */
+         services.AddCors(options =>
+         {
+            options.AddPolicy("CorsMyOrigins", builder =>
+            {
+               builder.WithOrigins(_configuration.GetValue<string>("CorsOrigins:WebApi"),
+                            _configuration.GetValue<string>("CorsOrigins:WebConsole"))
+               .AllowAnyMethod()
+               .AllowCredentials()
+               .AllowAnyHeader();
+            });
+         });
+      }
 
       // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
       public void Configure(IApplicationBuilder app)
@@ -122,7 +129,7 @@ namespace Multilinks.ApiService
             opt.Preload();
          });
 
-         app.UseCors("CorsAny");
+         app.UseCors("CorsMyOrigins");
 
          app.UseAuthentication();
 
@@ -130,8 +137,8 @@ namespace Multilinks.ApiService
 
          app.UseSignalR(routes =>
          {
-             routes.MapHub<MainHub>("/hub/main");
+            routes.MapHub<MainHub>("/hub/main");
          });
-        }
+      }
    }
 }

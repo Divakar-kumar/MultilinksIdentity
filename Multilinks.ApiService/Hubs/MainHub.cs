@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Linq;
 using System.Threading.Tasks;
-
 
 namespace Multilinks.ApiService.Hubs
 {
-    [Authorize]
-    public class MainHub : Hub
-    {
-        /* Dummy example method */
-        public async Task SendMessage(string user, string message)
-        {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
-        }
-    }
+   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   public class MainHub : Hub
+   {
+      public override async Task OnConnectedAsync()
+      {
+         Context.Items["Role"] = Context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+         await base.OnConnectedAsync();
+      }
+   }
 }

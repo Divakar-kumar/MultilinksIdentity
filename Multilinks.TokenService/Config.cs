@@ -37,7 +37,7 @@ namespace Multilinks.TokenService
                AllowAccessTokensViaBrowser = true,
                AllowedGrantTypes = GrantTypes.Implicit,
                RequireConsent = false,
-               AccessTokenLifetime = 180,
+               AccessTokenLifetime = 1800,
                AllowedCorsOrigins = { "https://localhost:44302" },
 
                RedirectUris =
