@@ -11,7 +11,5 @@ namespace Multilinks.ApiService.Entities
       public long Id { get; set; }
       public string ConnectionId { get; set; }
       public Guid EndpointId { get; set; }
-      public string AccessLevel { get; set; }
-      public string Token { get; set; }
    }
 }

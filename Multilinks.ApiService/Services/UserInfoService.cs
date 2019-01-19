@@ -16,7 +16,6 @@ namespace Multilinks.ApiService.Services
       public string Role { get; }
       public string ClientId { get; }
       public string ClientType { get; }
-      public string Token { get; }
 
       public UserInfoService(IHttpContextAccessor httpContextAccessor)
       {
@@ -48,12 +47,6 @@ namespace Multilinks.ApiService.Services
 
          ClientType = currentContext
            .User.Claims.FirstOrDefault(c => c.Type == "client_Type")?.Value;
-
-         /* We are going to extract the access token so we can use it to authenticate
-          * our websocket connection. The token itself will be very short-lived, maybe
-          * only need to be long enough to authenticate the websocket connection.
-          * (e.g if we deicde to do everything via websocket instead of HTTP WEB API). */
-         Token = AuthenticationHeaderValue.Parse(currentContext.Request.Headers[HeaderNames.Authorization]).Parameter;
       }
    }
 }

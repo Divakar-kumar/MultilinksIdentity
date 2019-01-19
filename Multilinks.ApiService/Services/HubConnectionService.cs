@@ -27,21 +27,14 @@ namespace Multilinks.ApiService.Services
          {
             entity = new HubConnectionEntity
             {
-               EndpointId = endpointId,
-               AccessLevel = _userInfoService.Role,
-               Token = _userInfoService.Token
+               EndpointId = endpointId
             };
 
             _context.HubConnections.Add(entity);
-         }
-         else
-         {
-            entity.AccessLevel = _userInfoService.Role;
-            entity.Token = _userInfoService.Token;
-         }
 
-         var created = await _context.SaveChangesAsync(ct);
-         if(created < 1) return false;
+            var created = await _context.SaveChangesAsync(ct);
+            if(created < 1) return false;
+         }
 
          return true;
       }
