@@ -12,10 +12,11 @@ using Multilinks.ApiService.Models;
 using Microsoft.EntityFrameworkCore;
 using Multilinks.ApiService.Services;
 using AutoMapper;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Multilinks.ApiService.Hubs;
+using System.Threading.Tasks;
+using Multilinks.ApiService.Infrastructure.Security;
 
 namespace Multilinks.ApiService
 {
@@ -82,13 +83,14 @@ namespace Multilinks.ApiService
 
          services.AddAuthentication(options =>
             {
-               options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+               options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddIdentityServerAuthentication(options =>
+            .AddIdentityServerAuthentication(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                options.Authority = _configuration.GetValue<string>("TokenServiceInfo:AuthorityUrl");
                options.ApiName = _configuration.GetValue<string>("TokenServiceInfo:ApiName");
+               options.TokenRetriever = CustomTokenRetriever.FromHeaderAndQueryString;
             });
 
          services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
