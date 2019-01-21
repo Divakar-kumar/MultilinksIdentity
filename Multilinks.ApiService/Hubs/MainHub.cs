@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Multilinks.ApiService.Services;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Multilinks.ApiService.Hubs
@@ -20,20 +21,34 @@ namespace Multilinks.ApiService.Hubs
 
       public override async Task OnConnectedAsync()
       {
-         Context.Items["Role"] = Context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-         Context.Items["EndpointId"] = Context.GetHttpContext().Request.Query["ep"];
+         var endpointId = Context.GetHttpContext().Request.Query["ep"];
 
-         var connectionReferenceUpdated = await _hubConnectionService.UpdateHubConnectionReferenceAsync(
-            Guid.Parse(Context.Items["EndpointId"].ToString()),
+         if(string.IsNullOrEmpty(endpointId))
+         {
+            Context.Abort();
+         }
+
+         var connectionReferenceCreated = await _hubConnectionService.CreateHubConnectionReferenceAsync(
+            Guid.Parse(endpointId),
             Context.ConnectionId,
             Context.ConnectionAborted);
 
-         if(!connectionReferenceUpdated)
+         if(!connectionReferenceCreated)
          {
             Context.Abort();
          }
 
          await base.OnConnectedAsync();
+      }
+
+      public override async Task OnDisconnectedAsync(Exception exception)
+      {
+
+         var connectionReferenceDeleted = await _hubConnectionService.DeleteHubConnectionReferenceAsync(
+            Context.ConnectionId,
+            CancellationToken.None);
+
+         await base.OnDisconnectedAsync(exception);
       }
    }
 }

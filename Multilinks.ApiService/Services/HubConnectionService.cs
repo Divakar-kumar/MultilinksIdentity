@@ -17,7 +17,7 @@ namespace Multilinks.ApiService.Services
          _userInfoService = userInfoService;
       }
 
-      public async Task<bool> CreateHubConnectionReferenceAsync(Guid endpointId, CancellationToken ct)
+      public async Task<bool> CreateHubConnectionReferenceAsync(Guid endpointId, string connectionId, CancellationToken ct)
       {
          var entity = await _context.HubConnections.SingleOrDefaultAsync(
             r => (r.EndpointId == endpointId),
@@ -27,14 +27,19 @@ namespace Multilinks.ApiService.Services
          {
             entity = new HubConnectionEntity
             {
-               EndpointId = endpointId
+               EndpointId = endpointId,
+               ConnectionId = connectionId
             };
 
             _context.HubConnections.Add(entity);
-
-            var created = await _context.SaveChangesAsync(ct);
-            if(created < 1) return false;
          }
+         else
+         {
+            entity.ConnectionId = connectionId;
+         }
+
+         var created = await _context.SaveChangesAsync(ct);
+         if(created < 1) return false;
 
          return true;
       }
@@ -49,19 +54,6 @@ namespace Multilinks.ApiService.Services
             var deleted = await _context.SaveChangesAsync(ct);
             if(deleted < 1) return false;
          }
-
-         return true;
-      }
-
-      public async Task<bool> UpdateHubConnectionReferenceAsync(Guid endpointId, string connectionId, CancellationToken ct)
-      {
-         var entity = await _context.HubConnections.SingleOrDefaultAsync(r => r.EndpointId == endpointId, ct);
-
-         if(entity == null) return false;
-
-         entity.ConnectionId = connectionId;
-         var updated = await _context.SaveChangesAsync();
-         if(updated < 1) return false;
 
          return true;
       }

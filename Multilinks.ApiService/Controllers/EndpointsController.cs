@@ -21,17 +21,14 @@ namespace Multilinks.ApiService.Controllers
    {
       private readonly IEndpointService _endpointService;
       private readonly IUserInfoService _userInfoService;
-      private readonly IHubConnectionService _hubConnectionService;
       private readonly PagingOptions _defaultPagingOptions;
 
       public EndpointsController(IEndpointService endpointService,
          IUserInfoService userInfoService,
-         IHubConnectionService hubConnectionService,
          IOptions<PagingOptions> defaultPagingOptions)
       {
          _endpointService = endpointService;
          _userInfoService = userInfoService;
-         _hubConnectionService = hubConnectionService;
          _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
@@ -102,13 +99,6 @@ namespace Multilinks.ApiService.Controllers
          if(endpointViewModel == null)
          {
             return NotFound();
-         }
-
-         var addHubConnectionReference = await _hubConnectionService.CreateHubConnectionReferenceAsync(endpointViewModel.EndpointId, ct);
-
-         if(!addHubConnectionReference)
-         {
-            return StatusCode(500, endpointViewModel);
          }
 
          if(!Request.GetEtagHandler().NoneMatch(endpointViewModel))
