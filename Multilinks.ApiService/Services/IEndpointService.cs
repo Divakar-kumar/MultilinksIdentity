@@ -35,5 +35,7 @@ namespace Multilinks.ApiService.Services
       Task<bool> UpdateEndpointByIdAsync(Guid endpointId,
                                          string description,
                                          CancellationToken ct);
+
+      Task<bool> CheckEndpointIsCreatedByUser(Guid endpointId, Guid creatorId, CancellationToken ct);
    }
 }
