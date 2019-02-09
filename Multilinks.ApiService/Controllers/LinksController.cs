@@ -39,12 +39,21 @@ namespace Multilinks.ApiService.Controllers
          var sourceId = Guid.Parse(newLink.Source);
          var destinationId = Guid.Parse(newLink.Destination);
 
-         /* Check user is source endpoint owner. */
-         var isOwner = await _endpointService.CheckEndpointIsCreatedByUser(sourceId, _userInfoService.UserId, ct);
+         if(sourceId == destinationId)
+         {
+            return BadRequest(new ApiError("A device cannot create a link to itself."));
+         }
 
+         var isOwner = await _endpointService.CheckEndpointIsCreatedByUserAsync(sourceId, _userInfoService.UserId, ct);
          if(!isOwner)
          {
             return BadRequest(new ApiError("Cannot create a link from a device you do not own."));
+         }
+
+         var destinationExists = await _endpointService.CheckEndpointExistsAsync(destinationId, ct);
+         if(!destinationExists)
+         {
+            return BadRequest(new ApiError("Cannot create a link to a device that do not exist."));
          }
 
          // Do more validation and actions according to sequence diagram

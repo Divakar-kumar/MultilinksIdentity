@@ -32,7 +32,7 @@ namespace Multilinks.ApiService.Hubs
             Context.Abort();
          }
 
-         var isCreator = await _endpointService.CheckEndpointIsCreatedByUser(Guid.Parse(endpointId),
+         var isCreator = await _endpointService.CheckEndpointIsCreatedByUserAsync(Guid.Parse(endpointId),
             Guid.Parse(creatorId),
             Context.ConnectionAborted);
 

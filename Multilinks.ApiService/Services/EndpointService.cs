@@ -174,9 +174,18 @@ namespace Multilinks.ApiService.Services
          return true;
       }
 
-      public async Task<bool> CheckEndpointIsCreatedByUser(Guid endpointId, Guid creatorId, CancellationToken ct)
+      public async Task<bool> CheckEndpointIsCreatedByUserAsync(Guid endpointId, Guid creatorId, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(r => (r.EndpointId == endpointId && r.CreatorId == creatorId), ct);
+
+         if(entity == null) return false;
+
+         return true;
+      }
+
+      public async Task<bool> CheckEndpointExistsAsync(Guid endpointId, CancellationToken ct)
+      {
+         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => (r.EndpointId == endpointId), ct);
 
          if(entity == null) return false;
 
