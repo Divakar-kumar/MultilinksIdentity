@@ -15,11 +15,15 @@ namespace Multilinks.ApiService.Controllers
    {
       private readonly IUserInfoService _userInfoService;
       private readonly ILinkService _linkService;
+      private readonly IEndpointService _endpointService;
 
-      public LinksController(IUserInfoService userInfoService, ILinkService linkService)
+      public LinksController(IUserInfoService userInfoService,
+         ILinkService linkService,
+         IEndpointService endpointService)
       {
          _userInfoService = userInfoService;
          _linkService = linkService;
+         _endpointService = endpointService;
       }
 
       [HttpPost(Name = nameof(CreateLinkAsync))]
@@ -36,7 +40,7 @@ namespace Multilinks.ApiService.Controllers
          var destinationId = Guid.Parse(newLink.Destination);
 
          /* Check user is source endpoint owner. */
-         var isOwner = await _linkService.CheckEndpointOwnedByUserAsync(_userInfoService.UserId, sourceId, ct);
+         var isOwner = await _endpointService.CheckEndpointIsCreatedByUser(sourceId, _userInfoService.UserId, ct);
 
          if(!isOwner)
          {

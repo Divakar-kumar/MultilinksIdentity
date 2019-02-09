@@ -122,7 +122,7 @@ namespace Multilinks.ApiService.Controllers
          }
 
          /* Device name should be unique for the same user. */
-         var endpointExist = await _endpointService.CheckEndpointExistsAsync(_userInfoService.UserId, newEndpoint.Name, ct);
+         var endpointExist = await _endpointService.CheckEndpointByNameOwnedByUserExistsAsync(_userInfoService.UserId, newEndpoint.Name, ct);
          if(endpointExist)
          {
             return BadRequest(new ApiError("A device with the same name already exists"));

@@ -58,10 +58,10 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointViewModel>(entity);
       }
 
-      public async Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct)
+      public async Task<bool> CheckEndpointByNameOwnedByUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(
-            r => (r.CreatorId == creatorId && r.Name == name),
+            r => (r.CreatorId == creatorId && r.Name == endpointName),
             ct);
          if(entity == null) return false;
 

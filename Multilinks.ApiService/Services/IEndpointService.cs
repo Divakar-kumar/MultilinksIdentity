@@ -12,7 +12,7 @@ namespace Multilinks.ApiService.Services
 
       Task<EndpointViewModel> GetOwnEndpointByNameAsync(string name, CancellationToken ct);
 
-      Task<bool> CheckEndpointExistsAsync(Guid creatorId, string name, CancellationToken ct);
+      Task<bool> CheckEndpointByNameOwnedByUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct);
 
       Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(PagingOptions pagingOptions,
                                                               SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
@@ -37,5 +37,7 @@ namespace Multilinks.ApiService.Services
                                          CancellationToken ct);
 
       Task<bool> CheckEndpointIsCreatedByUser(Guid endpointId, Guid creatorId, CancellationToken ct);
+
+
    }
 }

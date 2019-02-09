@@ -13,16 +13,5 @@ namespace Multilinks.ApiService.Services
       {
          _context = context;
       }
-
-      public async Task<bool> CheckEndpointOwnedByUserAsync(Guid creatorId, Guid endpointId, CancellationToken ct)
-      {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(
-            r => (r.CreatorId == creatorId && r.EndpointId == endpointId),
-            ct);
-
-         if(entity == null) return false;
-
-         return true;
-      }
    }
 }
