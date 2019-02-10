@@ -2,7 +2,7 @@
 
 namespace Multilinks.ApiService.Models
 {
-   public class NewLinkForm
+   public class NewEndpointLinkForm
    {
       [Required]
       [Display(Name = "source", Description = "Endpoint id of request originator")]

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Multilinks.ApiService.Services
 {
-   public interface ILinkService
+   public interface IEndpointLinkService
    {
    }
 }

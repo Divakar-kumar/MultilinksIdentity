@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Multilinks.ApiService.Services
 {
-   public class LinkService : ILinkService
+   public class EndpointLinkService : IEndpointLinkService
    {
       private readonly ApiServiceDbContext _context;
 
-      public LinkService(ApiServiceDbContext context)
+      public EndpointLinkService(ApiServiceDbContext context)
       {
          _context = context;
       }

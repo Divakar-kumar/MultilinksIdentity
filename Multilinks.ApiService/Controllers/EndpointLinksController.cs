@@ -11,14 +11,14 @@ namespace Multilinks.ApiService.Controllers
    [Route("api/[controller]")]
    [ApiVersion("1.0")]
    [Authorize]
-   public class LinksController : Controller
+   public class EndpointLinksController : Controller
    {
       private readonly IUserInfoService _userInfoService;
-      private readonly ILinkService _linkService;
+      private readonly IEndpointLinkService _linkService;
       private readonly IEndpointService _endpointService;
 
-      public LinksController(IUserInfoService userInfoService,
-         ILinkService linkService,
+      public EndpointLinksController(IUserInfoService userInfoService,
+         IEndpointLinkService linkService,
          IEndpointService endpointService)
       {
          _userInfoService = userInfoService;
@@ -28,7 +28,7 @@ namespace Multilinks.ApiService.Controllers
 
       [HttpPost(Name = nameof(CreateLinkAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
-      public async Task<IActionResult> CreateLinkAsync([FromBody] NewLinkForm newLink,
+      public async Task<IActionResult> CreateLinkAsync([FromBody] NewEndpointLinkForm newLink,
                                                        CancellationToken ct)
       {
          if(!ModelState.IsValid)
@@ -63,9 +63,9 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Destination device is invalid."));
          }
 
-         // Do more validation and actions according to sequence diagram
+         // Continue actions according to sequence diagram
 
-         var newLinkUrl = Url.Link(nameof(LinksController.CreateLinkAsync), null);
+         var newLinkUrl = Url.Link(nameof(EndpointLinksController.CreateLinkAsync), null);
          newLinkUrl = newLinkUrl + "/" + "linkId";
 
          return Created(newLinkUrl, null);

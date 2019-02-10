@@ -97,7 +97,7 @@ namespace Multilinks.ApiService
          services.AddScoped<IUserInfoService, UserInfoService>();
          services.AddScoped<IHubConnectionService, HubConnectionService>();
          services.AddScoped<IEndpointService, EndpointService>();
-         services.AddScoped<ILinkService, LinkService>();
+         services.AddScoped<IEndpointLinkService, EndpointLinkService>();
 
          services.AddSignalR();
 
