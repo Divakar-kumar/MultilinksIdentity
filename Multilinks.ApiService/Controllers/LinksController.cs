@@ -44,16 +44,23 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("A device cannot create a link to itself."));
          }
 
-         var isOwner = await _endpointService.CheckEndpointIsCreatedByUserAsync(sourceId, _userInfoService.UserId, ct);
-         if(!isOwner)
+         var sourceEndpoint = await _endpointService.GetEndpointByIdAsync(sourceId, ct);
+
+         if(sourceEndpoint == null)
          {
-            return BadRequest(new ApiError("Cannot create a link from a device you do not own."));
+            return BadRequest(new ApiError("Source device is invalid."));
          }
 
-         var destinationExists = await _endpointService.CheckEndpointExistsAsync(destinationId, ct);
-         if(!destinationExists)
+         if(sourceEndpoint.CreatorId != _userInfoService.UserId)
          {
-            return BadRequest(new ApiError("Cannot create a link to a device that do not exist."));
+            return BadRequest(new ApiError("Cannot create a link from a device not created by current user."));
+         }
+
+         var destinationEndpoint = await _endpointService.GetEndpointByIdAsync(destinationId, ct);
+
+         if(destinationEndpoint == null)
+         {
+            return BadRequest(new ApiError("Destination device is invalid."));
          }
 
          // Do more validation and actions according to sequence diagram

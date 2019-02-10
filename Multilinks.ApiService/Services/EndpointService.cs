@@ -30,10 +30,10 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointViewModel>(entity);
       }
 
-      public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string name, CancellationToken ct)
+      public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string endpointName, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(
-            r => (r.CreatorId == _userInfoService.UserId && r.Name == name),
+            r => (r.CreatorId == _userInfoService.UserId && r.Name == endpointName),
             ct);
 
          if(entity == null)
@@ -44,7 +44,7 @@ namespace Multilinks.ApiService.Services
                CreatorId = _userInfoService.UserId,
                ClientId = _userInfoService.ClientId,
                ClientType = _userInfoService.ClientType,
-               Name = name,
+               Name = endpointName,
                Description = "No description yet."
             };
 
@@ -58,7 +58,7 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointViewModel>(entity);
       }
 
-      public async Task<bool> CheckEndpointByNameOwnedByUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct)
+      public async Task<bool> CheckEndpointByNameCreatedBySpecifiedUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct)
       {
          var entity = await _context.Endpoints.SingleOrDefaultAsync(
             r => (r.CreatorId == creatorId && r.Name == endpointName),
@@ -170,24 +170,6 @@ namespace Multilinks.ApiService.Services
          var updated = await _context.SaveChangesAsync();
 
          if(updated < 1) return false;
-
-         return true;
-      }
-
-      public async Task<bool> CheckEndpointIsCreatedByUserAsync(Guid endpointId, Guid creatorId, CancellationToken ct)
-      {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => (r.EndpointId == endpointId && r.CreatorId == creatorId), ct);
-
-         if(entity == null) return false;
-
-         return true;
-      }
-
-      public async Task<bool> CheckEndpointExistsAsync(Guid endpointId, CancellationToken ct)
-      {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => (r.EndpointId == endpointId), ct);
-
-         if(entity == null) return false;
 
          return true;
       }
