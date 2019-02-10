@@ -1,13 +1,4 @@
-﻿/*************************************************************************************************
- *    Class:      Endpoint
- * 
- *    Summary:    This is the view model version of EndpointIdentity. It will contains properties
- *                related to EndpointIdentity that is useful to the client.
- *                The EndpointId is used to retreived the info from the data store.
- * 
- *************************************************************************************************/
-
-using Multilinks.ApiService.Infrastructure;
+﻿using Multilinks.ApiService.Infrastructure;
 using Newtonsoft.Json;
 using System;
 

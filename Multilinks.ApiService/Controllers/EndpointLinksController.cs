@@ -44,6 +44,13 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("A device cannot create a link to itself."));
          }
 
+         var endpointLink = await _linkService.GetEndpointLinkByIdAsync(sourceId, destinationId, ct);
+
+         if(endpointLink != null)
+         {
+            return BadRequest(new ApiError("Link between devices already exists."));
+         }
+
          var sourceEndpoint = await _endpointService.GetEndpointByIdAsync(sourceId, ct);
 
          if(sourceEndpoint == null)
