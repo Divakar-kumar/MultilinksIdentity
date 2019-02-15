@@ -8,5 +8,7 @@ namespace Multilinks.ApiService.Services
    public interface IEndpointLinkService
    {
       Task<EndpointLinkViewModel> GetEndpointLinkByIdAsync(Guid endpointA, Guid endpointB, CancellationToken ct);
+
+      Task<Guid> CreateEndpointLinkAsync(Guid endpointA, Guid endpointB, CancellationToken ct);
    }
 }

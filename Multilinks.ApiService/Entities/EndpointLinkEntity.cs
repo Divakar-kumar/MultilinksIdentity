@@ -10,6 +10,8 @@ namespace Multilinks.ApiService.Entities
       [Key]
       public long Id { get; set; }
 
+      public Guid LinkId { get; set; }
+
       public Guid FirstEndpointId { get; set; }
 
       public Guid SecondEndpointId { get; set; }

@@ -55,7 +55,7 @@ namespace Multilinks.ApiService.Controllers
 
          if(sourceEndpoint == null)
          {
-            return BadRequest(new ApiError("Source device is invalid."));
+            return BadRequest(new ApiError("Requesting device is invalid."));
          }
 
          if(sourceEndpoint.CreatorId != _userInfoService.UserId)
@@ -67,13 +67,15 @@ namespace Multilinks.ApiService.Controllers
 
          if(destinationEndpoint == null)
          {
-            return BadRequest(new ApiError("Destination device is invalid."));
+            return BadRequest(new ApiError("Requested device is invalid."));
          }
+
+         var linkId = await _linkService.CreateEndpointLinkAsync(sourceId, destinationId, ct);
 
          // Continue actions according to sequence diagram
 
          var newLinkUrl = Url.Link(nameof(EndpointLinksController.CreateLinkAsync), null);
-         newLinkUrl = newLinkUrl + "/" + "linkId";
+         newLinkUrl = newLinkUrl + "/" + linkId;
 
          return Created(newLinkUrl, null);
       }

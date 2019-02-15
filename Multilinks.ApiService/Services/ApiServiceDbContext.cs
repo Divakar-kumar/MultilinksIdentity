@@ -27,6 +27,10 @@ namespace Multilinks.ApiService.Services
                .HasIndex(u => u.EndpointId)
                .IsUnique();
 
+         builder.Entity<EndpointLinkEntity>()
+               .HasIndex(u => u.LinkId)
+               .IsUnique();
+
          base.OnModelCreating(builder);
       }
    }
