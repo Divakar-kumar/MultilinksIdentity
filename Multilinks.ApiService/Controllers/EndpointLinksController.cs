@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Multilinks.ApiService.Infrastructure;
 using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
 
@@ -26,6 +27,29 @@ namespace Multilinks.ApiService.Controllers
          _endpointService = endpointService;
       }
 
+      // GET api/endpointlinks/id/{linkId}
+      [HttpGet("id/{linkId}", Name = nameof(GetEndpointLinkByIdAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
+      [Etag]
+      public async Task<IActionResult> GetEndpointLinkByIdAsync(Guid linkId, CancellationToken ct)
+      {
+         // TODO: Need more validation to ensure user has access to this link
+         var endpointLinkViewModel = await _linkService.GetLinkByIdAsync(linkId, ct);
+
+         if(endpointLinkViewModel == null)
+         {
+            return NotFound();
+         }
+
+         if(!Request.GetEtagHandler().NoneMatch(endpointLinkViewModel))
+         {
+            return StatusCode(304, endpointLinkViewModel);
+         }
+
+         return Ok(endpointLinkViewModel);
+      }
+
+      // POST api/endpointlinks
       [HttpPost(Name = nameof(CreateLinkAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> CreateLinkAsync([FromBody] NewEndpointLinkForm newLink,
@@ -44,7 +68,7 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("A device cannot create a link to itself."));
          }
 
-         var endpointLink = await _linkService.GetEndpointLinkByIdAsync(sourceId, destinationId, ct);
+         var endpointLink = await _linkService.GetLinkByEndpointsIdAsync(sourceId, destinationId, ct);
 
          if(endpointLink != null)
          {
@@ -70,14 +94,19 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Requested device is invalid."));
          }
 
-         var linkId = await _linkService.CreateEndpointLinkAsync(sourceId, destinationId, ct);
+         var endpointLinkViewModel = await _linkService.CreateEndpointLinkAsync(sourceId, destinationId, ct);
 
-         // Continue actions according to sequence diagram
+         if(endpointLinkViewModel == null)
+         {
+            return StatusCode(500, new ApiError("Failed to create a link."));
+         }
+
+         // TODO: Continue actions according to sequence diagram
 
          var newLinkUrl = Url.Link(nameof(EndpointLinksController.CreateLinkAsync), null);
-         newLinkUrl = newLinkUrl + "/" + linkId;
+         newLinkUrl = newLinkUrl + "/" + endpointLinkViewModel.LinkId;
 
-         return Created(newLinkUrl, null);
+         return Created(newLinkUrl, endpointLinkViewModel);
       }
    }
 }

@@ -6,6 +6,8 @@ namespace Multilinks.ApiService.Models
 {
    public class EndpointLinkViewModel : Resource, IEtaggable
    {
+      public Guid LinkId { get; set; }
+
       public Guid FirstEndpointId { get; set; }
 
       public Guid SecondEndpointId { get; set; }

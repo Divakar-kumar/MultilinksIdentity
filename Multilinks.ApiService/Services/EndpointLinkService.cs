@@ -17,7 +17,7 @@ namespace Multilinks.ApiService.Services
          _context = context;
       }
 
-      public async Task<EndpointLinkViewModel> GetEndpointLinkByIdAsync(Guid endpointA, Guid endpointB, CancellationToken ct)
+      public async Task<EndpointLinkViewModel> GetLinkByEndpointsIdAsync(Guid endpointA, Guid endpointB, CancellationToken ct)
       {
          var entity = await _context.Links.SingleOrDefaultAsync(
             r => (r.FirstEndpointId == endpointA && r.SecondEndpointId == endpointB) || (r.FirstEndpointId == endpointB && r.SecondEndpointId == endpointA),
@@ -28,7 +28,16 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointLinkViewModel>(entity);
       }
 
-      public async Task<Guid> CreateEndpointLinkAsync(Guid endpointA, Guid endpointB, CancellationToken ct)
+      public async Task<EndpointLinkViewModel> GetLinkByIdAsync(Guid linkId, CancellationToken ct)
+      {
+         var entity = await _context.Links.SingleOrDefaultAsync(r => r.LinkId == linkId, ct);
+
+         if(entity == null) return null;
+
+         return Mapper.Map<EndpointLinkViewModel>(entity);
+      }
+
+      public async Task<EndpointLinkViewModel> CreateEndpointLinkAsync(Guid endpointA, Guid endpointB, CancellationToken ct)
       {
          var linkId = Guid.NewGuid();
 
@@ -46,7 +55,8 @@ namespace Multilinks.ApiService.Services
 
          if(created < 1) throw new InvalidOperationException("Could not create new link.");
 
-         return newEndpointLink.LinkId;
+         return Mapper.Map<EndpointLinkViewModel>(newEndpointLink);
       }
+
    }
 }

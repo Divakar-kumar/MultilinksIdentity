@@ -7,8 +7,10 @@ namespace Multilinks.ApiService.Services
 {
    public interface IEndpointLinkService
    {
-      Task<EndpointLinkViewModel> GetEndpointLinkByIdAsync(Guid endpointA, Guid endpointB, CancellationToken ct);
+      Task<EndpointLinkViewModel> GetLinkByEndpointsIdAsync(Guid endpointA, Guid endpointB, CancellationToken ct);
 
-      Task<Guid> CreateEndpointLinkAsync(Guid endpointA, Guid endpointB, CancellationToken ct);
+      Task<EndpointLinkViewModel> GetLinkByIdAsync(Guid linkId, CancellationToken ct);
+
+      Task<EndpointLinkViewModel> CreateEndpointLinkAsync(Guid endpointA, Guid endpointB, CancellationToken ct);
    }
 }
