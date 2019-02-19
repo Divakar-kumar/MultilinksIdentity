@@ -8,11 +8,15 @@ namespace Multilinks.ApiService.Infrastructure
    {
       public MappingProfile()
       {
-         CreateMap<EndpointEntity, EndpointViewModel>();
+         CreateMap<EndpointEntity, EndpointViewModel>()
+            .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
+               Link.To(nameof(Controllers.EndpointsController.GetEndpointByIdAsync), new { endpointId = src.EndpointId })));
 
          CreateMap<EndpointViewModel, UpdateEndpointForm>().ReverseMap();
 
-         CreateMap<EndpointLinkEntity, EndpointLinkViewModel>();
+         CreateMap<EndpointLinkEntity, EndpointLinkViewModel>()
+            .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
+               Link.To(nameof(Controllers.EndpointLinksController.GetEndpointLinkByIdAsync), new { linkId = src.LinkId })));
       }
    }
 }
