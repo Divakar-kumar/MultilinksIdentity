@@ -91,7 +91,7 @@ namespace Multilinks.ApiService.Controllers
 
          if(destinationEndpoint == null)
          {
-            return BadRequest(new ApiError("Requested device is invalid."));
+            return BadRequest(new ApiError("Target device is invalid."));
          }
 
          var endpointLinkViewModel = await _linkService.CreateEndpointLinkAsync(sourceId, destinationId, ct);
