@@ -12,9 +12,9 @@ namespace Multilinks.ApiService.Entities
 
       public Guid LinkId { get; set; }
 
-      public Guid FirstEndpointId { get; set; }
+      public Guid FirstEndpointId { get; set; }    // Link's source endpoint
 
-      public Guid SecondEndpointId { get; set; }
+      public Guid SecondEndpointId { get; set; }   // Link's destination endpoint
 
       public string Status { get; set; }
    }

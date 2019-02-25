@@ -21,5 +21,7 @@ namespace Multilinks.ApiService.Entities
       public string Name { get; set; }
 
       public string Description { get; set; }
+
+      public string CreatorName { get; set; }
    }
 }
