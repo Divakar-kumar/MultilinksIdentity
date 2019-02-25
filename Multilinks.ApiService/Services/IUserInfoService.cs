@@ -5,8 +5,7 @@ namespace Multilinks.ApiService.Services
    public interface IUserInfoService
    {
       Guid UserId { get; }
-      string FirstName { get; }
-      string LastName { get; }
+      string Name { get; }
       string Role { get; }
 
       /* The following are client details on behalf of the user */

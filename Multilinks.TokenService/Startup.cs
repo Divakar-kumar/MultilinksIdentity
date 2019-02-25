@@ -9,6 +9,7 @@ using System.Reflection;
 using Multilinks.TokenService.Services;
 using Multilinks.TokenService.Entities;
 using Microsoft.AspNetCore.Mvc;
+using IdentityServer4.Services;
 
 namespace Multilinks.TokenService
 {
@@ -46,9 +47,6 @@ namespace Multilinks.TokenService
             o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
             o.Lockout.MaxFailedAccessAttempts = 5;
          });
-
-         // Add application services.
-         services.AddTransient<IEmailSender, EmailSender>();
 
          services.AddMvc()
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
@@ -99,6 +97,10 @@ namespace Multilinks.TokenService
          {
             throw new Exception("need to configure key material");
          }
+
+         // Add application services.
+         services.AddTransient<IEmailSender, EmailSender>();
+         services.AddTransient<IProfileService, ProfileService>();
 
          /* TODO: CORS policy will need to be updated before deployment. */
          services.AddCors(options =>
