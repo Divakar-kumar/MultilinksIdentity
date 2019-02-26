@@ -8,10 +8,6 @@ namespace Multilinks.ApiService.Models
    {
       public Guid LinkId { get; set; }
 
-      public Guid FirstEndpointId { get; set; }
-
-      public Guid SecondEndpointId { get; set; }
-
       public string Status { get; set; }
 
       public string GetEtag()
