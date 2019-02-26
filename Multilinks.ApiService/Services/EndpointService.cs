@@ -24,7 +24,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<EndpointViewModel> GetEndpointByIdAsync(Guid id, CancellationToken ct)
       {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.EndpointId == id, ct);
+         var entity = await _context.Endpoints.FirstOrDefaultAsync(r => r.EndpointId == id, ct);
          if(entity == null) return null;
 
          return Mapper.Map<EndpointViewModel>(entity);
@@ -32,7 +32,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string endpointName, CancellationToken ct)
       {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(
+         var entity = await _context.Endpoints.FirstOrDefaultAsync(
             r => (r.CreatorId == _userInfoService.UserId && r.Name == endpointName),
             ct);
 
@@ -61,7 +61,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<bool> CheckEndpointByNameCreatedBySpecifiedUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct)
       {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(
+         var entity = await _context.Endpoints.FirstOrDefaultAsync(
             r => (r.CreatorId == creatorId && r.Name == endpointName),
             ct);
          if(entity == null) return false;
@@ -145,7 +145,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<bool> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
-         var endpoint = await _context.Endpoints.SingleOrDefaultAsync(ep => ep.EndpointId == endpointId, ct);
+         var endpoint = await _context.Endpoints.FirstOrDefaultAsync(ep => ep.EndpointId == endpointId, ct);
 
          if(endpoint == null) return false;
 
@@ -162,7 +162,7 @@ namespace Multilinks.ApiService.Services
                                                       string description,
                                                       CancellationToken ct)
       {
-         var entity = await _context.Endpoints.SingleOrDefaultAsync(r => r.EndpointId == endpointId, ct);
+         var entity = await _context.Endpoints.FirstOrDefaultAsync(r => r.EndpointId == endpointId, ct);
 
          if(entity == null) return false;
 

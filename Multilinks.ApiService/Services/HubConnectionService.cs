@@ -19,7 +19,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<bool> CreateHubConnectionReferenceAsync(Guid endpointId, string connectionId, CancellationToken ct)
       {
-         var entity = await _context.HubConnections.SingleOrDefaultAsync(
+         var entity = await _context.HubConnections.FirstOrDefaultAsync(
             r => (r.EndpointId == endpointId),
             ct);
 
@@ -46,7 +46,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<bool> DeleteHubConnectionReferenceAsync(string connectionId, CancellationToken ct)
       {
-         var entity = await _context.HubConnections.SingleOrDefaultAsync(r => r.ConnectionId == connectionId, ct);
+         var entity = await _context.HubConnections.FirstOrDefaultAsync(r => r.ConnectionId == connectionId, ct);
 
          if(entity != null)
          {

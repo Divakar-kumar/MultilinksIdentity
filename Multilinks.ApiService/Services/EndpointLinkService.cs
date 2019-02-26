@@ -19,7 +19,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<EndpointLinkViewModel> GetLinkByEndpointsIdAsync(Guid endpointA, Guid endpointB, CancellationToken ct)
       {
-         var entity = await _context.Links.SingleOrDefaultAsync(
+         var entity = await _context.Links.FirstOrDefaultAsync(
             r => (r.SourceEndpointId == endpointA && r.AssociatedEndpointId == endpointB),
             ct);
 
@@ -30,7 +30,7 @@ namespace Multilinks.ApiService.Services
 
       public async Task<EndpointLinkViewModel> GetLinkByIdAsync(Guid linkId, CancellationToken ct)
       {
-         var entity = await _context.Links.SingleOrDefaultAsync(r => r.LinkId == linkId, ct);
+         var entity = await _context.Links.FirstOrDefaultAsync(r => r.LinkId == linkId, ct);
 
          if(entity == null) return null;
 
