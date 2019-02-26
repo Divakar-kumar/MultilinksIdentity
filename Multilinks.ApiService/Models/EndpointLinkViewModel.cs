@@ -10,6 +10,10 @@ namespace Multilinks.ApiService.Models
 
       public string Status { get; set; }
 
+      public string AssociatedDeviceName { get; set; }
+
+      public string AssociatedDeviceOwnerName { get; set; }
+
       public string GetEtag()
       {
          var serialized = JsonConvert.SerializeObject(this);
