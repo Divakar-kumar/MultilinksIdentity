@@ -45,7 +45,8 @@ namespace Multilinks.ApiService.Services
                ClientId = _userInfoService.ClientId,
                ClientType = _userInfoService.ClientType,
                Name = endpointName,
-               Description = "No description yet."
+               Description = "No description yet.",
+               CreatorName = _userInfoService.Name
             };
 
             _context.Endpoints.Add(entity);
