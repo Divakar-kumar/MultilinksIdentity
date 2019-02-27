@@ -6,10 +6,7 @@ namespace Multilinks.ApiService.Entities
 {
    public class EndpointEntity
    {
-      [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
       [Key]
-      public long Id { get; set; }
-
       public Guid EndpointId { get; set; }
 
       public Guid CreatorId { get; set; }

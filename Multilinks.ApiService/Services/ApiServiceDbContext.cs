@@ -19,18 +19,6 @@ namespace Multilinks.ApiService.Services
 
       protected override void OnModelCreating(ModelBuilder builder)
       {
-         builder.Entity<EndpointEntity>()
-               .HasIndex(u => u.EndpointId)
-               .IsUnique();
-
-         builder.Entity<HubConnectionEntity>()
-               .HasIndex(u => u.EndpointId)
-               .IsUnique();
-
-         builder.Entity<EndpointLinkEntity>()
-               .HasIndex(u => u.LinkId)
-               .IsUnique();
-
          base.OnModelCreating(builder);
       }
    }
