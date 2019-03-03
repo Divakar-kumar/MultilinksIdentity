@@ -43,12 +43,14 @@ namespace Multilinks.ApiService.Services
                Name = endpointName,
                Description = "No description yet.",
 
+               // TODO: Use existing if exist
                Client = new EndpointClientEntity
                {
                   ClientId = _userInfoService.ClientId,
                   ClientType = _userInfoService.ClientType
                },
 
+               // TODO: Use existing if exist
                Owner = new EndpointOwnerEntity
                {
                   IdentityId = _userInfoService.UserId,
