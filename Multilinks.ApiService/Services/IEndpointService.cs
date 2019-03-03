@@ -25,8 +25,7 @@ namespace Multilinks.ApiService.Services
                                                                          SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
                                                                          CancellationToken ct);
 
-      Task<Guid> CreateEndpointAsync(Guid creatorId,
-                                     string name,
+      Task<Guid> CreateEndpointAsync(string name,
                                      string description,
                                      CancellationToken ct);
 

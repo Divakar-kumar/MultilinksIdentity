@@ -33,20 +33,27 @@ namespace Multilinks.ApiService.Services
       public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string endpointName, CancellationToken ct)
       {
          var entity = await _context.Endpoints.FirstOrDefaultAsync(
-            r => (r.CreatorId == _userInfoService.UserId && r.Name == endpointName),
+            r => (r.Owner.IdentityId == _userInfoService.UserId && r.Name == endpointName),
             ct);
 
          if(entity == null)
          {
             entity = new EndpointEntity
             {
-               EndpointId = Guid.NewGuid(),
-               CreatorId = _userInfoService.UserId,
-               ClientId = _userInfoService.ClientId,
-               ClientType = _userInfoService.ClientType,
                Name = endpointName,
                Description = "No description yet.",
-               CreatorName = _userInfoService.Name
+
+               Client = new EndpointClientEntity
+               {
+                  ClientId = _userInfoService.ClientId,
+                  ClientType = _userInfoService.ClientType
+               },
+
+               Owner = new EndpointOwnerEntity
+               {
+                  IdentityId = _userInfoService.UserId,
+                  OwnerName = _userInfoService.Name
+               }
             };
 
             _context.Endpoints.Add(entity);
@@ -62,8 +69,9 @@ namespace Multilinks.ApiService.Services
       public async Task<bool> CheckEndpointByNameCreatedBySpecifiedUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct)
       {
          var entity = await _context.Endpoints.FirstOrDefaultAsync(
-            r => (r.CreatorId == creatorId && r.Name == endpointName),
+            r => (r.Owner.IdentityId == creatorId && r.Name == endpointName),
             ct);
+
          if(entity == null) return false;
 
          return true;
@@ -100,7 +108,7 @@ namespace Multilinks.ApiService.Services
                                                                                       CancellationToken ct)
       {
          IQueryable<EndpointEntity> query = _context.Endpoints;
-         query = query.Where(ep => ep.CreatorId == creatorId);
+         query = query.Where(ep => ep.Owner.IdentityId == creatorId);
          query = searchOptions.Apply(query);
          query = sortOptions.Apply(query);
 
@@ -119,19 +127,31 @@ namespace Multilinks.ApiService.Services
          };
       }
 
-      public async Task<Guid> CreateEndpointAsync(Guid creatorId,
-                                     string name,
-                                     string description,
-                                     CancellationToken ct)
+      public async Task<Guid> CreateEndpointAsync(string name,
+                                                  string description,
+                                                  CancellationToken ct)
       {
          var endpointId = Guid.NewGuid();
 
          var newEndpoint = new EndpointEntity
          {
-            EndpointId = endpointId,
-            CreatorId = creatorId,
             Name = name,
-            Description = description
+            Description = description,
+
+            Client = new EndpointClientEntity
+            {
+               ClientId = _userInfoService.ClientId,
+               ClientType = _userInfoService.ClientType
+            },
+
+            Owner = new EndpointOwnerEntity
+            {
+               IdentityId = _userInfoService.UserId,
+               OwnerName = _userInfoService.Name
+            }
+
+
+
          };
 
          _context.Endpoints.Add(newEndpoint);

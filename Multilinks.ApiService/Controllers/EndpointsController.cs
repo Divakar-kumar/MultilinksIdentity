@@ -128,8 +128,7 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("A device with the same name already exists"));
          }
 
-         var endpointId = await _endpointService.CreateEndpointAsync(_userInfoService.UserId,
-                                                                     newEndpoint.Name,
+         var endpointId = await _endpointService.CreateEndpointAsync(newEndpoint.Name,
                                                                      newEndpoint.Description,
                                                                      ct);
 
