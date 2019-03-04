@@ -32,40 +32,54 @@ namespace Multilinks.ApiService.Services
 
       public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string endpointName, CancellationToken ct)
       {
-         var entity = await _context.Endpoints.FirstOrDefaultAsync(
+         var endpoint = await _context.Endpoints.FirstOrDefaultAsync(
             r => (r.Owner.IdentityId == _userInfoService.UserId && r.Name == endpointName),
             ct);
 
-         if(entity == null)
+         if(endpoint == null)
          {
-            entity = new EndpointEntity
-            {
-               Name = endpointName,
-               Description = "No description yet.",
+            var client = await _context.Clients.FirstOrDefaultAsync(
+               r => (r.ClientId == _userInfoService.ClientId && r.ClientType == _userInfoService.ClientType),
+               ct);
 
-               // TODO: Use existing if exist
-               Client = new EndpointClientEntity
+            if(client == null)
+            {
+               client = new EndpointClientEntity
                {
                   ClientId = _userInfoService.ClientId,
                   ClientType = _userInfoService.ClientType
-               },
+               };
+            }
 
-               // TODO: Use existing if exist
-               Owner = new EndpointOwnerEntity
+            var owner = await _context.Owners.FirstOrDefaultAsync(
+               r => (r.IdentityId == _userInfoService.UserId && r.OwnerName == _userInfoService.Name),
+               ct);
+
+            if(owner == null)
+            {
+               owner = new EndpointOwnerEntity
                {
                   IdentityId = _userInfoService.UserId,
                   OwnerName = _userInfoService.Name
-               }
+               };
+            }
+
+            endpoint = new EndpointEntity
+            {
+               Name = endpointName,
+               Description = "No description.",
+               Client = client,
+               Owner = owner
             };
 
-            _context.Endpoints.Add(entity);
+            _context.Endpoints.Add(endpoint);
 
             var created = await _context.SaveChangesAsync(ct);
 
             if(created < 1) throw new InvalidOperationException("Could not create new endpoint.");
          }
 
-         return Mapper.Map<EndpointViewModel>(entity);
+         return Mapper.Map<EndpointViewModel>(endpoint);
       }
 
       public async Task<bool> CheckEndpointByNameCreatedBySpecifiedUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct)
@@ -140,12 +154,14 @@ namespace Multilinks.ApiService.Services
             Name = name,
             Description = description,
 
+            // TODO: Use existing if exist
             Client = new EndpointClientEntity
             {
                ClientId = _userInfoService.ClientId,
                ClientType = _userInfoService.ClientType
             },
 
+            // TODO: Use existing if exist
             Owner = new EndpointOwnerEntity
             {
                IdentityId = _userInfoService.UserId,
