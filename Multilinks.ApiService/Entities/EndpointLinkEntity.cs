@@ -10,10 +10,8 @@ namespace Multilinks.ApiService.Entities
       [Key]
       public Guid LinkId { get; set; }
 
-      [Required]
       public EndpointEntity SourceEndpoint { get; set; }
 
-      [Required]
       public EndpointEntity AssociatedEndpoint { get; set; }
 
       [Required]
