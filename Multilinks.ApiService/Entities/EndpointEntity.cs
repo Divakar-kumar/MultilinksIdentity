@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,5 +23,7 @@ namespace Multilinks.ApiService.Entities
 
       [Required]
       public EndpointOwnerEntity Owner { get; set; }
+
+      public ICollection<EndpointLinkEntity> EndpointLinkEntities { get; set; }
    }
 }

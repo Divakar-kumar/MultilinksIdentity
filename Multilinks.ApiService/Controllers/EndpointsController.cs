@@ -8,6 +8,7 @@ using Multilinks.ApiService.Infrastructure;
 using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,53 +33,18 @@ namespace Multilinks.ApiService.Controllers
          _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
-      // GET api/endpoints/my-endpoints
-      [HttpGet("my-endpoints", Name = nameof(GetEndpointsAsync))]
-      [ResponseCache(CacheProfileName = "Collection")]
-      [Etag]
-      public async Task<IActionResult> GetEndpointsAsync(
-         [FromQuery] PagingOptions pagingOptions,
-         [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
-         [FromQuery] SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
-         CancellationToken ct)
-      {
-         if(!ModelState.IsValid) return BadRequest(new ApiError(ModelState));
-
-         pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
-         pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
-
-         var endpoints = await _endpointService.GetEndpointsByCreatorIdAsync(_userInfoService.UserId,
-                                                                             pagingOptions,
-                                                                             sortOptions,
-                                                                             searchOptions,
-                                                                             ct);
-
-         var collection = PagedCollection<EndpointViewModel>.Create<EndpointsResponse>(Link.ToCollection(nameof(GetEndpointsAsync)),
-                                                                                       endpoints.Items.ToArray(),
-                                                                                       endpoints.TotalSize,
-                                                                                       pagingOptions);
-
-         if(!Request.GetEtagHandler().NoneMatch(collection))
-         {
-            return StatusCode(304, collection);
-         }
-
-         return Ok(collection);
-      }
-
       // GET api/endpoints/id/{endpointId}
       [HttpGet("id/{endpointId}", Name = nameof(GetEndpointByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       [Etag]
       public async Task<IActionResult> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
-         var endpointViewModel = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
+         var endpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
-         if((endpointViewModel == null) ||
-            (_userInfoService.Role != "Administrator" && endpointViewModel.CreatorId != _userInfoService.UserId))
-         {
+         if(endpoint == null || endpoint.Owner.IdentityId != _userInfoService.UserId)
             return NotFound();
-         }
+
+         var endpointViewModel = Mapper.Map<EndpointViewModel>(endpoint);
 
          if(!Request.GetEtagHandler().NoneMatch(endpointViewModel))
          {
@@ -89,17 +55,34 @@ namespace Multilinks.ApiService.Controllers
       }
 
       // GET api/endpoints/login/{name}
-      [HttpGet("login/{name}", Name = nameof(GetEndpointByNameAsync))]
+      [HttpGet("login/{name}", Name = nameof(EndpointLoginByNameAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
       [Etag]
-      public async Task<IActionResult> GetEndpointByNameAsync(string name, CancellationToken ct)
+      public async Task<IActionResult> EndpointLoginByNameAsync(string name, CancellationToken ct)
       {
-         var endpointViewModel = await _endpointService.GetOwnEndpointByNameAsync(name, ct);
+         var endpoint = await _endpointService.GetEndpointByNameAsync(name, _userInfoService.UserId, ct);
 
-         if(endpointViewModel == null)
+         if(endpoint == null)
          {
-            return NotFound();
+            var client = new EndpointClientEntity
+            {
+               ClientId = _userInfoService.ClientId,
+               ClientType = _userInfoService.ClientType
+            };
+
+            var owner = new EndpointOwnerEntity
+            {
+               IdentityId = _userInfoService.UserId,
+               OwnerName = _userInfoService.Name
+            };
+
+            endpoint = await _endpointService.CreateEndpointAsync(name, client, owner, ct);
+
+            if(endpoint == null)
+               return BadRequest(new ApiError("Cannot login, device cannot be created"));
          }
+
+         var endpointViewModel = Mapper.Map<EndpointViewModel>(endpoint);
 
          if(!Request.GetEtagHandler().NoneMatch(endpointViewModel))
          {
@@ -109,34 +92,46 @@ namespace Multilinks.ApiService.Controllers
          return Ok(endpointViewModel);
       }
 
-      // POST api/endpoints
-      [HttpPost(Name = nameof(CreateEndpointAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
-      public async Task<IActionResult> CreateEndpointAsync(
-         [FromBody] NewEndpointForm newEndpoint,
+      // GET api/endpoints/my-endpoints
+      [HttpGet("my-endpoints", Name = nameof(GetEndpointsAsync))]
+      [ResponseCache(CacheProfileName = "Collection")]
+      [Etag]
+      public async Task<IActionResult> GetEndpointsAsync(
+         [FromQuery] PagingOptions pagingOptions,
+         [FromQuery] SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+         [FromQuery] SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
          CancellationToken ct)
       {
          if(!ModelState.IsValid)
-         {
             return BadRequest(new ApiError(ModelState));
-         }
 
-         /* Device name should be unique for the same user. */
-         var endpointExist = await _endpointService.CheckEndpointByNameCreatedBySpecifiedUserExistsAsync(_userInfoService.UserId, newEndpoint.Name, ct);
-         if(endpointExist)
+         pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+         pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+
+         var endpoints = await _endpointService.GetEndpointsByOwnerIdAsync(_userInfoService.UserId,
+                                                                           pagingOptions,
+                                                                           sortOptions,
+                                                                           searchOptions,
+                                                                           ct);
+
+         /* What we get from data repository are endpoints, but what we want to return to users are endpoints view model. */
+         var endpointsViewModel = new PagedResults<EndpointViewModel>()
          {
-            return BadRequest(new ApiError("A device with the same name already exists"));
+            Items = Mapper.Map<IEnumerable<EndpointEntity>, IEnumerable<EndpointViewModel>>(endpoints.Items),
+            TotalSize = endpoints.TotalSize
+         };
+
+         var collection = PagedCollection<EndpointViewModel>.Create<EndpointsResponse>(Link.ToCollection(nameof(GetEndpointsAsync)),
+                                                                                       endpointsViewModel.Items.ToArray(),
+                                                                                       endpointsViewModel.TotalSize,
+                                                                                       pagingOptions);
+
+         if(!Request.GetEtagHandler().NoneMatch(collection))
+         {
+            return StatusCode(304, collection);
          }
 
-         var endpointId = await _endpointService.CreateEndpointAsync(newEndpoint.Name,
-                                                                     newEndpoint.Description,
-                                                                     ct);
-
-         /* This is a workaround to build the link of the new endpoint. */
-         var newEndpointUrl = Url.Link(nameof(EndpointsController.CreateEndpointAsync), null);
-         newEndpointUrl = newEndpointUrl + "/" + endpointId;
-
-         return Created(newEndpointUrl, null);
+         return Ok(collection);
       }
 
       // DELETE api/endpoints/id/{endpointId}
@@ -146,64 +141,64 @@ namespace Multilinks.ApiService.Controllers
       {
          var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
-         if((existingEndpoint == null) ||
-            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId != _userInfoService.UserId))
+         if((existingEndpoint == null) || existingEndpoint.Owner.IdentityId != _userInfoService.UserId)
          {
-            return NotFound();
+            return NoContent();
          }
 
+         /* We are the owner of this endpoint so go ahead and delete it. */
          var endpointDeleted = await _endpointService.DeleteEndpointByIdAsync(endpointId, ct);
 
+         /* Something went wrong while trying to delete this endpoint. */
          if(!endpointDeleted)
-            return BadRequest(new ApiError("Device failed to be deleted"));
+            return StatusCode(500, new ApiError("Device failed to be deleted"));
 
          return NoContent();
       }
 
-      // PATCH api/endpoints/id/{endpointId}
-      [HttpPatch("id/{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
-      [ResponseCache(CacheProfileName = "Resource")]
-      public async Task<IActionResult> UpdateEndpointByIdAsync(Guid endpointId,
-         [FromBody] JsonPatchDocument<UpdateEndpointForm> jsonPatchDocument,
-         CancellationToken ct)
-      {
-         if(jsonPatchDocument == null)
-         {
-            return BadRequest();
-         }
+      //// PATCH api/endpoints/id/{endpointId}
+      //[HttpPatch("id/{endpointId}", Name = nameof(UpdateEndpointByIdAsync))]
+      //[ResponseCache(CacheProfileName = "Resource")]
+      //public async Task<IActionResult> UpdateEndpointByIdAsync(Guid endpointId,
+      //   [FromBody] JsonPatchDocument<UpdateEndpointForm> jsonPatchDocument,
+      //   CancellationToken ct)
+      //{
+      //   if(jsonPatchDocument == null)
+      //   {
+      //      return BadRequest();
+      //   }
 
-         var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
+      //   var existingEndpoint = await _endpointService.GetEndpointByIdAsync(endpointId, ct);
 
-         if((existingEndpoint == null) ||
-            (_userInfoService.Role != "Administrator" && existingEndpoint.CreatorId != _userInfoService.UserId))
-         {
-            return NotFound();
-         }
+      //   if((existingEndpoint == null) || existingEndpoint.Owner.IdentityId != _userInfoService.UserId)
+      //   {
+      //      return NotFound();
+      //   }
 
-         var endpointToPatch = Mapper.Map<UpdateEndpointForm>(existingEndpoint);
+      //   var endpointToPatch = Mapper.Map<UpdateEndpointForm>(existingEndpoint);
 
-         jsonPatchDocument.ApplyTo(endpointToPatch, ModelState);
+      //   jsonPatchDocument.ApplyTo(endpointToPatch, ModelState);
 
-         if(!ModelState.IsValid)
-         {
-            return new UnprocessableEntityObjectResult(ModelState);
-         }
+      //   if(!ModelState.IsValid)
+      //   {
+      //      return new UnprocessableEntityObjectResult(ModelState);
+      //   }
 
-         if(!TryValidateModel(endpointToPatch))
-         {
-            return new UnprocessableEntityObjectResult(ModelState);
-         }
+      //   if(!TryValidateModel(endpointToPatch))
+      //   {
+      //      return new UnprocessableEntityObjectResult(ModelState);
+      //   }
 
-         var endpointUpdated = await _endpointService.UpdateEndpointByIdAsync(endpointId,
-                                                                              endpointToPatch.Description,
-                                                                              ct);
+      //   var endpointUpdated = await _endpointService.UpdateEndpointByIdAsync(endpointId,
+      //                                                                        endpointToPatch.Description,
+      //                                                                        ct);
 
-         if(!endpointUpdated)
-         {
-            return BadRequest(new ApiError("Device failed to be updated"));
-         }
+      //   if(!endpointUpdated)
+      //   {
+      //      return BadRequest(new ApiError("Device failed to be updated"));
+      //   }
 
-         return NoContent();
-      }
+      //   return NoContent();
+      //}
    }
 }

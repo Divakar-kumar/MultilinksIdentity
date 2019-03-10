@@ -8,26 +8,20 @@ namespace Multilinks.ApiService.Services
 {
    public interface IEndpointService
    {
-      Task<EndpointViewModel> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct);
+      Task<EndpointEntity> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct);
 
-      Task<EndpointViewModel> GetOwnEndpointByNameAsync(string endpointName, CancellationToken ct);
+      Task<EndpointEntity> GetEndpointByNameAsync(string name, Guid ownerId, CancellationToken ct);
 
-      Task<bool> CheckEndpointByNameCreatedBySpecifiedUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct);
+      Task<EndpointEntity> CreateEndpointAsync(string name,
+                                               EndpointClientEntity client,
+                                               EndpointOwnerEntity owner,
+                                               CancellationToken ct);
 
-      Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(PagingOptions pagingOptions,
-                                                              SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
-                                                              SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
-                                                              CancellationToken ct);
-
-      Task<PagedResults<EndpointViewModel>> GetEndpointsByCreatorIdAsync(Guid creatorId,
-                                                                         PagingOptions pagingOptions,
-                                                                         SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
-                                                                         SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
-                                                                         CancellationToken ct);
-
-      Task<Guid> CreateEndpointAsync(string name,
-                                     string description,
-                                     CancellationToken ct);
+      Task<PagedResults<EndpointEntity>> GetEndpointsByOwnerIdAsync(Guid ownerId,
+                                                                    PagingOptions pagingOptions,
+                                                                    SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+                                                                    SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
+                                                                    CancellationToken ct);
 
       Task<bool> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct);
 

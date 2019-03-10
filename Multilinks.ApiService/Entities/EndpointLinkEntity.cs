@@ -6,13 +6,17 @@ namespace Multilinks.ApiService.Entities
 {
    public class EndpointLinkEntity
    {
+      [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
       [Key]
       public Guid LinkId { get; set; }
 
-      public Guid SourceEndpointId { get; set; }
+      [Required]
+      public EndpointEntity SourceEndpoint { get; set; }
 
-      public Guid AssociatedEndpointId { get; set; }
+      [Required]
+      public EndpointEntity AssociatedEndpoint { get; set; }
 
+      [Required]
       public string Status { get; set; }
    }
 }

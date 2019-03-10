@@ -75,6 +75,38 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Link between devices already exists."));
          }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
          var sourceEndpoint = await _endpointService.GetEndpointByIdAsync(sourceId, ct);
 
          if(sourceEndpoint == null)
@@ -82,7 +114,7 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Requesting device is invalid."));
          }
 
-         if(sourceEndpoint.CreatorId != _userInfoService.UserId)
+         if(sourceEndpoint.Owner.IdentityId != _userInfoService.UserId)
          {
             return BadRequest(new ApiError("Cannot create a link from a device not created by current user."));
          }
@@ -94,7 +126,7 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Target device is invalid."));
          }
 
-         var endpointLinkViewModel = await _linkService.CreateEndpointLinkAsync(sourceId, destinationId, ct);
+         var endpointLinkViewModel = await _linkService.CreateEndpointLinkAsync(sourceEndpoint, destinationEndpoint, ct);
 
          if(endpointLinkViewModel == null)
          {

@@ -25,16 +25,16 @@ namespace Multilinks.ApiService.Hubs
       public override async Task OnConnectedAsync()
       {
          var endpointId = Context.GetHttpContext().Request.Query["ep"];
-         var creatorId = Context.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+         var ownerId = Context.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
-         if(string.IsNullOrEmpty(endpointId) || string.IsNullOrEmpty(creatorId))
+         if(string.IsNullOrEmpty(endpointId) || string.IsNullOrEmpty(ownerId))
          {
             Context.Abort();
          }
 
          var endpoint = await _endpointService.GetEndpointByIdAsync(Guid.Parse(endpointId), Context.ConnectionAborted);
 
-         if(endpoint == null || endpoint.CreatorId != Guid.Parse(creatorId))
+         if(endpoint == null || endpoint.Owner.IdentityId != Guid.Parse(ownerId))
          {
             Context.Abort();
          }

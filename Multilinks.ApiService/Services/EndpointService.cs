@@ -3,8 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Multilinks.ApiService.Models;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using System.Linq;
 using Multilinks.ApiService.Entities;
 
@@ -13,184 +11,151 @@ namespace Multilinks.ApiService.Services
    public class EndpointService : IEndpointService
    {
       private readonly ApiServiceDbContext _context;
-      private readonly IUserInfoService _userInfoService;
 
-      public EndpointService(ApiServiceDbContext context,
-         IUserInfoService userInfoService)
+      public EndpointService(ApiServiceDbContext context)
       {
          _context = context;
-         _userInfoService = userInfoService;
       }
 
-      public async Task<EndpointViewModel> GetEndpointByIdAsync(Guid id, CancellationToken ct)
+      public async Task<EndpointEntity> GetEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
-         var entity = await _context.Endpoints.FirstOrDefaultAsync(r => r.EndpointId == id, ct);
-         if(entity == null) return null;
+         var endpoint = await _context.Endpoints
+            .Where(r => r.EndpointId == endpointId)
+            .Include(r => r.Owner)
+            .Include(r => r.Client)
+            .FirstOrDefaultAsync();
 
-         return Mapper.Map<EndpointViewModel>(entity);
+         return endpoint;
       }
 
-      public async Task<EndpointViewModel> GetOwnEndpointByNameAsync(string endpointName, CancellationToken ct)
+      public async Task<EndpointEntity> GetEndpointByNameAsync(string name, Guid ownerId, CancellationToken ct)
+      {
+         var endpoint = await _context.Endpoints
+            .Where(r => r.Name == name && r.Owner.IdentityId == ownerId)
+            .Include(r => r.Owner)
+            .Include(r => r.Client)
+            .FirstOrDefaultAsync();
+
+         return endpoint;
+      }
+
+      public async Task<EndpointEntity> CreateEndpointAsync(string name,
+                                                            EndpointClientEntity client,
+                                                            EndpointOwnerEntity owner,
+                                                            CancellationToken ct)
       {
          var endpoint = await _context.Endpoints.FirstOrDefaultAsync(
-            r => (r.Owner.IdentityId == _userInfoService.UserId && r.Name == endpointName),
+            r => (r.Owner.IdentityId == owner.IdentityId && r.Name == name),
             ct);
 
-         if(endpoint == null)
+         /* Endpoint already exists so return null to indicate we failed to create new endpoint. */
+         if(endpoint != null)
+            return null;
+
+
+         var existingClient = await _context.Clients.FirstOrDefaultAsync(
+            r => (r.ClientId == client.ClientId && r.ClientType == client.ClientType),
+            ct);
+
+         /* Ensure client exist */
+         if(existingClient == null)
+            _context.Clients.Add(client);
+
+         var existingOwner = await _context.Owners.FirstOrDefaultAsync(
+            r => (r.IdentityId == owner.IdentityId && r.OwnerName == owner.OwnerName),
+            ct);
+
+         /* Ensure owner exist */
+         if(existingOwner == null)
+            _context.Owners.Add(owner);
+
+         if(existingClient == null || existingOwner == null)
          {
-            var client = await _context.Clients.FirstOrDefaultAsync(
-               r => (r.ClientId == _userInfoService.ClientId && r.ClientType == _userInfoService.ClientType),
-               ct);
+            var createdNavigationPropertiesResult = await _context.SaveChangesAsync(ct);
 
-            if(client == null)
+            if(createdNavigationPropertiesResult < 1)
+               return null;
+
+            if(existingClient == null)
             {
-               client = new EndpointClientEntity
-               {
-                  ClientId = _userInfoService.ClientId,
-                  ClientType = _userInfoService.ClientType
-               };
+               existingClient = await _context.Clients.FirstOrDefaultAsync(
+                  r => (r.ClientId == client.ClientId && r.ClientType == client.ClientType),
+                  ct);
             }
 
-            var owner = await _context.Owners.FirstOrDefaultAsync(
-               r => (r.IdentityId == _userInfoService.UserId && r.OwnerName == _userInfoService.Name),
-               ct);
-
-            if(owner == null)
+            if(existingOwner == null)
             {
-               owner = new EndpointOwnerEntity
-               {
-                  IdentityId = _userInfoService.UserId,
-                  OwnerName = _userInfoService.Name
-               };
+               existingOwner = await _context.Owners.FirstOrDefaultAsync(
+                  r => (r.IdentityId == owner.IdentityId && r.OwnerName == owner.OwnerName),
+                  ct);
             }
-
-            endpoint = new EndpointEntity
-            {
-               Name = endpointName,
-               Description = "No description.",
-               Client = client,
-               Owner = owner
-            };
-
-            _context.Endpoints.Add(endpoint);
-
-            var created = await _context.SaveChangesAsync(ct);
-
-            if(created < 1) throw new InvalidOperationException("Could not create new endpoint.");
          }
 
-         return Mapper.Map<EndpointViewModel>(endpoint);
-      }
-
-      public async Task<bool> CheckEndpointByNameCreatedBySpecifiedUserExistsAsync(Guid creatorId, string endpointName, CancellationToken ct)
-      {
-         var entity = await _context.Endpoints.FirstOrDefaultAsync(
-            r => (r.Owner.IdentityId == creatorId && r.Name == endpointName),
-            ct);
-
-         if(entity == null) return false;
-
-         return true;
-      }
-
-      public async Task<PagedResults<EndpointViewModel>> GetEndpointsAsync(PagingOptions pagingOptions,
-                                                                           SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
-                                                                           SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
-                                                                           CancellationToken ct)
-      {
-         IQueryable<EndpointEntity> query = _context.Endpoints;
-         query = searchOptions.Apply(query);
-         query = sortOptions.Apply(query);
-
-         var size = await query.CountAsync(ct);
-
-         var items = await query
-                .Skip(pagingOptions.Offset.Value)
-                .Take(pagingOptions.Limit.Value)
-                .ProjectTo<EndpointViewModel>()
-                .ToArrayAsync(ct);
-
-         return new PagedResults<EndpointViewModel>
-         {
-            Items = items,
-            TotalSize = size
-         };
-      }
-
-      public async Task<PagedResults<EndpointViewModel>> GetEndpointsByCreatorIdAsync(Guid creatorId,
-                                                                                      PagingOptions pagingOptions,
-                                                                                      SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
-                                                                                      SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
-                                                                                      CancellationToken ct)
-      {
-         IQueryable<EndpointEntity> query = _context.Endpoints;
-         query = query.Where(ep => ep.Owner.IdentityId == creatorId);
-         query = searchOptions.Apply(query);
-         query = sortOptions.Apply(query);
-
-         var size = await query.CountAsync(ct);
-
-         var items = await query
-                .Skip(pagingOptions.Offset.Value)
-                .Take(pagingOptions.Limit.Value)
-                .ProjectTo<EndpointViewModel>()
-                .ToArrayAsync(ct);
-
-         return new PagedResults<EndpointViewModel>
-         {
-            Items = items,
-            TotalSize = size
-         };
-      }
-
-      public async Task<Guid> CreateEndpointAsync(string name,
-                                                  string description,
-                                                  CancellationToken ct)
-      {
-         var endpointId = Guid.NewGuid();
-
-         var newEndpoint = new EndpointEntity
+         endpoint = new EndpointEntity
          {
             Name = name,
-            Description = description,
-
-            // TODO: Use existing if exist
-            Client = new EndpointClientEntity
-            {
-               ClientId = _userInfoService.ClientId,
-               ClientType = _userInfoService.ClientType
-            },
-
-            // TODO: Use existing if exist
-            Owner = new EndpointOwnerEntity
-            {
-               IdentityId = _userInfoService.UserId,
-               OwnerName = _userInfoService.Name
-            }
-
-
-
+            Description = "No description.",
+            Client = existingClient,
+            Owner = existingOwner
          };
 
-         _context.Endpoints.Add(newEndpoint);
+         _context.Endpoints.Add(endpoint);
 
          var created = await _context.SaveChangesAsync(ct);
 
-         if(created < 1) throw new InvalidOperationException("Could not create new endpoint.");
+         if(created < 1)
+            return null;
 
-         return newEndpoint.EndpointId;
+         /* Everything should be up to date now, so let's try again and return the endpoint. */
+         endpoint = await _context.Endpoints
+            .Where(r => r.Name == name && r.Owner.IdentityId == existingOwner.IdentityId)
+            .Include(r => r.Owner)
+            .Include(r => r.Client)
+            .FirstOrDefaultAsync();
+
+         return endpoint;
+      }
+
+      public async Task<PagedResults<EndpointEntity>> GetEndpointsByOwnerIdAsync(Guid ownerId,
+                                                                                 PagingOptions pagingOptions,
+                                                                                 SortOptions<EndpointViewModel, EndpointEntity> sortOptions,
+                                                                                 SearchOptions<EndpointViewModel, EndpointEntity> searchOptions,
+                                                                                 CancellationToken ct)
+      {
+         IQueryable<EndpointEntity> query = _context.Endpoints
+            .Where(r => r.Owner.IdentityId == ownerId)
+            .Include(r => r.Owner)
+            .Include(r => r.Client);
+
+         query = searchOptions.Apply(query);
+         query = sortOptions.Apply(query);
+
+         var size = await query.CountAsync(ct);
+
+         var items = await query
+                .Skip(pagingOptions.Offset.Value)
+                .Take(pagingOptions.Limit.Value)
+                .ToArrayAsync(ct);
+
+         return new PagedResults<EndpointEntity>
+         {
+            Items = items,
+            TotalSize = size
+         };
       }
 
       public async Task<bool> DeleteEndpointByIdAsync(Guid endpointId, CancellationToken ct)
       {
-         var endpoint = await _context.Endpoints.FirstOrDefaultAsync(ep => ep.EndpointId == endpointId, ct);
+         var endpoint = await _context.Endpoints.FirstOrDefaultAsync(r => r.EndpointId == endpointId, ct);
 
-         if(endpoint == null) return false;
+         /* Still returns true if specified endpoint doesn't exist. */
+         if(endpoint == null) return true;
 
          _context.Endpoints.Remove(endpoint);
 
          var deleted = await _context.SaveChangesAsync(ct);
 
+         /* We tried to delete it but failed, so return false. */
          if(deleted < 1) return false;
 
          return true;
@@ -200,11 +165,12 @@ namespace Multilinks.ApiService.Services
                                                       string description,
                                                       CancellationToken ct)
       {
-         var entity = await _context.Endpoints.FirstOrDefaultAsync(r => r.EndpointId == endpointId, ct);
+         var endpoint = await _context.Endpoints.FirstOrDefaultAsync(r => r.EndpointId == endpointId, ct);
 
-         if(entity == null) return false;
+         if(endpoint == null)
+            return false;
 
-         entity.Description = description;
+         endpoint.Description = description;
 
          var updated = await _context.SaveChangesAsync();
 

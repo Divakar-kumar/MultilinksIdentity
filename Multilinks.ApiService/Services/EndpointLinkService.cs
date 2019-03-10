@@ -17,10 +17,12 @@ namespace Multilinks.ApiService.Services
          _context = context;
       }
 
-      public async Task<EndpointLinkViewModel> GetLinkByEndpointsIdAsync(Guid endpointA, Guid endpointB, CancellationToken ct)
+      public async Task<EndpointLinkViewModel> GetLinkByEndpointsIdAsync(Guid sourceEndpointId,
+         Guid associatedEndpointId,
+         CancellationToken ct)
       {
          var entity = await _context.Links.FirstOrDefaultAsync(
-            r => (r.SourceEndpointId == endpointA && r.AssociatedEndpointId == endpointB),
+            r => (r.SourceEndpoint.EndpointId == sourceEndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpointId),
             ct);
 
          if(entity == null) return null;
@@ -37,25 +39,28 @@ namespace Multilinks.ApiService.Services
          return Mapper.Map<EndpointLinkViewModel>(entity);
       }
 
-      public async Task<EndpointLinkViewModel> CreateEndpointLinkAsync(Guid endpointA, Guid endpointB, CancellationToken ct)
+      public async Task<EndpointLinkViewModel> CreateEndpointLinkAsync(EndpointEntity sourceEndpoint,
+         EndpointEntity associatedEndpoint,
+         CancellationToken ct)
       {
-         var linkId = Guid.NewGuid();
-
-         var newEndpointLink = new EndpointLinkEntity
+         var endpointLink = new EndpointLinkEntity
          {
-            LinkId = linkId,
-            SourceEndpointId = endpointA,
-            AssociatedEndpointId = endpointB,
+            SourceEndpoint = sourceEndpoint,
+            AssociatedEndpoint = associatedEndpoint,
             Status = "pending"
          };
 
-         _context.Links.Add(newEndpointLink);
+         _context.Links.Add(endpointLink);
 
          var created = await _context.SaveChangesAsync(ct);
 
          if(created < 1) throw new InvalidOperationException("Could not create new link.");
 
-         return Mapper.Map<EndpointLinkViewModel>(newEndpointLink);
+         endpointLink = await _context.Links.FirstOrDefaultAsync(
+            r => (r.SourceEndpoint.EndpointId == sourceEndpoint.EndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpoint.EndpointId),
+            ct);
+
+         return Mapper.Map<EndpointLinkViewModel>(endpointLink);
       }
 
    }
