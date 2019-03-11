@@ -8,13 +8,13 @@ namespace Multilinks.ApiService.Models
    {
       public Guid EndpointId { get; set; }
 
-      public Guid CreatorId { get; set; }
-
       [Sortable(Default = true)]
       [Searchable]
       public string Name { get; set; }
 
       public string Description { get; set; }
+
+      public string Owner { get; set; }
 
       public string GetEtag()
       {

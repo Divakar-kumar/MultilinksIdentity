@@ -9,6 +9,7 @@ namespace Multilinks.ApiService.Infrastructure
       public MappingProfile()
       {
          CreateMap<EndpointEntity, EndpointViewModel>()
+            .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner.OwnerName))
             .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
                Link.To(nameof(Controllers.EndpointsController.GetEndpointByIdAsync), new { endpointId = src.EndpointId })));
 
