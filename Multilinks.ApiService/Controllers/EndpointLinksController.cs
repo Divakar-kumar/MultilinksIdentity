@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Multilinks.ApiService.Infrastructure;
@@ -34,12 +35,14 @@ namespace Multilinks.ApiService.Controllers
       public async Task<IActionResult> GetEndpointLinkByIdAsync(Guid linkId, CancellationToken ct)
       {
          // TODO: Need more validation to ensure user has access to this link
-         var endpointLinkViewModel = await _linkService.GetLinkByIdAsync(linkId, ct);
+         var endpointLink = await _linkService.GetLinkByIdAsync(linkId, ct);
 
-         if(endpointLinkViewModel == null)
+         if(endpointLink == null)
          {
             return NotFound();
          }
+
+         var endpointLinkViewModel = Mapper.Map<EndpointLinkViewModel>(endpointLink);
 
          if(!Request.GetEtagHandler().NoneMatch(endpointLinkViewModel))
          {
@@ -75,38 +78,6 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Link between devices already exists."));
          }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
          var sourceEndpoint = await _endpointService.GetEndpointByIdAsync(sourceId, ct);
 
          if(sourceEndpoint == null)
@@ -126,9 +97,9 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Target device is invalid."));
          }
 
-         var endpointLinkViewModel = await _linkService.CreateEndpointLinkAsync(sourceEndpoint, destinationEndpoint, ct);
+         endpointLink = await _linkService.CreateEndpointLinkAsync(sourceEndpoint, destinationEndpoint, ct);
 
-         if(endpointLinkViewModel == null)
+         if(endpointLink == null)
          {
             return StatusCode(500, new ApiError("Failed to create a link."));
          }
@@ -136,7 +107,9 @@ namespace Multilinks.ApiService.Controllers
          // TODO: Continue actions according to sequence diagram
 
          var newLinkUrl = Url.Link(nameof(EndpointLinksController.CreateLinkAsync), null);
-         newLinkUrl = newLinkUrl + "/" + endpointLinkViewModel.LinkId;
+         newLinkUrl = newLinkUrl + "/" + endpointLink.LinkId;
+
+         var endpointLinkViewModel = Mapper.Map<EndpointLinkViewModel>(endpointLink);
 
          return Created(newLinkUrl, endpointLinkViewModel);
       }

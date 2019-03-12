@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Multilinks.ApiService.Entities;
 using Multilinks.ApiService.Models;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,51 +18,55 @@ namespace Multilinks.ApiService.Services
          _context = context;
       }
 
-      public async Task<EndpointLinkViewModel> GetLinkByEndpointsIdAsync(Guid sourceEndpointId,
+      public async Task<EndpointLinkEntity> GetLinkByEndpointsIdAsync(Guid sourceEndpointId,
          Guid associatedEndpointId,
          CancellationToken ct)
       {
-         var entity = await _context.Links.FirstOrDefaultAsync(
-            r => (r.SourceEndpoint.EndpointId == sourceEndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpointId),
-            ct);
+         var link = await _context.Links
+            .Where(r => (r.SourceEndpoint.EndpointId == sourceEndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpointId))
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Client)
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
+            .FirstOrDefaultAsync(ct);
 
-         if(entity == null) return null;
-
-         return Mapper.Map<EndpointLinkViewModel>(entity);
+         return link;
       }
 
-      public async Task<EndpointLinkViewModel> GetLinkByIdAsync(Guid linkId, CancellationToken ct)
+      public async Task<EndpointLinkEntity> GetLinkByIdAsync(Guid linkId, CancellationToken ct)
       {
-         var entity = await _context.Links.FirstOrDefaultAsync(r => r.LinkId == linkId, ct);
+         var link = await _context.Links
+            .Where(r => (r.LinkId == linkId))
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Client)
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
+            .FirstOrDefaultAsync(ct);
 
-         if(entity == null) return null;
-
-         return Mapper.Map<EndpointLinkViewModel>(entity);
+         return link;
       }
 
-      public async Task<EndpointLinkViewModel> CreateEndpointLinkAsync(EndpointEntity sourceEndpoint,
+      public async Task<EndpointLinkEntity> CreateEndpointLinkAsync(EndpointEntity sourceEndpoint,
          EndpointEntity associatedEndpoint,
          CancellationToken ct)
       {
-         var endpointLink = new EndpointLinkEntity
+         /* The assumption here is that we have already check that a link from sourceEndpoint to
+          * associatedEndpoint doesn't exist so we can just go ahead and create a link. */
+         var link = new EndpointLinkEntity
          {
             SourceEndpoint = sourceEndpoint,
             AssociatedEndpoint = associatedEndpoint,
             Status = "pending"
          };
 
-         _context.Links.Add(endpointLink);
+         _context.Links.Add(link);
 
          var created = await _context.SaveChangesAsync(ct);
 
-         if(created < 1) throw new InvalidOperationException("Could not create new link.");
+         if(created < 1)
+            return null;
 
-         endpointLink = await _context.Links.FirstOrDefaultAsync(
+         link = await _context.Links.FirstOrDefaultAsync(
             r => (r.SourceEndpoint.EndpointId == sourceEndpoint.EndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpoint.EndpointId),
             ct);
 
-         return Mapper.Map<EndpointLinkViewModel>(endpointLink);
+         return link;
       }
-
    }
 }

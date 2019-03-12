@@ -23,7 +23,7 @@ namespace Multilinks.ApiService.Services
             .Where(r => r.EndpointId == endpointId)
             .Include(r => r.Owner)
             .Include(r => r.Client)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(ct);
 
          return endpoint;
       }
@@ -34,7 +34,7 @@ namespace Multilinks.ApiService.Services
             .Where(r => r.Name == name && r.Owner.IdentityId == ownerId)
             .Include(r => r.Owner)
             .Include(r => r.Client)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(ct);
 
          return endpoint;
       }

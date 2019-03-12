@@ -8,11 +8,11 @@ namespace Multilinks.ApiService.Models
    {
       public Guid LinkId { get; set; }
 
-      public string Status { get; set; }
-
       public string AssociatedDeviceName { get; set; }
 
       public string AssociatedDeviceOwnerName { get; set; }
+
+      public string Status { get; set; }
 
       public string GetEtag()
       {

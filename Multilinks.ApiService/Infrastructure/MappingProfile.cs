@@ -16,6 +16,8 @@ namespace Multilinks.ApiService.Infrastructure
          CreateMap<EndpointViewModel, UpdateEndpointForm>().ReverseMap();
 
          CreateMap<EndpointLinkEntity, EndpointLinkViewModel>()
+            .ForMember(dest => dest.AssociatedDeviceName, opt => opt.MapFrom(src => src.AssociatedEndpoint.Name))
+            .ForMember(dest => dest.AssociatedDeviceOwnerName, opt => opt.MapFrom(src => src.AssociatedEndpoint.Owner.OwnerName))
             .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
                Link.To(nameof(Controllers.EndpointLinksController.GetEndpointLinkByIdAsync), new { linkId = src.LinkId })));
       }
