@@ -15,6 +15,6 @@ namespace Multilinks.ApiService.Entities
       public EndpointEntity AssociatedEndpoint { get; set; }
 
       [Required]
-      public string Status { get; set; }
+      public bool Confirmed { get; set; }
    }
 }

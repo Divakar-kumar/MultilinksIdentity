@@ -52,7 +52,7 @@ namespace Multilinks.ApiService.Services
          {
             SourceEndpoint = sourceEndpoint,
             AssociatedEndpoint = associatedEndpoint,
-            Status = "pending"
+            Confirmed = false
          };
 
          _context.Links.Add(link);
