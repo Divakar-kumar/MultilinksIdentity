@@ -76,7 +76,13 @@ namespace Multilinks.ApiService.Controllers
                OwnerName = _userInfoService.Name
             };
 
-            endpoint = await _endpointService.CreateEndpointAsync(name, client, owner, ct);
+            var hubConnection = new HubConnectionEntity
+            {
+               ConnectionId = "",
+               Connected = false
+            };
+
+            endpoint = await _endpointService.CreateEndpointAsync(name, client, owner, hubConnection, ct);
 
             if(endpoint == null)
                return BadRequest(new ApiError("Cannot login, device cannot be created"));

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Multilinks.ApiService.Entities;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,42 +18,36 @@ namespace Multilinks.ApiService.Services
          _userInfoService = userInfoService;
       }
 
-      public async Task<bool> CreateHubConnectionReferenceAsync(Guid endpointId, string connectionId, CancellationToken ct)
+      public async Task<bool> ConnectHubConnectionReferenceAsync(Guid endpointId, Guid ownerId, string connectionId, CancellationToken ct)
       {
-         var entity = await _context.HubConnections.FirstOrDefaultAsync(
-            r => (r.EndpointId == endpointId),
-            ct);
+         var endpoint = await _context.Endpoints
+            .Where(r => r.EndpointId == endpointId && r.Owner.IdentityId == ownerId)
+            .Include(r => r.HubConnection)
+            .FirstOrDefaultAsync(ct);
 
-         if(entity == null)
-         {
-            entity = new HubConnectionEntity
-            {
-               EndpointId = endpointId,
-               ConnectionId = connectionId
-            };
+         if(endpoint == null)
+            return false;
 
-            _context.HubConnections.Add(entity);
-         }
-         else
-         {
-            entity.ConnectionId = connectionId;
-         }
+         endpoint.HubConnection.ConnectionId = connectionId;
+         endpoint.HubConnection.Connected = true;
 
-         var created = await _context.SaveChangesAsync(ct);
-         if(created < 1) return false;
+         var updated = await _context.SaveChangesAsync(ct);
+         if(updated < 1) return false;
 
          return true;
       }
 
-      public async Task<bool> DeleteHubConnectionReferenceAsync(string connectionId, CancellationToken ct)
+      public async Task<bool> DisconnectHubConnectionReferenceAsync(string connectionId, CancellationToken ct)
       {
-         var entity = await _context.HubConnections.FirstOrDefaultAsync(r => r.ConnectionId == connectionId, ct);
+         var hubConnection = await _context.HubConnections.FirstOrDefaultAsync(r => r.ConnectionId == connectionId, ct);
 
-         if(entity != null)
+         if(hubConnection != null)
          {
-            _context.HubConnections.Remove(entity);
-            var deleted = await _context.SaveChangesAsync(ct);
-            if(deleted < 1) return false;
+            hubConnection.ConnectionId = "";
+            hubConnection.Connected = false;
+
+            var updated = await _context.SaveChangesAsync(ct);
+            if(updated < 1) return false;
          }
 
          return true;

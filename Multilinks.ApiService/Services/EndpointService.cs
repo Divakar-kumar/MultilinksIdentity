@@ -42,6 +42,7 @@ namespace Multilinks.ApiService.Services
       public async Task<EndpointEntity> CreateEndpointAsync(string name,
                                                             EndpointClientEntity client,
                                                             EndpointOwnerEntity owner,
+                                                            HubConnectionEntity hubConnection,
                                                             CancellationToken ct)
       {
          var endpoint = await _context.Endpoints.FirstOrDefaultAsync(
@@ -51,7 +52,6 @@ namespace Multilinks.ApiService.Services
          /* Endpoint already exists so return null to indicate we failed to create new endpoint. */
          if(endpoint != null)
             return null;
-
 
          var existingClient = await _context.Clients.FirstOrDefaultAsync(
             r => (r.ClientId == client.ClientId && r.ClientType == client.ClientType),
@@ -96,7 +96,8 @@ namespace Multilinks.ApiService.Services
             Name = name,
             Description = "No description.",
             Client = existingClient,
-            Owner = existingOwner
+            Owner = existingOwner,
+            HubConnection = hubConnection
          };
 
          _context.Endpoints.Add(endpoint);

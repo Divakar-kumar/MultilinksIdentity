@@ -32,14 +32,9 @@ namespace Multilinks.ApiService.Hubs
             Context.Abort();
          }
 
-         var endpoint = await _endpointService.GetEndpointByIdAsync(Guid.Parse(endpointId), Context.ConnectionAborted);
-
-         if(endpoint == null || endpoint.Owner.IdentityId != Guid.Parse(ownerId))
-         {
-            Context.Abort();
-         }
-
-         var connectionReferenceCreated = await _hubConnectionService.CreateHubConnectionReferenceAsync(Guid.Parse(endpointId),
+         var connectionReferenceCreated = await _hubConnectionService.ConnectHubConnectionReferenceAsync(
+            Guid.Parse(endpointId),
+            Guid.Parse(ownerId),
             Context.ConnectionId,
             Context.ConnectionAborted);
 
@@ -54,7 +49,7 @@ namespace Multilinks.ApiService.Hubs
       public override async Task OnDisconnectedAsync(Exception exception)
       {
 
-         var connectionReferenceDeleted = await _hubConnectionService.DeleteHubConnectionReferenceAsync(
+         var connectionReferenceDeleted = await _hubConnectionService.DisconnectHubConnectionReferenceAsync(
             Context.ConnectionId,
             CancellationToken.None);
 

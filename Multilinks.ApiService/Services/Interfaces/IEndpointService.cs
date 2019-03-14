@@ -15,6 +15,7 @@ namespace Multilinks.ApiService.Services
       Task<EndpointEntity> CreateEndpointAsync(string name,
                                                EndpointClientEntity client,
                                                EndpointOwnerEntity owner,
+                                               HubConnectionEntity hubConnection,
                                                CancellationToken ct);
 
       Task<PagedResults<EndpointEntity>> GetEndpointsByOwnerIdAsync(Guid ownerId,

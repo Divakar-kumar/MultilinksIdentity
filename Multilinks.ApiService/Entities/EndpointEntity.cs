@@ -22,5 +22,8 @@ namespace Multilinks.ApiService.Entities
 
       [Required]
       public EndpointOwnerEntity Owner { get; set; }
+
+      [Required]
+      public HubConnectionEntity HubConnection { get; set; }
    }
 }

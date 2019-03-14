@@ -26,6 +26,7 @@ namespace Multilinks.ApiService.Services
             .Where(r => (r.SourceEndpoint.EndpointId == sourceEndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpointId))
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Client)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection)
             .FirstOrDefaultAsync(ct);
 
          return link;
@@ -37,6 +38,7 @@ namespace Multilinks.ApiService.Services
             .Where(r => (r.LinkId == linkId))
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Client)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection)
             .FirstOrDefaultAsync(ct);
 
          return link;
