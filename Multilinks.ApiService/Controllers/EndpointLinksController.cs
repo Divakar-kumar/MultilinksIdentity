@@ -75,7 +75,7 @@ namespace Multilinks.ApiService.Controllers
 
          if(endpointLink != null)
          {
-            return BadRequest(new ApiError("Link between devices already exists."));
+            return BadRequest(new ApiError("Link to specified device already exists."));
          }
 
          var sourceEndpoint = await _endpointService.GetEndpointByIdAsync(sourceId, ct);
