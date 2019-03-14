@@ -109,9 +109,7 @@ namespace Multilinks.ApiService.Controllers
          var newLinkUrl = Url.Link(nameof(EndpointLinksController.CreateLinkAsync), null);
          newLinkUrl = newLinkUrl + "/" + endpointLink.LinkId;
 
-         var endpointLinkViewModel = Mapper.Map<EndpointLinkViewModel>(endpointLink);
-
-         return Created(newLinkUrl, endpointLinkViewModel);
+         return Created(newLinkUrl, null);
       }
    }
 }
