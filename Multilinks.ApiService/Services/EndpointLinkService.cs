@@ -64,9 +64,11 @@ namespace Multilinks.ApiService.Services
          if(created < 1)
             return null;
 
-         link = await _context.Links.FirstOrDefaultAsync(
-            r => (r.SourceEndpoint.EndpointId == sourceEndpoint.EndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpoint.EndpointId),
-            ct);
+         link = await _context.Links
+            .Where(r => (r.SourceEndpoint.EndpointId == sourceEndpoint.EndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpoint.EndpointId))
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection)
+            .FirstOrDefaultAsync(ct);
 
          return link;
       }

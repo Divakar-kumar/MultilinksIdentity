@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Multilinks.ApiService.Hubs;
+using Multilinks.ApiService.Hubs.Interfaces;
 using Multilinks.ApiService.Infrastructure;
 using Multilinks.ApiService.Models;
 using Multilinks.ApiService.Services;
@@ -18,14 +21,17 @@ namespace Multilinks.ApiService.Controllers
       private readonly IUserInfoService _userInfoService;
       private readonly IEndpointLinkService _linkService;
       private readonly IEndpointService _endpointService;
+      private readonly IHubContext<MainHub, IMainHub> _hubContext;
 
       public EndpointLinksController(IUserInfoService userInfoService,
          IEndpointLinkService linkService,
-         IEndpointService endpointService)
+         IEndpointService endpointService,
+         IHubContext<MainHub, IMainHub> hubContext)
       {
          _userInfoService = userInfoService;
          _linkService = linkService;
          _endpointService = endpointService;
+         _hubContext = hubContext;
       }
 
       // GET api/endpointlinks/id/{linkId}
@@ -104,7 +110,13 @@ namespace Multilinks.ApiService.Controllers
             return StatusCode(500, new ApiError("Failed to create a link."));
          }
 
-         // TODO: Continue actions according to sequence diagram
+         if(endpointLink.AssociatedEndpoint.HubConnection.Connected)
+         {
+            await _hubContext.Clients.Client(endpointLink.AssociatedEndpoint.HubConnection.ConnectionId)
+               .LinkRequestReceived(endpointLink.LinkId.ToString(),
+                                    endpointLink.AssociatedEndpoint.Name,
+                                    endpointLink.AssociatedEndpoint.Owner.OwnerName);
+         }
 
          var newLinkUrl = Url.Link(nameof(EndpointLinksController.CreateLinkAsync), null);
          newLinkUrl = newLinkUrl + "/" + endpointLink.LinkId;
