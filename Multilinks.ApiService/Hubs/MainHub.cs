@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Multilinks.ApiService.Hubs.Interfaces;
 using Multilinks.ApiService.Services;
 using System;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace Multilinks.ApiService.Hubs
 {
    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-   public class MainHub : Hub
+   public class MainHub : Hub<IMainHub>
    {
       private readonly IHubConnectionService _hubConnectionService;
 
@@ -51,6 +52,12 @@ namespace Multilinks.ApiService.Hubs
             CancellationToken.None);
 
          await base.OnDisconnectedAsync(exception);
+      }
+
+      /* WIP: Notifying AssociatedEndpoint of link request via SignalR */
+      public async Task SendLinkRequestCreated()
+      {
+         await Clients.Client("ConnectionId").LinkRequestReceived("linkId", "sourceDeviceName", "sourceDeviceOwnerName");
       }
    }
 }
