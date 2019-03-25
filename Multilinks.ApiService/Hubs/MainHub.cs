@@ -13,13 +13,10 @@ namespace Multilinks.ApiService.Hubs
    public class MainHub : Hub
    {
       private readonly IHubConnectionService _hubConnectionService;
-      private readonly IEndpointService _endpointService;
 
-      public MainHub(IHubConnectionService hubConnectionService,
-         IEndpointService endpointService)
+      public MainHub(IHubConnectionService hubConnectionService)
       {
          _hubConnectionService = hubConnectionService;
-         _endpointService = endpointService;
       }
 
       public override async Task OnConnectedAsync()
