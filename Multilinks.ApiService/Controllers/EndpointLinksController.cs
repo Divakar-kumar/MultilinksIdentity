@@ -114,8 +114,8 @@ namespace Multilinks.ApiService.Controllers
          {
             await _hubContext.Clients.Client(endpointLink.AssociatedEndpoint.HubConnection.ConnectionId)
                .LinkRequestReceived(endpointLink.LinkId.ToString(),
-                                    endpointLink.AssociatedEndpoint.Name,
-                                    endpointLink.AssociatedEndpoint.Owner.OwnerName);
+                                    endpointLink.SourceEndpoint.Name,
+                                    endpointLink.SourceEndpoint.Owner.OwnerName);
          }
 
          var newLinkUrl = Url.Link(nameof(EndpointLinksController.CreateLinkAsync), null);

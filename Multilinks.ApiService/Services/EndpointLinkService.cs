@@ -66,7 +66,7 @@ namespace Multilinks.ApiService.Services
 
          link = await _context.Links
             .Where(r => (r.SourceEndpoint.EndpointId == sourceEndpoint.EndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpoint.EndpointId))
-            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
+            .Include(r => r.SourceEndpoint).ThenInclude(r => r.Owner)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection)
             .FirstOrDefaultAsync(ct);
 
