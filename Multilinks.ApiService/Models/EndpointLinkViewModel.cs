@@ -8,9 +8,15 @@ namespace Multilinks.ApiService.Models
    {
       public Guid LinkId { get; set; }
 
+      public string SourceDeviceName { get; set; }
+
+      public string SourceDeviceOwnerName { get; set; }
+
       public string AssociatedDeviceName { get; set; }
 
       public string AssociatedDeviceOwnerName { get; set; }
+
+      public bool Confirmed { get; set; }
 
       public bool IsActive { get; set; }
 

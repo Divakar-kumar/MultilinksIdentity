@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
+using Multilinks.ApiService.Entities;
 using Multilinks.ApiService.Hubs;
 using Multilinks.ApiService.Hubs.Interfaces;
 using Multilinks.ApiService.Infrastructure;
@@ -22,16 +26,19 @@ namespace Multilinks.ApiService.Controllers
       private readonly IEndpointLinkService _linkService;
       private readonly IEndpointService _endpointService;
       private readonly IHubContext<MainHub, IMainHub> _hubContext;
+      private readonly PagingOptions _defaultPagingOptions;
 
       public EndpointLinksController(IUserInfoService userInfoService,
          IEndpointLinkService linkService,
          IEndpointService endpointService,
-         IHubContext<MainHub, IMainHub> hubContext)
+         IHubContext<MainHub, IMainHub> hubContext,
+         IOptions<PagingOptions> defaultPagingOptions)
       {
          _userInfoService = userInfoService;
          _linkService = linkService;
          _endpointService = endpointService;
          _hubContext = hubContext;
+         _defaultPagingOptions = defaultPagingOptions.Value;
       }
 
       // GET api/endpointlinks/id/{linkId}
@@ -56,6 +63,41 @@ namespace Multilinks.ApiService.Controllers
          }
 
          return Ok(endpointLinkViewModel);
+      }
+
+      // GET api/endpointlinks/pending/{endpointId}
+      [HttpGet("pending/{endpointId}", Name = nameof(GetEndpointLinksPendingAsync))]
+      [ResponseCache(CacheProfileName = "Collection")]
+      [Etag]
+      public async Task<IActionResult> GetEndpointLinksPendingAsync(Guid endpointId,
+         [FromQuery] PagingOptions pagingOptions,
+         CancellationToken ct)
+      {
+         if(!ModelState.IsValid)
+            return BadRequest(new ApiError(ModelState));
+
+         pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+         pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+
+         var links = await _linkService.GetEndpointLinksPendingAsync(endpointId, _userInfoService.UserId, pagingOptions, ct);
+
+         var endpointsLinkViewModel = new PagedResults<EndpointLinkViewModel>()
+         {
+            Items = Mapper.Map<IEnumerable<EndpointLinkEntity>, IEnumerable<EndpointLinkViewModel>>(links.Items),
+            TotalSize = links.TotalSize
+         };
+
+         var collection = PagedCollection<EndpointLinkViewModel>.Create<EndpointsLinkCollection>(Link.ToCollection(nameof(GetEndpointLinkByIdAsync)),
+                                                                                       endpointsLinkViewModel.Items.ToArray(),
+                                                                                       endpointsLinkViewModel.TotalSize,
+                                                                                       pagingOptions);
+
+         if(!Request.GetEtagHandler().NoneMatch(collection))
+         {
+            return StatusCode(304, collection);
+         }
+
+         return Ok(collection);
       }
 
       // POST api/endpointlinks

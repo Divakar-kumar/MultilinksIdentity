@@ -14,6 +14,11 @@ namespace Multilinks.ApiService.Services
 
       Task<EndpointLinkEntity> GetLinkByIdAsync(Guid linkId, CancellationToken ct);
 
+      Task<PagedResults<EndpointLinkEntity>> GetEndpointLinksPendingAsync(Guid endpointId,
+         Guid ownerId,
+         PagingOptions pagingOptions,
+         CancellationToken ct);
+
       Task<EndpointLinkEntity> CreateEndpointLinkAsync(EndpointEntity sourceEndpoint,
          EndpointEntity associatedEndpoint,
          CancellationToken ct);
