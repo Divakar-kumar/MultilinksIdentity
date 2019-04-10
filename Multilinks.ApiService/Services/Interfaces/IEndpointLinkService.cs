@@ -19,8 +19,10 @@ namespace Multilinks.ApiService.Services
          PagingOptions pagingOptions,
          CancellationToken ct);
 
-      Task<EndpointLinkEntity> CreateEndpointLinkAsync(EndpointEntity sourceEndpoint,
+      Task<EndpointLinkEntity> CreateLinkAsync(EndpointEntity sourceEndpoint,
          EndpointEntity associatedEndpoint,
          CancellationToken ct);
+
+      Task<bool> DeleteLinkByIdAsync(Guid linkId, Guid userId, CancellationToken ct);
    }
 }

@@ -145,7 +145,7 @@ namespace Multilinks.ApiService.Controllers
             return BadRequest(new ApiError("Target device is invalid."));
          }
 
-         endpointLink = await _linkService.CreateEndpointLinkAsync(sourceEndpoint, destinationEndpoint, ct);
+         endpointLink = await _linkService.CreateLinkAsync(sourceEndpoint, destinationEndpoint, ct);
 
          if(endpointLink == null)
          {
@@ -164,6 +164,19 @@ namespace Multilinks.ApiService.Controllers
          newLinkUrl = newLinkUrl + "/" + endpointLink.LinkId;
 
          return Created(newLinkUrl, null);
+      }
+
+      // DELETE api/endpointlinks/id/{linkId}
+      [HttpDelete("id/{linkId}", Name = nameof(DeleteEndpointLinkByIdAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
+      public async Task<IActionResult> DeleteEndpointLinkByIdAsync(Guid linkId, CancellationToken ct)
+      {
+         var deleted = await _linkService.DeleteLinkByIdAsync(linkId, _userInfoService.UserId, ct);
+
+         if(!deleted)
+            return StatusCode(500, new ApiError("Link failed to be deleted"));
+
+         return NoContent();
       }
    }
 }

@@ -68,7 +68,7 @@ namespace Multilinks.ApiService.Services
          };
       }
 
-      public async Task<EndpointLinkEntity> CreateEndpointLinkAsync(EndpointEntity sourceEndpoint,
+      public async Task<EndpointLinkEntity> CreateLinkAsync(EndpointEntity sourceEndpoint,
          EndpointEntity associatedEndpoint,
          CancellationToken ct)
       {
@@ -95,6 +95,26 @@ namespace Multilinks.ApiService.Services
             .FirstOrDefaultAsync(ct);
 
          return link;
+      }
+
+      public async Task<bool> DeleteLinkByIdAsync(Guid linkId, Guid userId, CancellationToken ct)
+      {
+         /* Only owners of the endpoints can delete links. */
+         var link = await _context.Links
+            .Where(r => (r.LinkId == linkId && (r.SourceEndpoint.Owner.IdentityId == userId || r.AssociatedEndpoint.Owner.IdentityId == userId)))
+            .FirstOrDefaultAsync(ct);
+
+         if(link == null)
+            return true;
+
+         _context.Links.Remove(link);
+
+         var deleted = await _context.SaveChangesAsync(ct);
+
+         if(deleted < 1)
+            return false;
+
+         return true;
       }
    }
 }
