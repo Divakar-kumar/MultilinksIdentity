@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
@@ -166,10 +167,53 @@ namespace Multilinks.ApiService.Controllers
          return Created(newLinkUrl, null);
       }
 
-      // DELETE api/endpointlinks/id/{linkId}
-      [HttpDelete("id/{linkId}", Name = nameof(DeleteEndpointLinkByIdAsync))]
+      // PATCH api/endpointlinks/confirmation/{linkId}
+      [HttpPatch("confirmation/{linkId}", Name = nameof(ConfirmEndpointLinkByIdAsync))]
       [ResponseCache(CacheProfileName = "Resource")]
-      public async Task<IActionResult> DeleteEndpointLinkByIdAsync(Guid linkId, CancellationToken ct)
+      public async Task<IActionResult> ConfirmEndpointLinkByIdAsync(Guid linkId,
+         [FromBody] JsonPatchDocument<ConfirmEndpointLinkForm> jsonPatchDocument,
+         CancellationToken ct)
+      {
+         if(jsonPatchDocument == null)
+         {
+            return BadRequest();
+         }
+
+         var existingLink = await _linkService.GetLinkByIdAsync(linkId, ct);
+
+         if((existingLink == null) || existingLink.AssociatedEndpoint.Owner.IdentityId != _userInfoService.UserId)
+         {
+            return NotFound();
+         }
+
+         var linkToPatch = Mapper.Map<ConfirmEndpointLinkForm>(existingLink);
+
+         jsonPatchDocument.ApplyTo(linkToPatch, ModelState);
+
+         if(!ModelState.IsValid)
+         {
+            return new UnprocessableEntityObjectResult(ModelState);
+         }
+
+         if(!TryValidateModel(linkToPatch))
+         {
+            return new UnprocessableEntityObjectResult(ModelState);
+         }
+
+         var linkUpdated = await _linkService.UpdateLinkStatusByIdAsync(linkId, linkToPatch.Confirmed, ct);
+
+         if(!linkUpdated)
+         {
+            return StatusCode(500, new ApiError("Link failed to be updated"));
+         }
+
+         return NoContent();
+      }
+
+      // DELETE api/endpointlinks/confirmation/{linkId}
+      [HttpDelete("confirmation/{linkId}", Name = nameof(DeclineEndpointLinkByIdAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
+      public async Task<IActionResult> DeclineEndpointLinkByIdAsync(Guid linkId, CancellationToken ct)
       {
          var deleted = await _linkService.DeleteLinkByIdAsync(linkId, _userInfoService.UserId, ct);
 

@@ -24,6 +24,8 @@ namespace Multilinks.ApiService.Infrastructure
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.AssociatedEndpoint.HubConnection.Connected))
             .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
                Link.To(nameof(Controllers.EndpointLinksController.GetEndpointLinkByIdAsync), new { linkId = src.LinkId })));
+
+         CreateMap<EndpointLinkViewModel, ConfirmEndpointLinkForm>().ReverseMap();
       }
    }
 }

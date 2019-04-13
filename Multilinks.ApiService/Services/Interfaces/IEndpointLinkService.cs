@@ -23,6 +23,8 @@ namespace Multilinks.ApiService.Services
          EndpointEntity associatedEndpoint,
          CancellationToken ct);
 
+      Task<bool> UpdateLinkStatusByIdAsync(Guid linkId, bool confirmed, CancellationToken ct);
+
       Task<bool> DeleteLinkByIdAsync(Guid linkId, Guid userId, CancellationToken ct);
    }
 }

@@ -97,6 +97,23 @@ namespace Multilinks.ApiService.Services
          return link;
       }
 
+      public async Task<bool> UpdateLinkStatusByIdAsync(Guid linkId, bool confirmed, CancellationToken ct)
+      {
+         var link = await _context.Links.FirstOrDefaultAsync(r => r.LinkId == linkId, ct);
+
+         if(link == null)
+            return false;
+
+         link.Confirmed = confirmed;
+
+         var updated = await _context.SaveChangesAsync();
+
+         if(updated < 1)
+            return false;
+
+         return true;
+      }
+
       public async Task<bool> DeleteLinkByIdAsync(Guid linkId, Guid userId, CancellationToken ct)
       {
          /* Only owners of the endpoints can delete links. */
