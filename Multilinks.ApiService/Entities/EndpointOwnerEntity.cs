@@ -5,16 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Multilinks.ApiService.Entities
 {
-   public class HubConnectionEntity
+   public class EndpointOwnerEntity
    {
       [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
       [Key]
-      public long Id { get; set; }
+      public long EndpointOwnerId { get; set; }
 
       [Required]
-      public string ConnectionId { get; set; }
+      public Guid IdentityId { get; set; }
 
+      [MaxLength(128)]
       [Required]
-      public bool Connected { get; set; }
+      public string OwnerName { get; set; }
+
+      public ICollection<EndpointEntity> EndpointEntities { get; set; }
    }
 }

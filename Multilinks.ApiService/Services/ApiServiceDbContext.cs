@@ -13,19 +13,17 @@ namespace Multilinks.ApiService.Services
       {
       }
 
-      public DbSet<HubConnectionEntity> HubConnections { get; set; }
+      public DbSet<EndpointClientEntity> Clients { get; set; }
+      public DbSet<EndpointOwnerEntity> Owners { get; set; }
       public DbSet<EndpointEntity> Endpoints { get; set; }
+
+
+
+      public DbSet<HubConnectionEntity> HubConnections { get; set; }
+      public DbSet<EndpointLinkEntity> Links { get; set; }
 
       protected override void OnModelCreating(ModelBuilder builder)
       {
-         builder.Entity<EndpointEntity>()
-               .HasIndex(u => u.EndpointId)
-               .IsUnique();
-
-         builder.Entity<HubConnectionEntity>()
-               .HasIndex(u => u.EndpointId)
-               .IsUnique();
-
          base.OnModelCreating(builder);
       }
    }

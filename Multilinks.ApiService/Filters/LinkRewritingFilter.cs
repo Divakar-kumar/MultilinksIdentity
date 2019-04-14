@@ -24,7 +24,8 @@ namespace Multilinks.ApiService.Filters
       public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
       {
          var asObjectResult = context.Result as ObjectResult;
-         bool shouldSkip = asObjectResult?.Value == null || asObjectResult?.StatusCode != (int)HttpStatusCode.OK;
+         bool shouldSkip = asObjectResult?.Value == null ||
+            (asObjectResult?.StatusCode != (int)HttpStatusCode.OK && asObjectResult?.StatusCode != (int)HttpStatusCode.Created);
 
          if(shouldSkip)
          {

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Multilinks.ApiService.Services;
 
 namespace Multilinks.ApiService.Services.Migrations
 {
     [DbContext(typeof(ApiServiceDbContext))]
-    partial class ApiServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190303083115_UpdateEndpointEntityWithNavigationProperties")]
+    partial class UpdateEndpointEntityWithNavigationProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,8 +50,6 @@ namespace Multilinks.ApiService.Services.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(512);
 
-                    b.Property<long>("HubConnectionId");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128);
@@ -59,8 +59,6 @@ namespace Multilinks.ApiService.Services.Migrations
                     b.HasKey("EndpointId");
 
                     b.HasIndex("ClientEndpointClientId");
-
-                    b.HasIndex("HubConnectionId");
 
                     b.HasIndex("OwnerEndpointOwnerId");
 
@@ -72,17 +70,13 @@ namespace Multilinks.ApiService.Services.Migrations
                     b.Property<Guid>("LinkId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid?>("AssociatedEndpointEndpointId");
+                    b.Property<Guid>("AssociatedEndpointId");
 
-                    b.Property<bool>("Confirmed");
+                    b.Property<Guid>("SourceEndpointId");
 
-                    b.Property<Guid?>("SourceEndpointEndpointId");
+                    b.Property<string>("Status");
 
                     b.HasKey("LinkId");
-
-                    b.HasIndex("AssociatedEndpointEndpointId");
-
-                    b.HasIndex("SourceEndpointEndpointId");
 
                     b.ToTable("Links");
                 });
@@ -110,10 +104,9 @@ namespace Multilinks.ApiService.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Connected");
+                    b.Property<string>("ConnectionId");
 
-                    b.Property<string>("ConnectionId")
-                        .IsRequired();
+                    b.Property<Guid>("EndpointId");
 
                     b.HasKey("Id");
 
@@ -127,26 +120,10 @@ namespace Multilinks.ApiService.Services.Migrations
                         .HasForeignKey("ClientEndpointClientId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Multilinks.ApiService.Entities.HubConnectionEntity", "HubConnection")
-                        .WithMany()
-                        .HasForeignKey("HubConnectionId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Multilinks.ApiService.Entities.EndpointOwnerEntity", "Owner")
                         .WithMany("EndpointEntities")
                         .HasForeignKey("OwnerEndpointOwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Multilinks.ApiService.Entities.EndpointLinkEntity", b =>
-                {
-                    b.HasOne("Multilinks.ApiService.Entities.EndpointEntity", "AssociatedEndpoint")
-                        .WithMany()
-                        .HasForeignKey("AssociatedEndpointEndpointId");
-
-                    b.HasOne("Multilinks.ApiService.Entities.EndpointEntity", "SourceEndpoint")
-                        .WithMany()
-                        .HasForeignKey("SourceEndpointEndpointId");
                 });
 #pragma warning restore 612, 618
         }

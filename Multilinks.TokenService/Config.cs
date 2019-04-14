@@ -1,4 +1,5 @@
-﻿using IdentityServer4;
+﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -13,7 +14,7 @@ namespace Multilinks.TokenService
          {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
-            new IdentityResource("roles", "User role(s)", new List<string> { "role" })
+            new IdentityResource("roles", "User role(s)", new List<string> { JwtClaimTypes.Role })
          };
       }
 
@@ -21,7 +22,7 @@ namespace Multilinks.TokenService
       {
          return new List<ApiResource>
          {
-            new ApiResource("ApiService", "Multilinks API Service", new List<string> { "role" })
+            new ApiResource("ApiService", "Multilinks API Service", new List<string> { JwtClaimTypes.Role })
          };
       }
 

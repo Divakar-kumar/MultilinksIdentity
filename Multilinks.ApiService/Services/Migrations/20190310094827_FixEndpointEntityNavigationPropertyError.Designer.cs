@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Multilinks.ApiService.Services;
 
 namespace Multilinks.ApiService.Services.Migrations
 {
     [DbContext(typeof(ApiServiceDbContext))]
-    partial class ApiServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190310094827_FixEndpointEntityNavigationPropertyError")]
+    partial class FixEndpointEntityNavigationPropertyError
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,8 +50,6 @@ namespace Multilinks.ApiService.Services.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(512);
 
-                    b.Property<long>("HubConnectionId");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128);
@@ -59,8 +59,6 @@ namespace Multilinks.ApiService.Services.Migrations
                     b.HasKey("EndpointId");
 
                     b.HasIndex("ClientEndpointClientId");
-
-                    b.HasIndex("HubConnectionId");
 
                     b.HasIndex("OwnerEndpointOwnerId");
 
@@ -74,9 +72,10 @@ namespace Multilinks.ApiService.Services.Migrations
 
                     b.Property<Guid?>("AssociatedEndpointEndpointId");
 
-                    b.Property<bool>("Confirmed");
-
                     b.Property<Guid?>("SourceEndpointEndpointId");
+
+                    b.Property<string>("Status")
+                        .IsRequired();
 
                     b.HasKey("LinkId");
 
@@ -110,10 +109,9 @@ namespace Multilinks.ApiService.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Connected");
+                    b.Property<string>("ConnectionId");
 
-                    b.Property<string>("ConnectionId")
-                        .IsRequired();
+                    b.Property<Guid>("EndpointId");
 
                     b.HasKey("Id");
 
@@ -125,11 +123,6 @@ namespace Multilinks.ApiService.Services.Migrations
                     b.HasOne("Multilinks.ApiService.Entities.EndpointClientEntity", "Client")
                         .WithMany("EndpointEntities")
                         .HasForeignKey("ClientEndpointClientId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Multilinks.ApiService.Entities.HubConnectionEntity", "HubConnection")
-                        .WithMany()
-                        .HasForeignKey("HubConnectionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Multilinks.ApiService.Entities.EndpointOwnerEntity", "Owner")

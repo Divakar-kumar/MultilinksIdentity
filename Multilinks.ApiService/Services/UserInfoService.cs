@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using IdentityModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Linq;
@@ -11,8 +12,7 @@ namespace Multilinks.ApiService.Services
       private readonly IHttpContextAccessor _httpContextAccessor;
 
       public Guid UserId { get; }
-      public string FirstName { get; }
-      public string LastName { get; }
+      public string Name { get; }
       public string Role { get; }
       public string ClientId { get; }
       public string ClientType { get; }
@@ -30,23 +30,15 @@ namespace Multilinks.ApiService.Services
             return;
          }
 
-         UserId = new Guid(currentContext
-             .User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value);
+         UserId = new Guid(currentContext.User.Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.Subject)?.Value);
 
-         FirstName = currentContext.User
-             .Claims.FirstOrDefault(c => c.Type == "given_name")?.Value;
+         Name = currentContext.User.Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.Name)?.Value;
 
-         LastName = currentContext
-             .User.Claims.FirstOrDefault(c => c.Type == "family_name")?.Value;
+         Role = currentContext.User.Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.Role)?.Value;
 
-         Role = currentContext
-           .User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+         ClientId = currentContext.User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
 
-         ClientId = currentContext
-            .User.Claims.FirstOrDefault(c => c.Type == "client_id")?.Value;
-
-         ClientType = currentContext
-           .User.Claims.FirstOrDefault(c => c.Type == "client_Type")?.Value;
+         ClientType = currentContext.User.Claims.FirstOrDefault(c => c.Type == "client_Type")?.Value;
       }
    }
 }

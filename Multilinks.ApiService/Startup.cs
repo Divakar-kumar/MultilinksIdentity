@@ -64,8 +64,8 @@ namespace Multilinks.ApiService
                opt.Filters.Add(new RequireHttpsAttribute());
 
                opt.CacheProfiles.Add("Static", new CacheProfile { Duration = 86400 });
-               opt.CacheProfiles.Add("EndpointCollection", new CacheProfile { Duration = 5 });
-               opt.CacheProfiles.Add("EndpointResource", new CacheProfile { Duration = 10 });
+               opt.CacheProfiles.Add("Collection", new CacheProfile { Duration = 5 });
+               opt.CacheProfiles.Add("Resource", new CacheProfile { Duration = 10 });
             });
 
          services.AddRouting(opt => opt.LowercaseUrls = true);
@@ -97,6 +97,7 @@ namespace Multilinks.ApiService
          services.AddScoped<IUserInfoService, UserInfoService>();
          services.AddScoped<IHubConnectionService, HubConnectionService>();
          services.AddScoped<IEndpointService, EndpointService>();
+         services.AddScoped<IEndpointLinkService, EndpointLinkService>();
 
          services.AddSignalR();
 

@@ -8,18 +8,22 @@ namespace Multilinks.ApiService.Entities
    {
       [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
       [Key]
-      public long Id { get; set; }
-
       public Guid EndpointId { get; set; }
 
-      public Guid CreatorId { get; set; }
-
-      public string ClientId { get; set; }
-
-      public string ClientType { get; set; }
-
+      [MaxLength(128)]
+      [Required]
       public string Name { get; set; }
 
+      [MaxLength(512)]
       public string Description { get; set; }
+
+      [Required]
+      public EndpointClientEntity Client { get; set; }
+
+      [Required]
+      public EndpointOwnerEntity Owner { get; set; }
+
+      [Required]
+      public HubConnectionEntity HubConnection { get; set; }
    }
 }
