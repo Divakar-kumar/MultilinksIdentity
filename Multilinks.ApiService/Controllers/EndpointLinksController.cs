@@ -101,6 +101,41 @@ namespace Multilinks.ApiService.Controllers
          return Ok(collection);
       }
 
+      // GET api/endpointlinks/confirmed/source-id/{sourceId}
+      [HttpGet("confirmed/source-id/{sourceId}", Name = nameof(GetEndpointLinksConfirmedAsync))]
+      [ResponseCache(CacheProfileName = "Collection")]
+      [Etag]
+      public async Task<IActionResult> GetEndpointLinksConfirmedAsync(Guid sourceId,
+         [FromQuery] PagingOptions pagingOptions,
+         CancellationToken ct)
+      {
+         if(!ModelState.IsValid)
+            return BadRequest(new ApiError(ModelState));
+
+         pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+         pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
+
+         var links = await _linkService.GetEndpointLinksConfirmedAsync(sourceId, _userInfoService.UserId, pagingOptions, ct);
+
+         var endpointsLinkViewModel = new PagedResults<EndpointLinkViewModel>()
+         {
+            Items = Mapper.Map<IEnumerable<EndpointLinkEntity>, IEnumerable<EndpointLinkViewModel>>(links.Items),
+            TotalSize = links.TotalSize
+         };
+
+         var collection = PagedCollection<EndpointLinkViewModel>.Create<EndpointsLinkCollection>(Link.ToCollection(nameof(GetEndpointLinkByIdAsync)),
+                                                                                       endpointsLinkViewModel.Items.ToArray(),
+                                                                                       endpointsLinkViewModel.TotalSize,
+                                                                                       pagingOptions);
+
+         if(!Request.GetEtagHandler().NoneMatch(collection))
+         {
+            return StatusCode(304, collection);
+         }
+
+         return Ok(collection);
+      }
+
       // POST api/endpointlinks
       [HttpPost(Name = nameof(CreateLinkAsync))]
       [ResponseCache(CacheProfileName = "Resource")]

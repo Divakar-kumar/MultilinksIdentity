@@ -24,7 +24,6 @@ namespace Multilinks.ApiService.Services
       {
          var link = await _context.Links
             .Where(r => (r.SourceEndpoint.EndpointId == sourceEndpointId && r.AssociatedEndpoint.EndpointId == associatedEndpointId))
-            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Client)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection)
             .FirstOrDefaultAsync(ct);
@@ -36,7 +35,6 @@ namespace Multilinks.ApiService.Services
       {
          var link = await _context.Links
             .Where(r => (r.LinkId == linkId))
-            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Client)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection)
             .FirstOrDefaultAsync(ct);
@@ -51,8 +49,31 @@ namespace Multilinks.ApiService.Services
       {
          IQueryable<EndpointLinkEntity> query = _context.Links
             .Where(r => r.AssociatedEndpoint.Owner.IdentityId == ownerId && r.AssociatedEndpoint.EndpointId == endpointId && !r.Confirmed)
-            .Include(r => r.SourceEndpoint).ThenInclude(r => r.Client)
             .Include(r => r.SourceEndpoint).ThenInclude(r => r.Owner);
+
+         var size = await query.CountAsync(ct);
+
+         var items = await query
+                .Skip(pagingOptions.Offset.Value)
+                .Take(pagingOptions.Limit.Value)
+                .ToArrayAsync(ct);
+
+         return new PagedResults<EndpointLinkEntity>
+         {
+            Items = items,
+            TotalSize = size
+         };
+      }
+
+      public async Task<PagedResults<EndpointLinkEntity>> GetEndpointLinksConfirmedAsync(Guid sourceId,
+         Guid ownerId,
+         PagingOptions pagingOptions,
+         CancellationToken ct)
+      {
+         IQueryable<EndpointLinkEntity> query = _context.Links
+            .Where(r => r.SourceEndpoint.Owner.IdentityId == ownerId && r.SourceEndpoint.EndpointId == sourceId && r.Confirmed)
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
+            .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection);
 
          var size = await query.CountAsync(ct);
 
