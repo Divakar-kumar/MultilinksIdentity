@@ -242,6 +242,15 @@ namespace Multilinks.ApiService.Controllers
             return StatusCode(500, new ApiError("Link failed to be updated"));
          }
 
+         if(existingLink.SourceEndpoint.HubConnection.Connected)
+         {
+            await _hubContext.Clients.Client(existingLink.SourceEndpoint.HubConnection.ConnectionId)
+               .LinkConfirmationReceived(existingLink.LinkId.ToString(),
+                                         existingLink.AssociatedEndpoint.Name,
+                                         existingLink.AssociatedEndpoint.Owner.OwnerName,
+                                         existingLink.AssociatedEndpoint.HubConnection.Connected);
+         }
+
          return NoContent();
       }
 

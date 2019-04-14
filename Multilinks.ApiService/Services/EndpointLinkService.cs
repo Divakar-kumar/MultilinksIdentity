@@ -35,6 +35,7 @@ namespace Multilinks.ApiService.Services
       {
          var link = await _context.Links
             .Where(r => (r.LinkId == linkId))
+            .Include(r => r.SourceEndpoint).ThenInclude(r => r.HubConnection)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.Owner)
             .Include(r => r.AssociatedEndpoint).ThenInclude(r => r.HubConnection)
             .FirstOrDefaultAsync(ct);
