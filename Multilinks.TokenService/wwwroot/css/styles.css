@@ -120,62 +120,6 @@ button:disabled {
 
 /* ############################################################### */
 
-/* ########################### FORM BOX ########################## */
-
-/* ############################################################### */
-
-.form-box {
-   width: 350px;
-   margin: 0 auto;
-   text-align: center;
-   background-color: white;
-   border-radius: 10px;
-   box-shadow: 0 5px 50px rgba(0, 0, 0, 0.4);
-}
-
-.form-box .box-header {
-   padding: 18px 10px;
-   color: #fff;
-   background-color: #00a1d9;
-   border-radius: 10px 10px 0 0;
-}
-
-.form-box .box-body {
-   padding: 18px 10px;
-}
-
-.form-box .box-body .blockquote-footer {
-   font-size: 0.8em;
-}
-
-.form-box input {
-   width: 240px;
-   margin-bottom: 20px;
-   padding: 10px;
-   color: #888;
-   font-size: 0.9em;
-   border: 1px solid #ccc;
-   border-radius: 10px;
-}
-
-.form-box input:focus {
-   color: #665851;
-   border-color: #665851;
-   outline: none;
-   transition: 0.5s;
-}
-
-.form-box a {
-   margin-top: 0;
-}
-
-.form-box a:hover {
-   color: #00a1d9;
-   text-decoration: underline;
-}
-
-/* ############################################################### */
-
 /* ######################## HEADER SECTION ####################### */
 
 /* ############################################################### */
@@ -252,7 +196,58 @@ nav li a.nav-link:focus {
    justify-content: center;
    height: 100vh;
    padding: 72px 0;
+   transform: translateY(-15%);
 }
+
+.form-box {
+   width: 350px;
+   margin: 0 auto;
+   text-align: center;
+   background-color: white;
+   border-radius: 10px;
+   box-shadow: 0 5px 50px rgba(0, 0, 0, 0.4);
+}
+
+   .form-box .box-header {
+      padding: 18px 10px;
+      color: #fff;
+      background-color: #00a1d9;
+      border-radius: 10px 10px 0 0;
+   }
+
+   .form-box .box-body {
+      padding: 18px 10px;
+   }
+
+      .form-box .box-body .blockquote-footer {
+         font-size: 0.8em;
+      }
+
+   .form-box input {
+      width: 240px;
+      margin-bottom: 20px;
+      padding: 10px;
+      color: #888;
+      font-size: 0.9em;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+   }
+
+      .form-box input:focus {
+         color: #665851;
+         border-color: #665851;
+         outline: none;
+         transition: 0.5s;
+      }
+
+   .form-box a {
+      margin-top: 0;
+   }
+
+      .form-box a:hover {
+         color: #00a1d9;
+         text-decoration: underline;
+      }
 
 /* ############################################################### */
 
