@@ -646,13 +646,6 @@ namespace Multilinks.TokenService.Controllers
       //   return View();
       //}
 
-
-      //[HttpGet]
-      //public IActionResult AccessDenied()
-      //{
-      //   return View();
-      //}
-
       #region Helpers
 
       private void AddErrors(IdentityResult result)
