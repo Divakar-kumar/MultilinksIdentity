@@ -197,65 +197,6 @@ namespace Multilinks.TokenService.Controllers
          return View();
       }
 
-      //[HttpGet]
-      //[AllowAnonymous]
-      //public IActionResult RegisterAdmin(string returnUrl = null)
-      //{
-      //   /* This action returns a form for an admin account to be created. */
-      //   ViewData["ReturnUrl"] = returnUrl;
-      //   return View();
-      //}
-
-      //[HttpPost]
-      //[AllowAnonymous]
-      //[ValidateAntiForgeryToken]
-      //public async Task<IActionResult> RegisterAdmin(RegisterAdminViewModel model, string returnUrl = null)
-      //{
-      //   /* This action allows an admin account to be created. However if an admin
-      //    * already existed, this will do nothing. */
-      //   var systemAdmin = await _userManager.GetUsersInRoleAsync("System Admin");
-
-      //   if(systemAdmin.Count != 0)
-      //   {
-      //      ViewData["ErrorMessage"] = $"There can only be one System Admin.";
-      //      return View("Error");
-      //   }
-
-      //   ViewData["ReturnUrl"] = returnUrl;
-      //   if(ModelState.IsValid)
-      //   {
-      //      var user = new UserEntity
-      //      {
-      //         UserName = model.Email,
-      //         Email = model.Email,
-      //         ApplicationUserId = Guid.NewGuid(),
-      //         Firstname = model.Firstname,
-      //         Lastname = model.Lastname,
-      //         StartDate = DateTimeOffset.UtcNow
-      //      };
-
-      //      var result = await _userManager.CreateAsync(user, model.Password);
-      //      if(result.Succeeded)
-      //      {
-      //         _logger.LogInformation("User created a new account with password.");
-
-      //         await _userManager.AddToRoleAsync(user, "System Admin");
-
-      //         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-      //         var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-      //         await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-      //         await _signInManager.SignInAsync(user, isPersistent: false);
-      //         _logger.LogInformation("User created a new account with password.");
-      //         return RedirectToLocal(returnUrl);
-      //      }
-      //      AddErrors(result);
-      //   }
-
-      //   // If we got this far, something failed, redisplay form
-      //   return View(model);
-      //}
-
       [HttpGet]
       [AllowAnonymous]
       public async Task<IActionResult> Logout(string logoutId)
