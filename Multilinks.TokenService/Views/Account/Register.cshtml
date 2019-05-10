@@ -5,10 +5,12 @@
       <div class="box-header">
          <h4>Account registration</h4>
       </div>
-      <div asp-validation-summary="All" id="form_message"></div>
-      <input asp-for="Email" placeholder="Email" />
-      <br />
-      <button type="submit">Register</button>
+      <div class="box-body">
+         <div asp-validation-summary="All" id="form_message"></div>
+         <input asp-for="Email" placeholder="Email" />
+         <br />
+         <button type="submit">Register</button>
+      </div>
    </form>
 </div>
 
