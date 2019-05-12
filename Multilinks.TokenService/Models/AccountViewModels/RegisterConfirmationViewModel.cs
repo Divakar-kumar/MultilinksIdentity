@@ -18,11 +18,6 @@ namespace Multilinks.TokenService.Models.AccountViewModels
       [Display(Name = "Password")]
       public string Password { get; set; }
 
-      [DataType(DataType.Password)]
-      [Display(Name = "Confirm password")]
-      [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-      public string ConfirmPassword { get; set; }
-
       public string UserId { get; set; }
       public string Code { get; set; }
    }
