@@ -313,6 +313,89 @@ namespace Multilinks.TokenService.Controllers
          return View(model);
       }
 
+      [HttpGet]
+      [AllowAnonymous]
+      public IActionResult ForgotPassword(string code = null)
+      {
+         return View();
+      }
+
+      [HttpPost]
+      [AllowAnonymous]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+      {
+         if(ModelState.IsValid)
+         {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if(user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+               /* Don't reveal that the user does not exist or is not confirmed */
+               return RedirectToAction(nameof(ForgotPasswordConfirmation));
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
+            await _emailSender.SendEmailForgotPasswordAsync(model.Email, callbackUrl);
+
+            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+         }
+
+         /* If we got this far, something failed, redisplay form */
+         return View(model);
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public IActionResult ForgotPasswordConfirmation()
+      {
+         return View();
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public IActionResult ResetPassword(string code = null, string userId = null)
+      {
+         if(code == null || userId == null)
+         {
+            throw new ApplicationException("A code and user Id must be supplied for password reset.");
+         }
+
+         var model = new ResetPasswordViewModel { Code = code, UserId = userId };
+
+         return View(model);
+      }
+
+      [HttpPost]
+      [AllowAnonymous]
+      [ValidateAntiForgeryToken]
+      public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+      {
+         if(!ModelState.IsValid)
+         {
+            return View(model);
+         }
+
+         var user = await _userManager.FindByIdAsync(model.UserId);
+
+         if(user == null)
+         {
+            // Don't reveal that the user does not exist
+            return Redirect("https://localhost:44302/reset-password-successful");
+         }
+
+         var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+
+         if(result.Succeeded)
+         {
+            return Redirect("https://localhost:44302/reset-password-successful");
+         }
+
+         AddErrors(result);
+
+         return View();
+      }
+
       #region Helpers
 
       private void AddErrors(IdentityResult result)
