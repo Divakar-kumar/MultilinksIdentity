@@ -217,6 +217,14 @@ nav li a.nav-link:focus {
    .form-box .box-body {
       padding: 18px 10px;
    }
+      .form-box .box-body .form-message {
+         color: #18bc9c !important;
+         margin: 10px auto;
+      }
+
+         .form-box .box-body .form-message ul {
+            list-style-type: none;
+         }
 
       .form-box .box-body .blockquote-footer {
          font-size: 0.8em;

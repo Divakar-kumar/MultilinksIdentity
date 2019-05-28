@@ -11,7 +11,7 @@
       <div class="box-body">
          <input asp-for="UserId" type="hidden" value="@ViewData["UserId"]" />
          <input asp-for="Code" type="hidden" value="@ViewData["Code"]" />
-         <div asp-validation-summary="All" id="form_message"></div>
+         <div asp-validation-summary="All" class="form-message"></div>
          <input asp-for="FirstName" placeholder="First Name" />
          <br />
          <input asp-for="LastName" placeholder="Last Name" />
