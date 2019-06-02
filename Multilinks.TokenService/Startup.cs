@@ -108,7 +108,7 @@ namespace Multilinks.TokenService
             options.AddPolicy("CorsMyOrigins", builder =>
             {
                builder.WithOrigins(_configuration.GetValue<string>("CorsOrigins:WebApi"),
-                            _configuration.GetValue<string>("CorsOrigins:WebConsole"))
+                                   _configuration.GetValue<string>("CorsOrigins:WebConsole"))
                .AllowAnyMethod()
                .AllowCredentials()
                .AllowAnyHeader();

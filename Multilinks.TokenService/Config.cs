@@ -41,7 +41,11 @@ namespace Multilinks.TokenService
                RequireClientSecret = false,
                RequireConsent = false,
                AccessTokenLifetime = 1800,
-               AllowedCorsOrigins = { "https://localhost:44302" },
+               AllowedCorsOrigins =
+               {
+                  "https://localhost:44301",
+                  "https://localhost:44302"
+               },
 
                RedirectUris =
                {
