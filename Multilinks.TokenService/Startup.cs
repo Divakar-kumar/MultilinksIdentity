@@ -25,7 +25,6 @@ namespace Multilinks.TokenService
          _env = env;
       }
 
-      // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
          var connectionString = _configuration.GetConnectionString("TokenServiceDb");
@@ -38,7 +37,6 @@ namespace Multilinks.TokenService
              .AddEntityFrameworkStores<TokenServiceDbContext>()
              .AddDefaultTokenProviders();
 
-         // Modify default password validation options.
          services.Configure<IdentityOptions>(o =>
          {
             o.Password.RequireNonAlphanumeric = false;
