@@ -1,6 +1,8 @@
 ﻿using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Options;
+using Multilinks.TokenService.Models;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -8,6 +10,13 @@ namespace Multilinks.TokenService
 {
    public class Config
    {
+      private readonly ApiServiceOptions _defaultApiServiceOptions;
+
+      public Config(IOptions<ApiServiceOptions> defaultApiServiceOptions)
+      {
+         _defaultApiServiceOptions = defaultApiServiceOptions.Value;
+      }
+
       public static IEnumerable<IdentityResource> GetIdentityResources()
       {
          return new List<IdentityResource>
@@ -18,15 +27,16 @@ namespace Multilinks.TokenService
          };
       }
 
-      public static IEnumerable<ApiResource> GetApiResources()
+      public IEnumerable<ApiResource> GetApiResources()
       {
          return new List<ApiResource>
          {
-            new ApiResource("ApiService", "Multilinks API Service", new List<string> { JwtClaimTypes.Role })
+            new ApiResource(_defaultApiServiceOptions.Name,
+                            _defaultApiServiceOptions.DisplayName,
+                            new List<string> { JwtClaimTypes.Role })
          };
       }
 
-      // clients want to access resources (aka scopes)
       public static IEnumerable<Client> GetClients()
       {
          return new List<Client>

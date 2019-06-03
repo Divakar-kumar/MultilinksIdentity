@@ -20,8 +20,10 @@ namespace Multilinks.TokenService
 
             {
                var context = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+               var idpConfigContext = scope.ServiceProvider.GetRequiredService<Config>();
+
                context.Database.Migrate();
-               EnsureSeedData(context);
+               EnsureSeedData(context, idpConfigContext);
             }
 
             {
@@ -34,7 +36,7 @@ namespace Multilinks.TokenService
          Console.WriteLine();
       }
 
-      private static void EnsureSeedData(ConfigurationDbContext context)
+      private static void EnsureSeedData(ConfigurationDbContext context, Config idpConfigContext)
       {
          if(!context.Clients.Any())
          {
@@ -72,7 +74,9 @@ namespace Multilinks.TokenService
          {
             Console.WriteLine("ApiResources being populated");
 
-            foreach(var resource in Config.GetApiResources().ToList())
+            var apiServiceOptions = idpConfigContext.GetApiResources();
+
+            foreach(var resource in idpConfigContext.GetApiResources().ToList())
             {
                context.ApiResources.Add(resource.ToEntity());
             }

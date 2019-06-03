@@ -15,7 +15,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Multilinks.ApiService.Hubs;
-using System.Threading.Tasks;
 using Multilinks.ApiService.Infrastructure.Security;
 
 namespace Multilinks.ApiService

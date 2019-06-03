@@ -10,6 +10,7 @@ using Multilinks.TokenService.Services;
 using Multilinks.TokenService.Entities;
 using Microsoft.AspNetCore.Mvc;
 using IdentityServer4.Services;
+using Multilinks.TokenService.Models;
 
 namespace Multilinks.TokenService
 {
@@ -63,6 +64,9 @@ namespace Multilinks.TokenService
                }
                opt.Filters.Add(new RequireHttpsAttribute());
             });
+
+         services.Configure<ApiServiceOptions>(_configuration.GetSection("DefaultApiServiceOptions"));
+         services.AddSingleton<Config>();
 
          var identityServerbuilder = services.AddIdentityServer(options =>
             {
