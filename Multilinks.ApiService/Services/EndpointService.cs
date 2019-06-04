@@ -100,6 +100,11 @@ namespace Multilinks.ApiService.Services
             HubConnection = hubConnection
          };
 
+         if(endpoint.Client.ClientId == "WebConsole")
+         {
+            endpoint.Description = "This web console is the default interface for your Multilinks account.";
+         }
+
          _context.Endpoints.Add(endpoint);
 
          var created = await _context.SaveChangesAsync(ct);
