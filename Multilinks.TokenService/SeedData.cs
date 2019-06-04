@@ -42,7 +42,7 @@ namespace Multilinks.TokenService
          {
             Console.WriteLine("Clients being populated");
 
-            foreach(var client in Config.GetClients().ToList())
+            foreach(var client in idpConfigContext.GetClients().ToList())
             {
                context.Clients.Add(client.ToEntity());
             }
@@ -58,7 +58,7 @@ namespace Multilinks.TokenService
          {
             Console.WriteLine("IdentityResources being populated");
 
-            foreach(var resource in Config.GetIdentityResources().ToList())
+            foreach(var resource in idpConfigContext.GetIdentityResources().ToList())
             {
                context.IdentityResources.Add(resource.ToEntity());
             }
@@ -73,8 +73,6 @@ namespace Multilinks.TokenService
          if(!context.ApiResources.Any())
          {
             Console.WriteLine("ApiResources being populated");
-
-            var apiServiceOptions = idpConfigContext.GetApiResources();
 
             foreach(var resource in idpConfigContext.GetApiResources().ToList())
             {

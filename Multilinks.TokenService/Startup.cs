@@ -64,6 +64,7 @@ namespace Multilinks.TokenService
             });
 
          services.Configure<ApiServiceOptions>(_configuration.GetSection("DefaultApiServiceOptions"));
+         services.Configure<WebConsoleClientOptions>(_configuration.GetSection("WebConsoleClientOptions"));
          services.AddSingleton<Config>();
 
          var identityServerbuilder = services.AddIdentityServer(options =>

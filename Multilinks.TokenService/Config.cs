@@ -11,13 +11,16 @@ namespace Multilinks.TokenService
    public class Config
    {
       private readonly ApiServiceOptions _defaultApiServiceOptions;
+      private readonly WebConsoleClientOptions _webConsoleClientOptions;
 
-      public Config(IOptions<ApiServiceOptions> defaultApiServiceOptions)
+      public Config(IOptions<ApiServiceOptions> defaultApiServiceOptions,
+                    IOptions<WebConsoleClientOptions> webConsoleClientOptions)
       {
          _defaultApiServiceOptions = defaultApiServiceOptions.Value;
+         _webConsoleClientOptions = webConsoleClientOptions.Value;
       }
 
-      public static IEnumerable<IdentityResource> GetIdentityResources()
+      public IEnumerable<IdentityResource> GetIdentityResources()
       {
          return new List<IdentityResource>
          {
@@ -37,7 +40,7 @@ namespace Multilinks.TokenService
          };
       }
 
-      public static IEnumerable<Client> GetClients()
+      public IEnumerable<Client> GetClients()
       {
          return new List<Client>
          {
@@ -53,19 +56,19 @@ namespace Multilinks.TokenService
                AccessTokenLifetime = 1800,
                AllowedCorsOrigins =
                {
-                  "https://localhost:44301",
-                  "https://localhost:44302"
+                  _webConsoleClientOptions.AllowedCorsOriginsIdp,
+                  _webConsoleClientOptions.AllowedCorsOriginsApi
                },
 
                RedirectUris =
                {
-                  "https://localhost:44302/signin-oidc",
-                  "https://localhost:44302/redirect-silent-renew"
+                  _webConsoleClientOptions.LoginRedirectUri,
+                  _webConsoleClientOptions.SilentLoginRedirectUri
                },
 
                PostLogoutRedirectUris =
                {
-                  "https://localhost:44302/signout-oidc"
+                  _webConsoleClientOptions.LogoutRedirectUri
                },
  
                // scopes that client has access to
@@ -82,6 +85,7 @@ namespace Multilinks.TokenService
                {
                   new Claim("Type", "SPA_CLIENT")
                },
+
                AlwaysSendClientClaims = true
             }
          };

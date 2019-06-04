@@ -15,6 +15,8 @@ using System.Linq;
 using System.Security.Claims;
 using IdentityModel;
 using Multilinks.TokenService.Entities;
+using Multilinks.TokenService.Models;
+using Microsoft.Extensions.Options;
 
 namespace Multilinks.TokenService.Controllers
 {
@@ -34,6 +36,8 @@ namespace Multilinks.TokenService.Controllers
       private readonly IAuthenticationSchemeProvider _schemeProvider;
       private readonly IEventService _events;
 
+      private readonly WebConsoleClientOptions _webConsoleClientOptions;
+
       public AccountController(
           UserManager<UserEntity> userManager,
           SignInManager<UserEntity> signInManager,
@@ -43,7 +47,8 @@ namespace Multilinks.TokenService.Controllers
           IIdentityServerInteractionService interaction,
           IClientStore clientStore,
           IHttpContextAccessor httpContextAccessor,
-          IAuthenticationSchemeProvider schemeProvider
+          IAuthenticationSchemeProvider schemeProvider,
+          IOptions<WebConsoleClientOptions> webConsoleClientOptions
       )
       {
          _userManager = userManager;
@@ -57,6 +62,8 @@ namespace Multilinks.TokenService.Controllers
          _schemeProvider = schemeProvider;
          _clientStore = clientStore;
          _events = events;
+
+         _webConsoleClientOptions = webConsoleClientOptions.Value;
       }
 
       [HttpGet]
@@ -294,7 +301,7 @@ namespace Multilinks.TokenService.Controllers
 
                if(confirmationResult.Succeeded)
                {
-                  return Redirect("https://localhost:44302/registration-confirmation-successful");
+                  return Redirect(_webConsoleClientOptions.RegistrationConfirmedRedirectUri);
                }
 
                /* Failed to confirm email code. */
@@ -381,14 +388,14 @@ namespace Multilinks.TokenService.Controllers
          if(user == null)
          {
             // Don't reveal that the user does not exist
-            return Redirect("https://localhost:44302/reset-password-successful");
+            return Redirect(_webConsoleClientOptions.ResetPasswordSuccessfulRedirectUri);
          }
 
          var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
 
          if(result.Succeeded)
          {
-            return Redirect("https://localhost:44302/reset-password-successful");
+            return Redirect(_webConsoleClientOptions.ResetPasswordSuccessfulRedirectUri);
          }
 
          AddErrors(result);
