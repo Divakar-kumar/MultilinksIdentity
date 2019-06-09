@@ -48,12 +48,16 @@ namespace Multilinks.ApiService.Controllers
       [Etag]
       public async Task<IActionResult> GetEndpointLinkByIdAsync(Guid linkId, CancellationToken ct)
       {
-         // TODO: Need more validation to ensure user has access to this link
          var endpointLink = await _linkService.GetLinkByIdAsync(linkId, ct);
 
          if(endpointLink == null)
          {
             return NotFound();
+         }
+
+         if (_userInfoService.UserId != endpointLink.SourceEndpoint.Owner.IdentityId)
+         {
+            return StatusCode(403, new ApiError("Access to the requested link is denied."));
          }
 
          var endpointLinkViewModel = Mapper.Map<EndpointLinkViewModel>(endpointLink);
