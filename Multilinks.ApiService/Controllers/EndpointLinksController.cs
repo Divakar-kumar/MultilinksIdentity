@@ -243,7 +243,7 @@ namespace Multilinks.ApiService.Controllers
 
          if(!linkUpdated)
          {
-            return StatusCode(500, new ApiError("Link failed to be updated"));
+            return StatusCode(500, new ApiError("Link failed to be updated."));
          }
 
          if(existingLink.SourceEndpoint.HubConnection.Connected)
@@ -263,10 +263,35 @@ namespace Multilinks.ApiService.Controllers
       [ResponseCache(CacheProfileName = "Resource")]
       public async Task<IActionResult> DeclineEndpointLinkByIdAsync(Guid linkId, CancellationToken ct)
       {
+         var endpointLink = await _linkService.GetLinkByIdAsync(linkId, ct);
+
+         if(endpointLink == null)
+         {
+            return NoContent();
+         }
+
+         if(_userInfoService.UserId != endpointLink.AssociatedEndpoint.Owner.IdentityId)
+         {
+            return StatusCode(403, new ApiError("No permission to denied the requested link."));
+         }
+
          var deleted = await _linkService.DeleteLinkByIdAsync(linkId, _userInfoService.UserId, ct);
 
          if(!deleted)
-            return StatusCode(500, new ApiError("Link failed to be deleted"));
+            return StatusCode(500, new ApiError("Link failed to be deleted."));
+
+         var notification = new NotificationEntity
+         {
+            RecipientEndpointId = endpointLink.SourceEndpoint.EndpointId,
+            NotificationType = NotificationEntity.Type.LinkRequestDenied,
+            Message = $"Request to link with {endpointLink.AssociatedEndpoint.Owner.OwnerName}'s {endpointLink.AssociatedEndpoint.Name} ({endpointLink.AssociatedEndpoint.EndpointId}) was denied."
+         };
+
+
+
+
+
+
 
          return NoContent();
       }
