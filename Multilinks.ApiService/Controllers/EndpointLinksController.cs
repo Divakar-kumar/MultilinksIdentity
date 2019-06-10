@@ -282,7 +282,7 @@ namespace Multilinks.ApiService.Controllers
 
          var notification = new NotificationEntity
          {
-            RecipientEndpointId = endpointLink.SourceEndpoint.EndpointId,
+            RecipientEndpoint = endpointLink.SourceEndpoint,
             NotificationType = NotificationEntity.Type.LinkRequestDenied,
             Message = $"Request to link with {endpointLink.AssociatedEndpoint.Owner.OwnerName}'s {endpointLink.AssociatedEndpoint.Name} ({endpointLink.AssociatedEndpoint.EndpointId}) was denied."
          };
