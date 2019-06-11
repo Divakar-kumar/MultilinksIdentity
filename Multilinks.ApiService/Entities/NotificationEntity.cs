@@ -18,6 +18,9 @@ namespace Multilinks.ApiService.Entities
       public long NotificationId { get; set; }
 
       [Required]
+      public Guid Id { get; set; }
+
+      [Required]
       public EndpointEntity RecipientEndpoint { get; set; }
 
       [Required]
