@@ -26,18 +26,21 @@ namespace Multilinks.ApiService.Controllers
       private readonly IUserInfoService _userInfoService;
       private readonly IEndpointLinkService _linkService;
       private readonly IEndpointService _endpointService;
+      private readonly INotificationService _notificationService;
       private readonly IHubContext<MainHub, IMainHub> _hubContext;
       private readonly PagingOptions _defaultPagingOptions;
 
       public EndpointLinksController(IUserInfoService userInfoService,
          IEndpointLinkService linkService,
          IEndpointService endpointService,
+         INotificationService notificationService,
          IHubContext<MainHub, IMainHub> hubContext,
          IOptions<PagingOptions> defaultPagingOptions)
       {
          _userInfoService = userInfoService;
          _linkService = linkService;
          _endpointService = endpointService;
+         _notificationService = notificationService;
          _hubContext = hubContext;
          _defaultPagingOptions = defaultPagingOptions.Value;
       }
@@ -282,16 +285,13 @@ namespace Multilinks.ApiService.Controllers
 
          var notification = new NotificationEntity
          {
+            Id = Guid.NewGuid(),
             RecipientEndpoint = endpointLink.SourceEndpoint,
             NotificationType = NotificationEntity.Type.LinkRequestDenied,
             Message = $"Request to link with {endpointLink.AssociatedEndpoint.Owner.OwnerName}'s {endpointLink.AssociatedEndpoint.Name} ({endpointLink.AssociatedEndpoint.EndpointId}) was denied."
          };
 
-
-
-
-
-
+         var createdSuccess = await _notificationService.CreateNotificationAsync(notification, ct);
 
          return NoContent();
       }
