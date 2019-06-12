@@ -293,6 +293,15 @@ namespace Multilinks.ApiService.Controllers
 
          var createdSuccess = await _notificationService.CreateNotificationAsync(notification, ct);
 
+         if (createdSuccess && endpointLink.SourceEndpoint.HubConnection.Connected)
+         {
+            await _hubContext.Clients.Client(endpointLink.SourceEndpoint.HubConnection.ConnectionId)
+               .NotificationReceived(notification.Id.ToString(),
+                  notification.NotificationType,
+                  notification.Message,
+                  notification.Hidden);
+         }
+
          return NoContent();
       }
    }

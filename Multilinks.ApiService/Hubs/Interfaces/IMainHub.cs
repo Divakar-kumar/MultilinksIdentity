@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Multilinks.ApiService.Entities;
+using System.Threading.Tasks;
 
 namespace Multilinks.ApiService.Hubs.Interfaces
 {
@@ -7,5 +8,7 @@ namespace Multilinks.ApiService.Hubs.Interfaces
       Task LinkRequestReceived(string linkId, string sourceDeviceName, string sourceDeviceOwnerName);
 
       Task LinkConfirmationReceived(string linkId, string associatedDeviceName, string associatedDeviceOwnerName, bool isActive);
+
+      Task NotificationReceived(string id, NotificationEntity.Type notificationType, string message, bool isHidden);
    }
 }
