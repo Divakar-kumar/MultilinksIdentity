@@ -27,7 +27,9 @@ namespace Multilinks.ApiService.Infrastructure
 
          CreateMap<EndpointLinkViewModel, ConfirmEndpointLinkForm>().ReverseMap();
 
-         CreateMap<NotificationEntity, NotificationViewModel>();
+         CreateMap<NotificationEntity, NotificationViewModel>()
+            .ForMember(dest => dest.Self, opt => opt.MapFrom(src =>
+               Link.To(nameof(Controllers.NotificationsController.GetNotificationByIdAsync), new { id = src.Id })));
       }
    }
 }
