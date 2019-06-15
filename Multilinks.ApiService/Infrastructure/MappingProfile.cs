@@ -26,6 +26,8 @@ namespace Multilinks.ApiService.Infrastructure
                Link.To(nameof(Controllers.EndpointLinksController.GetEndpointLinkByIdAsync), new { linkId = src.LinkId })));
 
          CreateMap<EndpointLinkViewModel, ConfirmEndpointLinkForm>().ReverseMap();
+
+         CreateMap<NotificationEntity, NotificationViewModel>();
       }
    }
 }
