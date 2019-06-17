@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Multilinks.ApiService.Entities;
@@ -90,6 +91,49 @@ namespace Multilinks.ApiService.Controllers
          }
 
          return Ok(collection);
+      }
+
+      // PATCH api/notifications/id/{id}
+      [HttpPatch("id/{id}", Name = nameof(UpdateNotificationByIdAsync))]
+      [ResponseCache(CacheProfileName = "Resource")]
+      public async Task<IActionResult> UpdateNotificationByIdAsync(Guid id,
+         [FromBody] JsonPatchDocument<UpdateNotificationForm> jsonPatchDocument,
+         CancellationToken ct)
+      {
+         if(jsonPatchDocument == null)
+         {
+            return BadRequest();
+         }
+
+         var existingNotification = await _notificationService.GetNotificationByIdAsync(id, ct);
+
+         if((existingNotification == null) || existingNotification.RecipientEndpoint.Owner.IdentityId != _userInfoService.UserId)
+         {
+            return NotFound();
+         }
+
+         var linkToPatch = Mapper.Map<UpdateNotificationForm>(existingNotification);
+
+         jsonPatchDocument.ApplyTo(linkToPatch, ModelState);
+
+         if(!ModelState.IsValid)
+         {
+            return new UnprocessableEntityObjectResult(ModelState);
+         }
+
+         if(!TryValidateModel(linkToPatch))
+         {
+            return new UnprocessableEntityObjectResult(ModelState);
+         }
+
+         var notificationUpdated = await _notificationService.UpdateHiddenStatusByIdAsync(id, linkToPatch.Hidden, ct);
+
+         if(!notificationUpdated)
+         {
+            return StatusCode(500, new ApiError("Link failed to be updated."));
+         }
+
+         return NoContent();
       }
    }
 }

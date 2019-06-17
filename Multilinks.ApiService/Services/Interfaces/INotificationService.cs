@@ -17,5 +17,7 @@ namespace Multilinks.ApiService.Services
          Guid ownerId,
          PagingOptions pagingOptions,
          CancellationToken ct);
+
+      Task<bool> UpdateHiddenStatusByIdAsync(Guid id, bool hidden, CancellationToken ct);
    }
 }

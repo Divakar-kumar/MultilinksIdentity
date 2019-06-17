@@ -58,5 +58,22 @@ namespace Multilinks.ApiService.Services
 
          return created > 0 ? true : false;
       }
+
+      public async Task<bool> UpdateHiddenStatusByIdAsync(Guid id, bool hidden, CancellationToken ct)
+      {
+         var notification = await _context.Notifications.FirstOrDefaultAsync(r => r.Id == id, ct);
+
+         if(notification == null)
+            return false;
+
+         notification.Hidden = hidden;
+
+         var updated = await _context.SaveChangesAsync();
+
+         if(updated < 1)
+            return false;
+
+         return true;
+      }
    }
 }
