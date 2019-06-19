@@ -249,6 +249,16 @@ namespace Multilinks.ApiService.Controllers
             return StatusCode(500, new ApiError("Link failed to be updated."));
          }
 
+         var notification = new NotificationEntity
+         {
+            Id = Guid.NewGuid(),
+            RecipientEndpoint = existingLink.SourceEndpoint,
+            NotificationType = NotificationEntity.Type.LinkRequestAccepted,
+            Message = $"Request to link with {existingLink.AssociatedEndpoint.Owner.OwnerName}'s {existingLink.AssociatedEndpoint.Name} ({existingLink.AssociatedEndpoint.EndpointId}) was accepted."
+         };
+
+         var notificationCreated = await _notificationService.CreateNotificationAsync(notification, ct);
+
          if(existingLink.SourceEndpoint.HubConnection.Connected)
          {
             await _hubContext.Clients.Client(existingLink.SourceEndpoint.HubConnection.ConnectionId)
@@ -256,6 +266,15 @@ namespace Multilinks.ApiService.Controllers
                                          existingLink.AssociatedEndpoint.Name,
                                          existingLink.AssociatedEndpoint.Owner.OwnerName,
                                          existingLink.AssociatedEndpoint.HubConnection.Connected);
+
+            if(notificationCreated)
+            {
+               await _hubContext.Clients.Client(existingLink.SourceEndpoint.HubConnection.ConnectionId)
+                  .NotificationReceived(notification.Id.ToString(),
+                     notification.NotificationType,
+                     notification.Message,
+                     notification.Hidden);
+            }
          }
 
          return NoContent();
