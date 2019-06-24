@@ -18,14 +18,14 @@ namespace Multilinks.TokenService.Services
 
       public async Task SendEmailAsync(string email, string subject, string htmlContent)
       {
-         var apiKey = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SENDGRID_API_KEY");
-         var supportEmail = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SUPPORT_EMAIL_ADDRESS");
-         var supportName = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SUPPORT_NAME");
+         var apiKey = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE_API_KEY");
+         var supportEmail = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE_EMAIL_ADDRESS");
+         var supportName = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE__NAME");
 
          if(_env.IsDevelopment())
          {
             /* All outgoing emails should go to a predefined email if working in dev environment. */
-            email = Environment.GetEnvironmentVariable("MDS_MULTILINKS_SENDGRID_DUMMY_EMAIL");
+            email = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE_DUMMY_EMAIL");
 
             if (email == null)
             {
