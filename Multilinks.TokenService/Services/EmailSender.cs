@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
+using Multilinks.TokenService.Models;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -10,22 +12,24 @@ namespace Multilinks.TokenService.Services
    public class EmailSender : IEmailSender
    {
       private readonly IHostingEnvironment _env;
+      private readonly EmailServiceOptions _emailServiceOptions;
 
-      public EmailSender(IHostingEnvironment env)
+      public EmailSender(IHostingEnvironment env, IOptions<EmailServiceOptions> emailServiceOptions)
       {
          _env = env;
+         _emailServiceOptions = emailServiceOptions.Value;
       }
 
       public async Task SendEmailAsync(string email, string subject, string htmlContent)
       {
-         var apiKey = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE_API_KEY");
-         var supportEmail = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE_EMAIL_ADDRESS");
-         var supportName = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE__NAME");
+         var apiKey = _emailServiceOptions.ApiKey;
+         var supportEmail = _emailServiceOptions.Email;
+         var supportName = _emailServiceOptions.Name;
 
-         if(_env.IsDevelopment())
+         if (_env.IsDevelopment())
          {
-            /* All outgoing emails should go to a predefined email if working in dev environment. */
-            email = Environment.GetEnvironmentVariable("MULTILINKS_EMAIL_SERVICE_DUMMY_EMAIL");
+            /* All outgoing emails should go to supportEmail if working in dev environment. */
+            email = supportEmail;
 
             if (email == null)
             {
