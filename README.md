@@ -39,7 +39,20 @@ Please take a few minutes to review the overview below before diving into the co
       + Enter Key/Value secrets into "secrets.json" or via the [command line](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-2.2&tabs=windows#set-a-secret)
          - "EmailService:ApiKey": "[SENDGRID_API_KEY_CREATED_EARLIER]",
          - "EmailService:Email": "[EMAIL_ADDRESS_FOR_DEV_ENVIRONMENT]",
-         - "EmailService:Name": "[NAME_ASSOCIATED_WITH_EMAIL_ADDRESS]"
+         - "EmailService:Name": "[NAME_ASSOCIATED_WITH_EMAIL_ADDRESS]",
+         - "ConnectionStrings:TokenServiceDb": "[CONNECTION_STRING_TO_LOCAL_IDP_DB]",
+         - "CorsOrigins:WebIdp": "https://localhost:44300",
+         - "CorsOrigins:WebApi": "https://localhost:44301",
+         - "CorsOrigins:WebConsole": "https://localhost:44302",
+         - "DefaultApiServiceOptions:name": "ApiService",
+         - "DefaultApiServiceOptions:displayName": "Multilinks API Service",
+         - "WebConsoleClientOptions:AllowedCorsOriginsIdp": "https://localhost:44300",
+         - "WebConsoleClientOptions:AllowedCorsOriginsApi": "https://localhost:44301",
+         - "WebConsoleClientOptions:LoginRedirectUri": "https://localhost:44302/signin-oidc",
+         - "WebConsoleClientOptions:SilentLoginRedirectUri": "https://localhost:44302/redirect-silent-renew",
+         - "WebConsoleClientOptions:LogoutRedirectUri": "https://localhost:44302/signout-oidc",
+         - "WebConsoleClientOptions:RegistrationConfirmedRedirectUri": "https://localhost:44302/registration-confirmation-successful",
+         - "WebConsoleClientOptions:ResetPasswordSuccessfulRedirectUri": "https://localhost:44302/reset-password-successful"
    * Handling self-signed certificate (if required)
       + Open a Powershell session by opening the Package Manager Console => ALT + T, N, O
       + Check that the current directory is the project directory => pwd should show .../[PATH_TO_REPO_FOLDER]/Multilinks.TokenService
