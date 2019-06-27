@@ -40,3 +40,13 @@ Please take a few minutes to review the overview below before diving into the co
          - "EmailService:ApiKey": "[SENDGRID_API_KEY_CREATED_EARLIER]",
          - "EmailService:Email": "[EMAIL_ADDRESS_FOR_DEV_ENVIRONMENT]",
          - "EmailService:Name": "[NAME_ASSOCIATED_WITH_EMAIL_ADDRESS]"
+   * Handling self-signed certificate (if required)
+      + Open a Powershell session by opening the Package Manager Console => ALT + T, N, O
+      + Check that the current directory is the project directory => pwd should show .../[PATH_TO_REPO_FOLDER]/Multilinks.TokenService
+      + Change to project directory if not
+      + Enable "dev-certs" trust => dotnet dev-certs https --trust
+      + A dialog will ask for confirmation
+      + Close Package Manager Console => SHFT + ESC
+   * Idenity Provider Service should now be ready to launch
+
+
