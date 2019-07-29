@@ -27,7 +27,7 @@ namespace Multilinks.TokenService
             }
 
             {
-               var context = scope.ServiceProvider.GetService<TokenServiceDbContext>();
+               var context = scope.ServiceProvider.GetRequiredService<TokenServiceDbContext>();
                context.Database.Migrate();
             }
          }
