@@ -173,7 +173,7 @@ namespace Multilinks.TokenService.Controllers
 
                result = _userManager.AddClaimsAsync(user, new Claim[]{
                   new Claim(JwtClaimTypes.Email, model.Email),
-                  new Claim(JwtClaimTypes.Role, "Standard User"),
+                  new Claim(JwtClaimTypes.Role, "Application User"),
                   new Claim("RegisteredDateTimeOffsetUtc", DateTimeOffset.UtcNow.ToString())
                }).Result;
 
