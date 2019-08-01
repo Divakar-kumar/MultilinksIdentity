@@ -14,7 +14,7 @@ namespace Multilinks.TokenService
       {
          Console.WriteLine("Seeding database...");
 
-         using(var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+         using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
          {
             scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
@@ -38,11 +38,11 @@ namespace Multilinks.TokenService
 
       private static void EnsureSeedData(ConfigurationDbContext context, Config idpConfigContext)
       {
-         if(!context.Clients.Any())
+         if (!context.Clients.Any())
          {
             Console.WriteLine("Clients being populated");
 
-            foreach(var client in idpConfigContext.GetClients().ToList())
+            foreach (var client in idpConfigContext.GetClients().ToList())
             {
                context.Clients.Add(client.ToEntity());
             }
@@ -54,11 +54,11 @@ namespace Multilinks.TokenService
             Console.WriteLine("Clients already populated");
          }
 
-         if(!context.IdentityResources.Any())
+         if (!context.IdentityResources.Any())
          {
             Console.WriteLine("IdentityResources being populated");
 
-            foreach(var resource in idpConfigContext.GetIdentityResources().ToList())
+            foreach (var resource in idpConfigContext.GetIdentityResources().ToList())
             {
                context.IdentityResources.Add(resource.ToEntity());
             }
@@ -70,11 +70,11 @@ namespace Multilinks.TokenService
             Console.WriteLine("IdentityResources already populated");
          }
 
-         if(!context.ApiResources.Any())
+         if (!context.ApiResources.Any())
          {
             Console.WriteLine("ApiResources being populated");
 
-            foreach(var resource in idpConfigContext.GetApiResources().ToList())
+            foreach (var resource in idpConfigContext.GetApiResources().ToList())
             {
                context.ApiResources.Add(resource.ToEntity());
             }

@@ -67,6 +67,7 @@ namespace Multilinks.TokenService
          services.Configure<WebConsoleClientOptions>(_configuration.GetSection("WebConsoleClientOptions"));
          services.Configure<CorsOriginsOptions>(_configuration.GetSection("CorsOrigins"));
          services.Configure<EmailServiceOptions>(_configuration.GetSection("EmailService"));
+         services.Configure<SystemOwnerOptions>(_configuration.GetSection("SystemOwnerOptions"));
          services.AddSingleton<Config>();
 
          var identityServerbuilder = services.AddIdentityServer(options =>
