@@ -12,12 +12,15 @@ namespace Multilinks.TokenService
    {
       private readonly ApiServiceOptions _defaultApiServiceOptions;
       private readonly WebConsoleClientOptions _webConsoleClientOptions;
+      private readonly SystemOwnerOptions _systemOwnerOptions;
 
       public Config(IOptions<ApiServiceOptions> defaultApiServiceOptions,
-                    IOptions<WebConsoleClientOptions> webConsoleClientOptions)
+                    IOptions<WebConsoleClientOptions> webConsoleClientOptions,
+                    IOptions<SystemOwnerOptions> systemOwnerOptions)
       {
          _defaultApiServiceOptions = defaultApiServiceOptions.Value;
          _webConsoleClientOptions = webConsoleClientOptions.Value;
+         _systemOwnerOptions = systemOwnerOptions.Value;
       }
 
       public IEnumerable<IdentityResource> GetIdentityResources()
@@ -89,6 +92,11 @@ namespace Multilinks.TokenService
                AlwaysSendClientClaims = true
             }
          };
+      }
+
+      public SystemOwnerOptions GetSystemOwnerOptions()
+      {
+         return _systemOwnerOptions;
       }
    }
 }
