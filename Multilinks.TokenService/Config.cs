@@ -49,8 +49,8 @@ namespace Multilinks.TokenService
          {
             new Client
             {
-               ClientId = "WebConsole",
-               ClientName = "Multilinks Web Console",
+               ClientId = "54b8b2f7-cb54-44c0-905d-467522c7988f",
+               ClientName = "Multilinks Portal",
                AllowAccessTokensViaBrowser = true,
                AllowedGrantTypes = GrantTypes.Code,
                RequirePkce = true,
