@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+   <PropertyGroup>
+      <TargetFramework>netcoreapp2.2</TargetFramework>
+      <UserSecretsId>aspnet-Multilinks.Identity-8AC28FE3-AA9F-4478-9AC7-C156BEC96385</UserSecretsId>
+   </PropertyGroup>
+
+
+   <ItemGroup>
+      <PackageReference Include="IdentityServer4" Version="2.3.2" />
+      <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.3.0" />
+      <PackageReference Include="IdentityServer4.EntityFramework" Version="2.3.2" />
+      <PackageReference Include="Microsoft.AspNetCore.App" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" PrivateAssets="All" />
+      <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0" />
+      <PackageReference Include="Sendgrid" Version="9.10.0" />
+   </ItemGroup>
+
+</Project>
