@@ -80,7 +80,7 @@ namespace Multilinks.Identity
                   IdentityServerConstants.StandardScopes.OpenId,
                   IdentityServerConstants.StandardScopes.Profile,
                   "roles",
-                  "CoreService"
+                  _coreConfig.Name
                },
 
                /* Custom claims to include with access token for this client. */
