@@ -1,6 +1,6 @@
 ﻿namespace Multilinks.Identity.Models
 {
-   public class ApiServiceOptions
+   public class MultilinksCoreConfigOptions
    {
       public string Name { get; set; }
 

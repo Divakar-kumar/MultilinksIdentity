@@ -63,7 +63,7 @@ namespace Multilinks.Identity
                opt.Filters.Add(new RequireHttpsAttribute());
             });
 
-         services.Configure<ApiServiceOptions>(_configuration.GetSection("DefaultApiServiceOptions"));
+         services.Configure<MultilinksCoreConfigOptions>(_configuration.GetSection("CoreConfigOptions"));
          services.Configure<WebConsoleClientOptions>(_configuration.GetSection("WebConsoleClientOptions"));
          services.Configure<CorsOriginsOptions>(_configuration.GetSection("CorsOrigins"));
          services.Configure<EmailServiceOptions>(_configuration.GetSection("EmailService"));
