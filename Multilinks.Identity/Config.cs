@@ -10,15 +10,15 @@ namespace Multilinks.Identity
 {
    public class Config
    {
-      private readonly ApiServiceOptions _defaultApiServiceOptions;
+      private readonly MultilinksCoreConfigOptions _coreConfig;
       private readonly WebConsoleClientOptions _webConsoleClientOptions;
       private readonly SystemOwnerOptions _systemOwnerOptions;
 
-      public Config(IOptions<ApiServiceOptions> defaultApiServiceOptions,
+      public Config(IOptions<MultilinksCoreConfigOptions> coreConfig,
                     IOptions<WebConsoleClientOptions> webConsoleClientOptions,
                     IOptions<SystemOwnerOptions> systemOwnerOptions)
       {
-         _defaultApiServiceOptions = defaultApiServiceOptions.Value;
+         _coreConfig = coreConfig.Value;
          _webConsoleClientOptions = webConsoleClientOptions.Value;
          _systemOwnerOptions = systemOwnerOptions.Value;
       }
@@ -37,8 +37,8 @@ namespace Multilinks.Identity
       {
          return new List<ApiResource>
          {
-            new ApiResource(_defaultApiServiceOptions.Name,
-                            _defaultApiServiceOptions.DisplayName,
+            new ApiResource(_coreConfig.Name,
+                            _coreConfig.DisplayName,
                             new List<string> { JwtClaimTypes.Role })
          };
       }
@@ -80,7 +80,7 @@ namespace Multilinks.Identity
                   IdentityServerConstants.StandardScopes.OpenId,
                   IdentityServerConstants.StandardScopes.Profile,
                   "roles",
-                  "ApiService"
+                  "CoreService"
                },
 
                /* Custom claims to include with access token for this client. */
