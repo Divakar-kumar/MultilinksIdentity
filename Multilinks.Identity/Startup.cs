@@ -27,7 +27,7 @@ namespace Multilinks.Identity
 
       public void ConfigureServices(IServiceCollection services)
       {
-         var connectionString = _configuration.GetConnectionString("TokenServiceDb");
+         var connectionString = _configuration.GetConnectionString("IdentityDb");
          var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
          services.AddDbContext<IdentityDbContext>(options =>
@@ -63,11 +63,11 @@ namespace Multilinks.Identity
                opt.Filters.Add(new RequireHttpsAttribute());
             });
 
-         services.Configure<MultilinksCoreConfigOptions>(_configuration.GetSection("CoreConfigOptions"));
-         services.Configure<WebConsoleClientOptions>(_configuration.GetSection("WebConsoleClientOptions"));
-         services.Configure<CorsOriginsOptions>(_configuration.GetSection("CorsOrigins"));
+         services.Configure<MultilinksCoreConfigOptions>(_configuration.GetSection("CoreConfig"));
+         services.Configure<PortalConfigOptions>(_configuration.GetSection("PortalConfig"));
+         services.Configure<CorsOriginsOptions>(_configuration.GetSection("Cors"));
          services.Configure<EmailServiceOptions>(_configuration.GetSection("EmailService"));
-         services.Configure<SystemOwnerOptions>(_configuration.GetSection("SystemOwnerOptions"));
+         services.Configure<SystemOwnerOptions>(_configuration.GetSection("SystemOwnerConfig"));
          services.AddSingleton<Config>();
 
          var identityServerbuilder = services.AddIdentityServer(options =>
@@ -113,8 +113,8 @@ namespace Multilinks.Identity
          {
             options.AddPolicy("CorsMyOrigins", builder =>
             {
-               builder.WithOrigins(_configuration.GetValue<string>("CorsOrigins:WebApi"),
-                                   _configuration.GetValue<string>("CorsOrigins:WebConsole"))
+               builder.WithOrigins(_configuration.GetValue<string>("Cors:Core"),
+                                   _configuration.GetValue<string>("Cors:Portal"))
                .AllowAnyMethod()
                .AllowCredentials()
                .AllowAnyHeader();
