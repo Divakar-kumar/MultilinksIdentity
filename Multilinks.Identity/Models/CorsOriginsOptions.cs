@@ -2,10 +2,10 @@
 {
    public class CorsOriginsOptions
    {
-      public string WebIdp { get; set; }
+      public string Identity { get; set; }
 
-      public string WebApi { get; set; }
+      public string Core { get; set; }
 
-      public string WebConsole { get; set; }
+      public string Portal { get; set; }
    }
 }

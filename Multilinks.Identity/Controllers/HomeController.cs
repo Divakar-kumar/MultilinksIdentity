@@ -23,9 +23,9 @@ namespace Multilinks.Identity.Controllers
          return View();
       }
 
-      public IActionResult WebConsoleHome()
+      public IActionResult PortalHome()
       {
-         return Redirect(_corsOriginsOptions.WebConsole);
+         return Redirect(_corsOriginsOptions.Portal);
       }
    }
 }
