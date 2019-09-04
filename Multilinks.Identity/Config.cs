@@ -11,15 +11,15 @@ namespace Multilinks.Identity
    public class Config
    {
       private readonly MultilinksCoreConfigOptions _coreConfig;
-      private readonly WebConsoleClientOptions _webConsoleClientOptions;
+      private readonly PortalConfigOptions _portalConfig;
       private readonly SystemOwnerOptions _systemOwnerOptions;
 
       public Config(IOptions<MultilinksCoreConfigOptions> coreConfig,
-                    IOptions<WebConsoleClientOptions> webConsoleClientOptions,
+                    IOptions<PortalConfigOptions> portalConfig,
                     IOptions<SystemOwnerOptions> systemOwnerOptions)
       {
          _coreConfig = coreConfig.Value;
-         _webConsoleClientOptions = webConsoleClientOptions.Value;
+         _portalConfig = portalConfig.Value;
          _systemOwnerOptions = systemOwnerOptions.Value;
       }
 
@@ -59,19 +59,19 @@ namespace Multilinks.Identity
                AccessTokenLifetime = 600,
                AllowedCorsOrigins =
                {
-                  _webConsoleClientOptions.AllowedCorsOriginsIdp,
-                  _webConsoleClientOptions.AllowedCorsOriginsApi
+                  _portalConfig.AllowedCorsOriginsIdp,
+                  _portalConfig.AllowedCorsOriginsApi
                },
 
                RedirectUris =
                {
-                  _webConsoleClientOptions.LoginRedirectUri,
-                  _webConsoleClientOptions.SilentLoginRedirectUri
+                  _portalConfig.LoginRedirectUri,
+                  _portalConfig.SilentLoginRedirectUri
                },
 
                PostLogoutRedirectUris =
                {
-                  _webConsoleClientOptions.LogoutRedirectUri
+                  _portalConfig.LogoutRedirectUri
                },
  
                // scopes that client has access to

@@ -36,7 +36,7 @@ namespace Multilinks.Identity.Controllers
       private readonly IAuthenticationSchemeProvider _schemeProvider;
       private readonly IEventService _events;
 
-      private readonly WebConsoleClientOptions _webConsoleClientOptions;
+      private readonly PortalConfigOptions _portalConfig;
 
       public AccountController(
           UserManager<UserEntity> userManager,
@@ -48,7 +48,7 @@ namespace Multilinks.Identity.Controllers
           IClientStore clientStore,
           IHttpContextAccessor httpContextAccessor,
           IAuthenticationSchemeProvider schemeProvider,
-          IOptions<WebConsoleClientOptions> webConsoleClientOptions
+          IOptions<PortalConfigOptions> portalConfig
       )
       {
          _userManager = userManager;
@@ -63,7 +63,7 @@ namespace Multilinks.Identity.Controllers
          _clientStore = clientStore;
          _events = events;
 
-         _webConsoleClientOptions = webConsoleClientOptions.Value;
+         _portalConfig = portalConfig.Value;
       }
 
       [HttpGet]
@@ -301,7 +301,7 @@ namespace Multilinks.Identity.Controllers
 
                if(confirmationResult.Succeeded)
                {
-                  return Redirect(_webConsoleClientOptions.RegistrationConfirmedRedirectUri);
+                  return Redirect(_portalConfig.RegistrationConfirmedRedirectUri);
                }
 
                /* Failed to confirm email code. */
@@ -388,14 +388,14 @@ namespace Multilinks.Identity.Controllers
          if(user == null)
          {
             // Don't reveal that the user does not exist
-            return Redirect(_webConsoleClientOptions.ResetPasswordSuccessfulRedirectUri);
+            return Redirect(_portalConfig.ResetPasswordSuccessfulRedirectUri);
          }
 
          var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
 
          if(result.Succeeded)
          {
-            return Redirect(_webConsoleClientOptions.ResetPasswordSuccessfulRedirectUri);
+            return Redirect(_portalConfig.ResetPasswordSuccessfulRedirectUri);
          }
 
          AddErrors(result);

@@ -1,6 +1,6 @@
 ﻿namespace Multilinks.Identity.Models
 {
-   public class WebConsoleClientOptions
+   public class PortalConfigOptions
    {
       public string AllowedCorsOriginsIdp { get; set; }
 
