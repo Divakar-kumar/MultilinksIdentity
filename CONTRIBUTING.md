@@ -63,24 +63,6 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 * **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
 * **Explain why this enhancement would be useful**
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Your First Code Contribution
 
 Unsure where to begin contributing to Multilinks Identity? You can start by looking through these `help-wanted` issues:
