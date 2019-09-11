@@ -137,7 +137,7 @@ Multilinks Identity can be developed locally:
    * Occasionally you will want to merge changes in the upstream repository (the original MultilinksIdentity repository) with your fork:
       + Change to the root folder of your cloned repository
       + Change to the master branch `git checkout master`
-      + Pull any changes from the original MultilinksPortal repository to your local master branch `git pull https://github.com/ChrisDinhNZ/MultilinksIdentity.git master`
+      + Pull any changes from the original MultilinksIdentity repository to your local master branch `git pull https://github.com/ChrisDinhNZ/MultilinksIdentity.git master`
       + Manage any merge conflicts and commit your changes `git commit -m <your-commit-message>`
       + Push your changes to your forked repository `git push`
 
