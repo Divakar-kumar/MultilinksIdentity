@@ -1,4 +1,4 @@
-# Contributing to Multilinks Identity (draft)
+# Contributing to Multilinks Identity
 
 :clap::tada: First off, thanks for taking the time to contribute! :tada::clap:
 
@@ -45,8 +45,7 @@ Explain the problem and include additional details to help maintainers reproduce
 
 Provide more context by answering these questions:
 
-* **Did the problem start happening recently**
-* If the problem started happening recently, what's the most recent version in which the problem doesn't happen?
+* **Did the problem start happening recently?** If so, what's the most recent version in which the problem doesn't happen?
 * **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
 
 ### Suggesting Enhancements
