@@ -86,7 +86,7 @@ namespace Multilinks.Identity
                /* Custom claims to include with access token for this client. */
                Claims = new List<Claim>
                {
-                  new Claim("Type", "SPA_CLIENT")
+                  new Claim("Type", "MULTILINKS_PORTAL")
                },
 
                AlwaysSendClientClaims = true
